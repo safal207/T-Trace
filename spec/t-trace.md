@@ -4,6 +4,8 @@
 
 T-Trace is a format for recording acknowledged state transitions. It solves the problem of maintaining continuity of meaning in long-lived interactions by capturing only those state changes that have been explicitly recognized.
 
+T-Trace originated from the needs of continuity-preserving protocols such as Liminal Thread Protocol (LTP), but is defined as a protocol-agnostic format.
+
 ## 2. Core Concepts
 
 *   **Transition**: A discrete modification of state.
@@ -19,9 +21,9 @@ T-Trace uses the JSON Lines format (newline-delimited JSON).
 
 Each record MUST contain:
 
-*   `id`: Unique identifier for the record.
+*   `id`: Identifier unique within the trace stream or generation context.
 *   `type`: The record type.
-*   `ts`: Timestamp (ISO 8601 or Unix epoch).
+*   `ts`: Timestamp indicating when the transition was acknowledged (ISO 8601 or Unix epoch).
 *   `thread_id`: Identifier of the associated thread.
 
 ### Optional Fields
