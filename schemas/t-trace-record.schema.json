@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/safal207/T-Trace/schemas/t-trace-record.schema.json",
+  "title": "T-Trace Record",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["id", "type", "ts", "thread_id"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "enum": ["sense", "transition", "commit"]
+    },
+    "ts": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "thread_id": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

@@ -1,0 +1,3 @@
+{"id":"1","type":"sense","ts":"2025-01-01T10:00:00Z","thread_id":"thread-1","input":"question"}
+{"id":"2","type":"transition","ts":"2025-01-01T10:00:01Z","thread_id":"thread-1","from":"uncertain","to":"clarity"}
+{"id":"3","type":"commit","ts":"2025-01-01T10:00:02Z","thread_id":"thread-1","confidence":0.81}
