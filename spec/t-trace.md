@@ -2,45 +2,49 @@
 
 ## 1. Purpose
 
-T-Trace is a format for recording acknowledged state transitions. It solves the problem of maintaining continuity of meaning in long-lived interactions by capturing only those state changes that have been explicitly recognized.
+T-Trace is a protocol-agnostic, append-only JSONL format for recording acknowledged state transitions.
 
-T-Trace originated from the needs of continuity-preserving protocols such as Liminal Thread Protocol (LTP), but is defined as a protocol-agnostic format.
+Its goal is to preserve continuity, causality, and auditability across long-running threads.
 
-## 2. Core Concepts
+## 2. Terms
 
-*   **Transition**: A discrete modification of state.
-*   **Thread**: A logical context representing continuity over time.
-*   **Acknowledgement**: Explicit confirmation that a transition is valid and accepted.
-*   **Append-only Principle**: The trace is an immutable sequence of records; history is preserved by addition, never modification.
+- **Thread**: a continuity context identified by `thread_id`.
+- **Record**: one JSON object line in a T-Trace stream.
+- **Transition**: a proposed state evolution.
+- **Commit**: acknowledgement/finalization of a transition.
+- **Sense**: admission of external input into thread context.
 
-## 3. Record Structure
+## 3. Wire Format
 
-T-Trace uses the JSON Lines format (newline-delimited JSON).
+T-Trace MUST be encoded as newline-delimited JSON (JSONL).
 
-### Minimal Required Fields
+Each record MUST be a JSON object with at least:
 
-Each record MUST contain:
+- `id` (string): unique trace identifier
+- `type` (string): one of `sense`, `transition`, `commit`
+- `ts` (string|number): ISO 8601 timestamp or unix epoch
+- `thread_id` (string): thread continuity key
 
-*   `id`: Identifier unique within the trace stream or generation context.
-*   `type`: The record type.
-*   `ts`: Timestamp indicating when the transition was acknowledged (ISO 8601 or Unix epoch).
-*   `thread_id`: Identifier of the associated thread.
+Additional fields MAY be included as domain payload.
 
-### Optional Fields
+## 4. Canonical Types
 
-Fields beyond the required set are permitted only when strictly necessary to describe the payload of the transition.
+- `sense` - introduces external signal/input
+- `transition` - proposes state change
+- `commit` - acknowledges/finalizes state change
 
-## 4. Allowed Record Types
+## 5. Normative Invariants
 
-The canonical set of record types is restricted to:
+1. **Append-only**: prior records are immutable.
+2. **Line validity**: each non-empty line MUST parse as JSON object.
+3. **Type validity**: `type` MUST be in canonical set.
+4. **ID uniqueness**: `id` MUST be unique per trace file.
+5. **Per-thread monotonic time**: `ts` MUST not decrease within a thread.
+6. **Transition causality**: `transition` SHOULD follow prior `sense` or `transition` in same thread.
+7. **Commit causality**: `commit` SHOULD follow prior `transition` in same thread.
 
-*   `sense`: Represents the admission of external input into the thread context.
-*   `transition`: Represents a proposed change of state.
-*   `commit`: Represents the acknowledgement and finalization of a state change.
+## 6. Scope
 
-## 5. Invariants
+T-Trace defines record structure and invariants only.
 
-*   **Immutability**: Existing records must not be altered or deleted.
-*   **Causality**: Records within a thread must respect causal ordering.
-*   **Format Strictness**: Each line must be a valid JSON object.
-*   **Scope**: The format defines structure, not transport or storage.
+Transport, storage backend, cryptographic signing, and access control are out of scope for v0.1.
