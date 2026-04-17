@@ -1,0 +1,5 @@
+{"id":"1","type":"log","ts":"2025-01-01T10:00:00Z","thread_id":"thread-1","message":"received message"}
+{"id":"2","type":"metric","ts":"2025-01-01T10:00:01Z","thread_id":"thread-1","cpu":0.82}
+{"id":"3","type":"transition","ts":"2025-01-01T10:00:02Z","from":"a","to":"b"}
+{"id":"2","type":"commit","ts":"2025-01-01T10:00:05Z","thread_id":"thread-1","confidence":0.9,"_update":true}
+{"id":"4","type":"event","ts":"2025-01-01T10:00:06Z","thread_id":"thread-1","action":"clicked"}
