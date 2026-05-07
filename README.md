@@ -10,6 +10,14 @@ It is designed for systems that need deterministic replay, auditability, and con
 
 See `examples/minimal.ttrace.jsonl` for the smallest complete T-Trace sequence.
 
+## Review links
+
+- Grant evidence: [docs/GRANT_EVIDENCE.md](docs/GRANT_EVIDENCE.md)
+- Protocol spec: [spec/t-trace.md](spec/t-trace.md)
+- JSON Schema: [schemas/t-trace-record.schema.json](schemas/t-trace-record.schema.json)
+- Reference validator: [scripts/validate_ttrace.py](scripts/validate_ttrace.py)
+- Canonical example: [examples/minimal.ttrace.jsonl](examples/minimal.ttrace.jsonl)
+
 ## Boundaries
 
 T-Trace intentionally excludes logs, metrics, raw events, and observability data. Only acknowledged state transitions belong in a trace.
