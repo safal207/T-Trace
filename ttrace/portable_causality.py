@@ -75,11 +75,21 @@ class ReconciliationAgreement:
         }
 
 
+def _plain_json_value(value: Any) -> Any:
+    """Normalize abstract mappings and sequences to standard JSON containers."""
+
+    if isinstance(value, Mapping):
+        return {key: _plain_json_value(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_plain_json_value(item) for item in value]
+    return value
+
+
 def canonical_json_bytes(value: Any) -> bytes:
     """Serialize JSON deterministically for portable identity hashing."""
 
     return json.dumps(
-        value,
+        _plain_json_value(value),
         sort_keys=True,
         separators=(",", ":"),
         ensure_ascii=False,
