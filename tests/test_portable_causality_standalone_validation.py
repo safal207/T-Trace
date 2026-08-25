@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import UserDict
 from copy import deepcopy
 
 from ttrace.portable_causality import (
@@ -98,6 +99,13 @@ def _rebind_parent_material(agreement: ReconciliationAgreement) -> None:
     agreement.receipt["reconciliation_ref_sha256"] = digest_json(
         agreement.reconciliation_ref
     )
+
+
+def test_abstract_mapping_serializes_and_validates_like_dict() -> None:
+    common, agreement = _fixture()
+    wrapped = UserDict(common)
+    assert digest_json(wrapped) == digest_json(common)
+    assert validate_reconciliation_agreement(agreement, wrapped) is True
 
 
 def test_standalone_validator_rejects_duplicate_parent_tip() -> None:
