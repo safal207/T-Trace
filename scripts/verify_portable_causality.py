@@ -63,8 +63,18 @@ def main() -> int:
             "reconciliation_ref_sha256": digest_json(agreement.reconciliation_ref),
             "receipt_sha256": digest_json(agreement.receipt),
         }
-        if actual != expected:
-            raise ValueError("expected_digest_mismatch")
+        mismatched = sorted(
+            key
+            for key in set(actual) | set(expected)
+            if actual.get(key) != expected.get(key)
+        )
+        if mismatched:
+            details = ", ".join(
+                "%s: expected=%r actual=%r"
+                % (key, expected.get(key), actual.get(key))
+                for key in mismatched
+            )
+            raise ValueError("expected_digest_mismatch: %s" % details)
         print(
             "PASS %s (fork epoch %s -> reconciled epoch %s; receipt %s)"
             % (
@@ -75,7 +85,7 @@ def main() -> int:
             )
         )
         return 0
-    except (KeyError, TypeError, ValueError) as error:
+    except (KeyError, OSError, TypeError, ValueError) as error:
         print("FAIL %s: %s" % (args.fixture, error))
         return 1
 
