@@ -1,6 +1,7 @@
 # T-Trace
 
 [![CI](https://github.com/safal207/T-Trace/actions/workflows/ci.yml/badge.svg)](https://github.com/safal207/T-Trace/actions/workflows/ci.yml)
+[![Receipt interop](https://github.com/safal207/T-Trace/actions/workflows/governex-action-receipts.yml/badge.svg)](https://github.com/safal207/T-Trace/actions/workflows/governex-action-receipts.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![Spec](https://img.shields.io/badge/spec-v0.1-blue.svg)](spec/t-trace.md)
 
@@ -19,6 +20,7 @@ See `examples/minimal.ttrace.jsonl` for the smallest complete T-Trace sequence.
 - Canonical example: [examples/minimal.ttrace.jsonl](examples/minimal.ttrace.jsonl)
 - Assurance levels: [docs/assurance-levels.md](docs/assurance-levels.md)
 - OpenPoC-01 selective omission: [docs/openpoc-01-selective-omission.md](docs/openpoc-01-selective-omission.md)
+- Governex action-receipt compatibility: [docs/governex-action-receipts-compatibility.md](docs/governex-action-receipts-compatibility.md)
 
 ## Boundaries
 
@@ -36,6 +38,12 @@ A valid T-Trace proves that the **presented records** satisfy the protocol's str
 python -m openpoc.verify_assurance \
   examples/openpoc-01/bypass.scenario.json
 ```
+
+### Signed action-receipt interoperability
+
+The separate action-receipt verifier checks Ed25519 signatures and raw-octet hash-chain linkage against a pinned external conformance suite. CI reads the upstream vector data and manifest but does **not** execute the upstream verifier.
+
+The current compatibility report records the exact expected and observed outcomes for all 13 public vectors, including the intentionally undetectable head-truncation limit and the unsigned-extension tampering case.
 
 ## Why T-Trace
 
@@ -66,9 +74,9 @@ PASS examples/minimal.ttrace.jsonl (3 records)
 - `spec/t-trace.md` - normative protocol specification
 - `schemas/t-trace-record.schema.json` - JSON Schema for record envelope
 - `scripts/validate_ttrace.py` - reference validator
-- `openpoc/` - executable assurance-boundary fixtures
+- `openpoc/` - executable assurance-boundary and interoperability fixtures
 - `examples/` - canonical trace and OpenPoC examples
-- `tests/` - validator and OpenPoC regression tests
+- `tests/` - validator, OpenPoC, and interoperability regression tests
 
 ## Validation Matrix
 

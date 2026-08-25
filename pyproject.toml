@@ -16,7 +16,8 @@ keywords = ["trace", "jsonl", "protocol", "audit", "continuity"]
 
 [project.optional-dependencies]
 dev = [
-  "pytest>=8.0"
+  "pytest>=8.0",
+  "cryptography>=43.0"
 ]
 
 [tool.pytest.ini_options]
