@@ -21,20 +21,13 @@ As agents gain longer horizons, broader tool access, and the ability to operate 
 
 If those systems confuse **trace validity** with **capture completeness**, an agent or operator can perform a dangerous action while still presenting a green audit result. This creates false assurance at exactly the layers intended to provide defence in depth.
 
-This project does not claim to solve alignment or eliminate catastrophic risk. Its narrower contribution is to make one failure mode measurable: **a safety-relevant effect can be omitted while the available trace remains valid**. Identifying and testing the minimum conditions for non-bypassable capture can improve the reliability of agent evaluations, control systems, and audit-based safety arguments.
+This project does not claim to solve alignment or eliminate catastrophic risk. Its narrower contribution is to make one failure mode measurable: **a safety-relevant effect can be omitted while the available trace remains valid**. Testing the minimum conditions for non-bypassable capture can improve the reliability of agent evaluations, control systems, and audit-based safety arguments.
 
 ## Evidence already produced
 
-OpenPoC-01 is merged and reproducible:
+### OpenPoC-01 — selective omission
 
-- [PR #15 — Separate trace validity from capture completeness](https://github.com/safal207/T-Trace/pull/15)
-- [OpenPoC-01 fixture documentation](openpoc-01-selective-omission.md)
-- honest, bypass, and gated execution scenarios;
-- explicit assurance verdicts rather than a single overloaded `PASS`;
-- **11 tests passing**;
-- CI, CodeQL, and secret scanning passing.
-
-The key negative result is intentional:
+[PR #15](https://github.com/safal207/T-Trace/pull/15) is merged and reproducible. It contains honest, bypass, and gated execution scenarios and separates structural validity from assurance:
 
 ```text
 trace_valid        = true
@@ -44,26 +37,45 @@ effect_bound       = false
 overall_assurance  = insufficient
 ```
 
-The trace validator is correct to accept the records it received. The assurance failure is inferring complete execution from that structural result.
+The validator is correct to accept the records it received. The assurance failure is inferring complete execution from that structural result.
 
-Independent technical feedback from an append-only transparency-log author and a signed-action-receipt draft author converged on the same boundary: detecting or preventing omission requires evidence at a non-bypassable effect point, not the log alone. A draft author has also offered cross-implementation test vectors for independent comparison.
+### Independent signed-receipt interoperability
+
+[PR #18](https://github.com/safal207/T-Trace/pull/18) adds a separate verifier for the public `draft-sahu-agent-action-receipts-00` conformance suite. Against the upstream repository pinned at commit `65836f4e1ecb96ff22e8b4ab6a7c086532ce564c`, the result is:
+
+```text
+13/13 AGREE
+0 DISAGREE
+0 UNSUPPORTED
+```
+
+The verifier independently reconstructs signed bytes, validates Ed25519 signatures, and checks hash-chain links over the exact transmitted JSONL octets. CI reads only the pinned vector data and manifest; it does not execute the upstream verifier.
+
+Evidence:
+
+- [deterministic compatibility matrix](governex-action-receipts-compatibility.md);
+- **17 repository tests passing**;
+- dedicated pinned interoperability workflow passing;
+- CI, CodeQL, and secret scanning passing on the merged result.
+
+The draft author confirmed that OpenPoC-01 draws the intended trace-integrity versus capture-completeness boundary and invited this independent conformance check. The 13/13 result has been sent for consideration in the draft's RFC 7942 Implementation Status section.
 
 ## Eight-week research scope
 
-### 1. Public adversarial benchmark
+### 1. Expand the adversarial assurance benchmark
 
-Expand OpenPoC into a machine-readable benchmark covering at least:
+Add at least **12 new T-Trace/OpenPoC vectors** covering:
 
 - recorder bypass / never-recorded action;
-- missing, duplicated, and reordered records;
 - stale or replayed pre-commitments;
-- receipt replay;
+- receipt replay and cross-run substitution;
 - mismatched effect digests;
-- truncated and split-view presentations;
+- missing, duplicated, reordered, and truncated records;
+- split-view presentations;
 - honest-but-unattested capture;
-- mandatory-gate capture.
+- mandatory-gate capture and configuration drift.
 
-Each vector will have explicit expected verdicts across separate dimensions:
+Each vector will have deterministic expected verdicts across separate dimensions:
 
 - `trace_valid`;
 - `record_integrity`;
@@ -71,60 +83,56 @@ Each vector will have explicit expected verdicts across separate dimensions:
 - `effect_bound`;
 - `overall_assurance`.
 
-### 2. Cross-implementation validation
+### 2. Build one external evidence-format adapter
 
-Run external signed-action-receipt test vectors against T-Trace/OpenPoC and publish an exact compatibility matrix:
+Implement a versioned adapter from a current signed-action-receipt or transparency-log format into a T-Trace causal projection. The goal is composability, not replacement: external formats protect receipt integrity; T-Trace/OpenPoC evaluates causal meaning and assurance boundaries.
 
-- `agree`;
-- `disagree`;
-- `unsupported`;
-- interpretation notes kept separate from test results.
+### 3. Specify and test the deployment trust model
 
-### 3. One external evidence-format adapter
-
-Implement and document an adapter for at least one current signed-receipt or transparency-log format. The goal is composability, not replacement: external formats protect receipt integrity; T-Trace/OpenPoC evaluates causal projection and assurance boundaries.
-
-### 4. Deployment trust model
-
-Specify what must be independently justified before a system may claim capture completeness, including:
+Define what must be independently justified before a system may claim capture completeness:
 
 - all relevant effects traverse the gate;
 - direct resource access is disabled;
 - recorder and gate identities are authenticated;
-- pre-commitments and receipts resist forgery and replay;
-- configuration changes are auditable.
+- pre-commitments and receipts resist forgery, replay, and cross-run substitution;
+- configuration changes are themselves auditable.
 
 No production TEE, PKI, blockchain, or universal standard is promised within this sprint.
 
-### 5. External technical review and public report
+### 4. OpenPoC-02 — independent reproducibility
 
-Invite focused review from researchers and implementers already working on evaluation integrity, action receipts, transparency logs, and agent assurance. Publish corrections, negative results, and unresolved assumptions rather than converting feedback into endorsements.
+Test the difference between a prover supplying a trace and a prover supplying a trace plus the recipe, inputs, versions, and environment evidence required for a third party to reproduce or falsify the claimed transition.
+
+### 5. External review and public report
+
+Invite focused review from implementers working on evaluation integrity, action receipts, transparency logs, and agent assurance. Publish corrections, negative results, disagreements, and unresolved assumptions rather than converting feedback into endorsements.
 
 ## Deliverables
 
-1. A public benchmark with at least **12 adversarial vectors** and deterministic expected verdicts.
-2. A cross-implementation compatibility report against a second receipt implementation or draft vector set.
-3. One external evidence-format adapter.
-4. A documented L1–L4 assurance model:
+1. At least **12 additional adversarial assurance vectors** with deterministic verdicts.
+2. Continued reproducibility of the existing **13/13 external conformance result** at its pinned commit.
+3. One versioned external evidence-format adapter.
+4. A documented and executable L1–L4 assurance model:
    - L1: trace validity;
    - L2: record integrity;
    - L3: capture completeness;
    - L4: independent reproducibility.
-5. Reproducible CI across all fixtures and a reviewer-facing final report.
-6. A concise integration guide for evaluation and agent-control developers.
+5. OpenPoC-02 with positive and negative replay-recipe fixtures.
+6. Reproducible CI, a reviewer-facing final report, and an integration guide for evaluation and agent-control developers.
 
 ## Success criteria
 
 The sprint succeeds if:
 
-- the benchmark reliably distinguishes valid traces from justified completeness claims;
 - bypass cases remain structurally valid but cannot receive a complete-assurance verdict;
 - mandatory-gate cases block effects lacking required evidence;
-- at least two implementations agree on shared test-vector outcomes, or disagreements are precisely isolated;
+- the new adapter preserves explicit distinctions between signature validity, chain integrity, capture completeness, and reproducibility;
+- the current 13-vector compatibility result remains reproducible from the pinned upstream commit;
+- at least one external implementer reviews a concrete artifact or compatibility result;
 - all claims include explicit trust assumptions and non-claims;
 - all public tests and security checks pass in CI.
 
-A useful negative result also counts as success: if a proposed mechanism cannot establish capture completeness, the benchmark should demonstrate that limitation reproducibly.
+A useful negative result also counts as success: if a proposed mechanism cannot establish capture completeness or independent reproducibility, the benchmark should demonstrate that limitation reproducibly.
 
 ## Budget
 
@@ -133,6 +141,6 @@ A useful negative result also counts as success: if a proposed mechanism cannot 
 - **USD 3,000** — test infrastructure, compute, and integration environments;
 - **USD 2,000** — documentation, release work, and contingency.
 
-## Funding decision requested
+## Funding request
 
-Would TAIF consider this an appropriate **8-week, USD 20,000 technical-safety exploration grant**, or should it first be submitted through the standard application route in a different format?
+I am requesting an **8-week, USD 20,000 technical-safety exploration grant** through the Transformative AI Fund's standard application route.
