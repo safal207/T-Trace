@@ -15,11 +15,16 @@ See `examples/minimal.ttrace.jsonl` for the smallest complete T-Trace sequence.
 
 - Grant evidence: [docs/GRANT_EVIDENCE.md](docs/GRANT_EVIDENCE.md)
 - Protocol spec: [spec/t-trace.md](spec/t-trace.md)
+- Causal Execution Graph profile: [spec/causal-execution-graph-v0.1.md](spec/causal-execution-graph-v0.1.md)
+- Portable Causality profile: [spec/portable-causality-profile-v0.1.md](spec/portable-causality-profile-v0.1.md)
 - JSON Schema: [schemas/t-trace-record.schema.json](schemas/t-trace-record.schema.json)
 - Reference validator: [scripts/validate_ttrace.py](scripts/validate_ttrace.py)
-- Canonical example: [examples/minimal.ttrace.jsonl](examples/minimal.ttrace.jsonl)
+- Portable causality verifier: [scripts/verify_portable_causality.py](scripts/verify_portable_causality.py)
+- Canonical trace example: [examples/minimal.ttrace.jsonl](examples/minimal.ttrace.jsonl)
+- Canonical fork/reconciliation example: [examples/causal-portability/fork-reconciliation.json](examples/causal-portability/fork-reconciliation.json)
 - Assurance levels: [docs/assurance-levels.md](docs/assurance-levels.md)
 - OpenPoC-01 selective omission: [docs/openpoc-01-selective-omission.md](docs/openpoc-01-selective-omission.md)
+- Liminal research provenance: [docs/liminal-research-provenance.md](docs/liminal-research-provenance.md)
 - Governex action-receipt compatibility: [docs/governex-action-receipts-compatibility.md](docs/governex-action-receipts-compatibility.md)
 
 ## Boundaries
@@ -43,21 +48,26 @@ python -m openpoc.verify_assurance \
 
 The separate action-receipt verifier checks Ed25519 signatures and raw-octet hash-chain linkage against a pinned external conformance suite. CI reads the upstream vector data and manifest but does **not** execute the upstream verifier.
 
-The current compatibility report records the exact expected and observed outcomes for all 13 public vectors, including the intentionally undetectable head-truncation limit and the unsigned-extension tampering case.
+The compatibility report records the expected and observed outcomes for all public vectors, including the intentionally undetectable head-truncation limit and unsigned-extension tampering case.
 
 ## Why T-Trace
 
 Event logs often capture *what happened* but not whether transitions were causally coherent and acknowledged.
 
-T-Trace adds a strict record shape and invariants so traces are machine-verifiable and reproducible:
+T-Trace adds strict record invariants and optional causal profiles so traces can be machine-verified without confusing evidence provenance with semantic identity:
 
 - strict record envelope (`id`, `type`, `ts`, `thread_id`)
 - canonical record types (`sense`, `transition`, `commit`)
-- per-thread timestamp monotonicity
+- per-thread timestamp monotonicity for the base v0.1 model
 - uniqueness of record identifiers
 - transition/commit causality checks
+- explicit DAG lineage for distributed execution profiles
+- canonical semantic state and transition references
+- genuine fork detection and two-parent reconciliation
 
 ## Quick Start
+
+Validate the canonical base trace:
 
 ```bash
 python scripts/validate_ttrace.py examples/minimal.ttrace.jsonl
@@ -69,16 +79,47 @@ Expected output:
 PASS examples/minimal.ttrace.jsonl (3 records)
 ```
 
+Verify the Portable Causality example:
+
+```bash
+python scripts/verify_portable_causality.py \
+  examples/causal-portability/fork-reconciliation.json
+```
+
+The verifier checks two independently evidenced, semantically divergent branches and a canonical order-independent two-parent reconciliation.
+
+## Portable Causality Profile
+
+The optional profile separates three identities:
+
+```text
+provider evidence
+      ↓ proves
+portable StateRef
+      ↓ evolves through
+portable TransitionRef / ForkBranchRef
+      ↓ reconciles through
+canonical two-parent ReconciliationRef
+```
+
+Provider, signer, registry, manifest, workflow-run, and storage identities remain evidence. They do not become the portable state's identity merely because they established it.
+
+The base T-Trace v0.1 validator is intentionally unchanged; profile objects are additional payload semantics with a focused verifier.
+
 ## Repository Layout
 
-- `spec/t-trace.md` - normative protocol specification
-- `schemas/t-trace-record.schema.json` - JSON Schema for record envelope
-- `scripts/validate_ttrace.py` - reference validator
+- `spec/t-trace.md` - normative base protocol specification
+- `spec/causal-execution-graph-v0.1.md` - distributed causal graph profile
+- `spec/portable-causality-profile-v0.1.md` - portable semantic identity and reconciliation profile
+- `schemas/t-trace-record.schema.json` - JSON Schema for the base record envelope
+- `scripts/validate_ttrace.py` - base reference validator
+- `scripts/verify_portable_causality.py` - focused portable-causality verifier
+- `ttrace/portable_causality.py` - provider-agnostic reference implementation
 - `openpoc/` - executable assurance-boundary and interoperability fixtures
-- `examples/` - canonical trace and OpenPoC examples
-- `tests/` - validator, OpenPoC, and interoperability regression tests
+- `examples/` - canonical traces and profile examples
+- `tests/` - validator, OpenPoC, interoperability, and profile regression tests
 
-## Validation Matrix
+## Base Validation Matrix
 
 - JSON object on every line
 - required fields present

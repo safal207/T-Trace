@@ -16,6 +16,10 @@ jobs:
       - name: Validate canonical example
         run: |
           python scripts/validate_ttrace.py examples/minimal.ttrace.jsonl
+      - name: Verify portable causality example
+        run: |
+          python scripts/verify_portable_causality.py \
+            examples/causal-portability/fork-reconciliation.json
 
   tests:
     runs-on: ubuntu-latest

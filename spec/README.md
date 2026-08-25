@@ -6,32 +6,30 @@ This directory contains the normative and draft protocol specifications for T-Tr
 
 - [`t-trace.md`](t-trace.md) — T-Trace v0.1 base specification for append-only acknowledged state transitions.
 - [`causal-execution-graph-v0.1.md`](causal-execution-graph-v0.1.md) — draft distributed execution profile for causal ordering, retries, re-resolution, fork/merge, recovery, and portable verification.
+- [`portable-causality-profile-v0.1.md`](portable-causality-profile-v0.1.md) — draft canonical identity profile for semantic state, transitions, genuine forks, and explicit two-parent reconciliation.
 
-## Causal Execution Graph Profile
+## Layering
 
-Core principle:
+```text
+T-Trace v0.1 record envelope
+        ↓
+Causal Execution Graph Profile
+        ↓
+Portable Causality Profile
+```
+
+The base validator remains unchanged. Profiles add domain payload semantics and focused verifiers without silently changing T-Trace v0.1 wire compatibility.
+
+## Core principles
 
 > **A portable execution record is a causally ordered execution graph, not a linear audit log.**
 
-The profile defines a minimal causal spine:
+> **Evidence proves a causal state; evidence does not become the causal state's portable identity.**
 
-```text
-logical_operation_id
-  -> intent
-  -> resolution
-  -> execution attempt
-  -> observed outcome
-  -> verification
-  -> recovery/disposition when required
-```
+The distributed profiles distinguish:
 
-It also defines these ordering semantics:
-
-- explicit causal-parent/evidence references establish cross-emitter `happened-before`;
-- emitter-local monotonic sequence may order records from the same emitter;
-- wall-clock timestamps are descriptive and do not establish cross-server causality;
-- causally unrelated branches may remain concurrent;
-- material re-resolution under the same logical operation is an explicit state transition that requires re-verification;
-- retries preserve `logical_operation_id` but use a distinct `execution_id` for each concrete attempt.
-
-The profile is intentionally separate from the v0.1 base validator until schema, examples, and verifier behavior are upgraded together.
+- logical operation from concrete execution attempt;
+- wall-clock description from causal authority;
+- provider evidence from portable semantic identity;
+- historical generation from causal epoch;
+- one-parent transition from multi-parent reconciliation.
