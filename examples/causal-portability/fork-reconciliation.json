@@ -1,0 +1,72 @@
+{
+  "branch_evidence": [
+    {
+      "authority_id": "oidc:branch-a",
+      "authorization_contract_sha256": "05c51d3194896051876aadc21699a347a7d2a23d7f023a75993eff3e7cec0336",
+      "branch_contract_sha256": "8880c259c573f7c3b76b7b409b1faaf925172e55065cf4a1017b821dbdcc20c2",
+      "from_state_ref_sha256": "def8fc9f7f7638a0e6fae7f533d84ac49008eba9deaa4b797f037708132d847d",
+      "logical_branch_id": "policy-fork-a",
+      "provenance_sha256": "fcd8d25034bc2d7a32bc8416adbfdb35bcc508ac7bde8623df9eed2058b7f888",
+      "provider_id": "github-oidc-branch-a",
+      "to_semantic_state_sha256": "68aa3ce4f923f76d5fa609736d64666709414d33ce62f9720739fd2a9aa3fdac",
+      "trust_domain": "example.procurement",
+      "verified": true
+    },
+    {
+      "authority_id": "ed25519:branch-b",
+      "authorization_contract_sha256": "05c51d3194896051876aadc21699a347a7d2a23d7f023a75993eff3e7cec0336",
+      "branch_contract_sha256": "8880c259c573f7c3b76b7b409b1faaf925172e55065cf4a1017b821dbdcc20c2",
+      "from_state_ref_sha256": "def8fc9f7f7638a0e6fae7f533d84ac49008eba9deaa4b797f037708132d847d",
+      "logical_branch_id": "policy-fork-b",
+      "provenance_sha256": "ec22429fdc84461509ab7740b36c5a61cbba0bfd21858dc1f0cbfa8aef8e6bd8",
+      "provider_id": "offline-ed25519-branch-b",
+      "to_semantic_state_sha256": "389bde3a93fb0b5d40d2a935c6f2521ae2747eff3319c4d408f31907f042a348",
+      "trust_domain": "example.procurement",
+      "verified": true
+    }
+  ],
+  "common_state_ref": {
+    "causal_epoch": 2,
+    "logical_state_id": "authorization-state",
+    "schema": "ttrace-portable-state-ref/v0.1",
+    "semantic_state_sha256": "0dfc7620bca6dfa5d6bb16efed5088e4931aa2286feffc5056cd0a8a5db1fb61",
+    "trust_domain": "example.procurement"
+  },
+  "expected": {
+    "parent_set_sha256": "031b1e62b5863589130e73655eb435385cd1853247c7ce8ab6019187f186d86a",
+    "receipt_sha256": "4dbc4447305692707267cff5c78fff2b5c4ef6c1052fd1e0b60d8ce35ad1cd51",
+    "reconciled_state_ref_sha256": "1b2e6c78ac10a8fbaa194b9390af18c47d12935272932c0850534e6c5894d4e1",
+    "reconciliation_ref_sha256": "ffba38aa373127769fc22bea07aa3b6819ed4fbe53e8cb558a999fda48c7e150"
+  },
+  "reconciliation_votes": [
+    {
+      "authority_id": "oidc:branch-a",
+      "authorization_contract_sha256": "cc9876842388d08e74a433de800845bd0cc5d3afac7c93c988cbedc823de7b1f",
+      "branch_ref_sha256": "d29b8383c5dca9b49cccbad72984c05bfaa8682308fbe2f48ff7d600160f8c77",
+      "branch_state_ref_sha256": "c87d555fe1291d8a259de3e3108c9ecf6e6604b40735b923dcfd3b0f151f442e",
+      "branch_tip_sha256": "1db69d8154085a9e103958576792428afb488b9a05306fb54f9de6a345183099",
+      "logical_reconciliation_id": "policy-fork-reconcile-v0.1",
+      "provenance_sha256": "f2d6c05924119071145bfafa4c586cfd1899380982d7bb3eed6756ac75f06830",
+      "provider_id": "github-oidc-branch-a",
+      "reconciliation_contract_sha256": "55a6141be45f2de8fb8baeb8d60c5e85c72e1437e984e629037a1bd36a8289ef",
+      "target_semantic_state_sha256": "5e4d63c67c5863e3d464c4755fbf87467adc35cac8c349da32ddc2641887cd98",
+      "trust_domain": "example.procurement",
+      "verified": true
+    },
+    {
+      "authority_id": "ed25519:branch-b",
+      "authorization_contract_sha256": "cc9876842388d08e74a433de800845bd0cc5d3afac7c93c988cbedc823de7b1f",
+      "branch_ref_sha256": "dd167e230c69c4b5897ba166c63ce3ec0348f6b67afbfbb5d9004259504042ef",
+      "branch_state_ref_sha256": "9082743691aaaf6175a38f7ce5c05fc65cbddaab96395c5b6761b9859b82a35b",
+      "branch_tip_sha256": "88fd6d3420f1721d7ac795ffa30f303f4bdc42982b8b8c6da0485385f99577c2",
+      "logical_reconciliation_id": "policy-fork-reconcile-v0.1",
+      "provenance_sha256": "2de38e2483b8431f2c8a1619b7dcfc0cd88706810dd24743ee0788b46ba2fd6a",
+      "provider_id": "offline-ed25519-branch-b",
+      "reconciliation_contract_sha256": "55a6141be45f2de8fb8baeb8d60c5e85c72e1437e984e629037a1bd36a8289ef",
+      "target_semantic_state_sha256": "5e4d63c67c5863e3d464c4755fbf87467adc35cac8c349da32ddc2641887cd98",
+      "trust_domain": "example.procurement",
+      "verified": true
+    }
+  ],
+  "schema": "ttrace-portable-causality-example/v0.1"
+}
