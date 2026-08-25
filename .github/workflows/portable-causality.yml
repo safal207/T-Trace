@@ -1,0 +1,57 @@
+name: Portable Causality Profile
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ttrace/**"
+      - "tests/test_portable_causality.py"
+      - "scripts/verify_portable_causality.py"
+      - "examples/portable-causal/**"
+      - "spec/portable-causal-*.md"
+      - "spec/causal-fork-reconciliation-v0.1.md"
+      - ".github/workflows/portable-causality.yml"
+  pull_request:
+    paths:
+      - "ttrace/**"
+      - "tests/test_portable_causality.py"
+      - "scripts/verify_portable_causality.py"
+      - "examples/portable-causal/**"
+      - "spec/portable-causal-*.md"
+      - "spec/causal-fork-reconciliation-v0.1.md"
+      - ".github/workflows/portable-causality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify-portable-causality:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install reference implementation
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+      - name: Run portable-causality tests
+        run: python -m pytest -q tests/test_portable_causality.py
+      - name: Recompute canonical reconciliation example
+        run: |
+          python scripts/verify_portable_causality.py \
+            examples/portable-causal/two-parent-reconciliation.json
+      - name: Prepare deterministic proof artifact
+        run: |
+          mkdir -p artifacts
+          cp examples/portable-causal/two-parent-reconciliation.json \
+            artifacts/two-parent-reconciliation.json
+          sha256sum artifacts/two-parent-reconciliation.json \
+            > artifacts/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ttrace-portable-causality-v0.1
+          path: artifacts
+          if-no-files-found: error
+          retention-days: 30
