@@ -1,0 +1,3 @@
+{"id":"gated-1","type":"sense","ts":"2026-08-25T10:10:00Z","thread_id":"run-gated","effect_id":"effect-gated","action":"transfer","state":"requested"}
+{"id":"gated-2","type":"transition","ts":"2026-08-25T10:10:01Z","thread_id":"run-gated","effect_id":"effect-gated","from":"requested","to":"precommitted"}
+{"id":"gated-3","type":"commit","ts":"2026-08-25T10:10:02Z","thread_id":"run-gated","effect_id":"effect-gated","outcome":"applied"}

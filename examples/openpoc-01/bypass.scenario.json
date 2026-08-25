@@ -1,0 +1,15 @@
+{
+  "scenario": "selective-omission-bypass",
+  "trace": "bypass.ttrace.jsonl",
+  "receipt_effect_ids": ["effect-captured"],
+  "external_effect_ids": ["effect-captured", "effect-hidden"],
+  "non_bypassable_gate_attested": false,
+  "expected": {
+    "trace_valid": true,
+    "capture_complete": false,
+    "capture_status": "violated",
+    "effect_bound": false,
+    "overall_assurance": "insufficient",
+    "missing_effect_ids": ["effect-hidden"]
+  }
+}

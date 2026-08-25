@@ -17,12 +17,25 @@ See `examples/minimal.ttrace.jsonl` for the smallest complete T-Trace sequence.
 - JSON Schema: [schemas/t-trace-record.schema.json](schemas/t-trace-record.schema.json)
 - Reference validator: [scripts/validate_ttrace.py](scripts/validate_ttrace.py)
 - Canonical example: [examples/minimal.ttrace.jsonl](examples/minimal.ttrace.jsonl)
+- Assurance levels: [docs/assurance-levels.md](docs/assurance-levels.md)
+- OpenPoC-01 selective omission: [docs/openpoc-01-selective-omission.md](docs/openpoc-01-selective-omission.md)
 
 ## Boundaries
 
 T-Trace intentionally excludes logs, metrics, raw events, and observability data. Only acknowledged state transitions belong in a trace.
 
 See `examples/forbidden.ttrace.jsonl` for examples of what T-Trace is NOT.
+
+### Assurance boundary
+
+A valid T-Trace proves that the **presented records** satisfy the protocol's structural and causal rules. It does not by itself prove that every real-world effect was captured, that an action could not bypass the recorder, or that a claimed outcome was independently reproduced.
+
+[OpenPoC-01](docs/openpoc-01-selective-omission.md) demonstrates the key negative case: a real effect occurs outside the recorder while the shorter presented trace still validates correctly. The assurance verifier therefore reports trace validity separately from capture completeness.
+
+```bash
+python -m openpoc.verify_assurance \
+  examples/openpoc-01/bypass.scenario.json
+```
 
 ## Why T-Trace
 
@@ -53,8 +66,9 @@ PASS examples/minimal.ttrace.jsonl (3 records)
 - `spec/t-trace.md` - normative protocol specification
 - `schemas/t-trace-record.schema.json` - JSON Schema for record envelope
 - `scripts/validate_ttrace.py` - reference validator
-- `examples/` - canonical trace examples
-- `tests/` - validator regression tests
+- `openpoc/` - executable assurance-boundary fixtures
+- `examples/` - canonical trace and OpenPoC examples
+- `tests/` - validator and OpenPoC regression tests
 
 ## Validation Matrix
 
