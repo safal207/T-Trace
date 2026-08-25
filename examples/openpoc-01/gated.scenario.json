@@ -1,0 +1,15 @@
+{
+  "scenario": "non-bypassable-effect-gate",
+  "trace": "gated.ttrace.jsonl",
+  "receipt_effect_ids": ["effect-gated"],
+  "external_effect_ids": ["effect-gated"],
+  "non_bypassable_gate_attested": true,
+  "expected": {
+    "trace_valid": true,
+    "capture_complete": true,
+    "capture_status": "proven",
+    "effect_bound": true,
+    "overall_assurance": "sufficient",
+    "missing_effect_ids": []
+  }
+}

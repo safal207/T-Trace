@@ -1,0 +1,3 @@
+{"id":"honest-1","type":"sense","ts":"2026-08-25T10:00:00Z","thread_id":"run-honest","effect_id":"effect-captured","action":"transfer","state":"requested"}
+{"id":"honest-2","type":"transition","ts":"2026-08-25T10:00:01Z","thread_id":"run-honest","effect_id":"effect-captured","from":"requested","to":"precommitted"}
+{"id":"honest-3","type":"commit","ts":"2026-08-25T10:00:02Z","thread_id":"run-honest","effect_id":"effect-captured","outcome":"applied"}
