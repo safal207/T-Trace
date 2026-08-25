@@ -23,7 +23,6 @@ The base validator remains unchanged. Profiles add domain payload semantics and 
 ## Core principles
 
 > **A portable execution record is a causally ordered execution graph, not a linear audit log.**
-
 > **Evidence proves a causal state; evidence does not become the causal state's portable identity.**
 
 The distributed profiles distinguish:
