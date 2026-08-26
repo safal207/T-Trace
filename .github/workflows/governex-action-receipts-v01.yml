@@ -1,0 +1,52 @@
+name: Governex Action Receipt -01 Interoperability
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  conformance-v01:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out T-Trace
+        uses: actions/checkout@v4
+
+      - name: Check out pinned Governex -01 vectors
+        uses: actions/checkout@v4
+        with:
+          repository: governex/agent-action-receipts-vectors
+          ref: 6e31f1fabe0f5f6de511c5821bdf8b924d8aaa2a
+          path: external/governex-action-receipts-v01
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install verifier dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      - name: Run pinned -01 conformance suite
+        run: |
+          python -m openpoc.action_receipt_compat_v01 \
+            --manifest-root external/governex-action-receipts-v01 \
+            --source-commit 6e31f1fabe0f5f6de511c5821bdf8b924d8aaa2a \
+            --json-out /tmp/governex-action-receipts-v01-compatibility.json \
+            --markdown-out /tmp/governex-action-receipts-v01-compatibility.md
+
+      - name: Require deterministic committed report
+        run: |
+          diff -u \
+            docs/governex-action-receipts-v01-compatibility.md \
+            /tmp/governex-action-receipts-v01-compatibility.md
+
+      - name: Run local -01 verifier regression tests
+        run: |
+          python -m pytest tests/test_action_receipt_compat_v01.py
