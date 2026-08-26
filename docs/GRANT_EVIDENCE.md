@@ -1,237 +1,241 @@
-# Grant Evidence Package
+# T-Trace / OpenPoC — Grant Evidence Package
 
-Status: reviewer-facing evidence package.
-
-Scope: this document summarizes the current T-Trace artifact, reproducible reviewer path, evidence assets, explicit non-claims, and near-term roadmap for grant reviewers and technical evaluators.
+**Status:** reviewer-facing evidence package  
+**Applicant:** Aleksei Safonov — Independent Researcher and Maintainer of T-Trace/OpenPoC  
+**Repository:** https://github.com/safal207/T-Trace
 
 ## One-sentence claim
 
-T-Trace is an append-only JSONL protocol for recording acknowledged state transitions with machine-checkable invariants for continuity, causality, auditability, and deterministic validation.
+T-Trace/OpenPoC is an open protocol and executable benchmark that separates **trace validity**, **record integrity**, **capture completeness**, and **independent reproducibility** instead of collapsing them into one overloaded `PASS` result.
 
-## Core idea
+## Core research question
 
-T-Trace separates acknowledged state transitions from raw logs, metrics, storage engines, and replay systems.
+> What evidence is required to distinguish a structurally valid AI-agent trace from a complete and independently checkable account of all safety-relevant effects?
+
+The central failure mode is selective omission: a real effect may occur outside the recorder while the shorter presented trace remains internally valid.
 
 ```text
-raw event / signal -> acknowledged transition record -> append-only JSONL trace -> validator / downstream replay / audit tools
+valid presented trace
+        ≠
+all created records are unchanged
+        ≠
+every real effect entered the evidence path
+        ≠
+the claimed outcome was independently reproduced
 ```
-
-T-Trace defines the record format and invariants. Other layers can store, replay, inspect, or audit the resulting trace.
-
-## Why this matters
-
-Long-running agentic and adaptive systems need more than ordinary event logs.
-
-They need a trace format that can answer:
-
-- Which thread of continuity does this record belong to?
-- Did time move monotonically within the thread?
-- Was this record type allowed?
-- Was this transition causally preceded by a prior sense/transition?
-- Was this commit preceded by a transition?
-- Are record identifiers unique?
-- Can the trace be validated deterministically?
-
-T-Trace provides the minimal structure needed for that validation.
 
 ## Reviewer path
 
-Validate the canonical example:
+### 1. Validate the base T-Trace protocol
 
 ```bash
 python scripts/validate_ttrace.py examples/minimal.ttrace.jsonl
 ```
 
-Expected shape:
+Expected result:
 
 ```text
 PASS examples/minimal.ttrace.jsonl (3 records)
 ```
 
-Install dev dependencies and run tests:
+### 2. Reproduce OpenPoC-01 selective omission
+
+```bash
+python -m openpoc.verify_assurance \
+  examples/openpoc-01/bypass.scenario.json
+```
+
+Expected assurance boundary:
+
+```text
+trace_valid        = true
+capture_complete   = false
+capture_status     = violated
+effect_bound       = false
+overall_assurance  = insufficient
+```
+
+The trace validator is correct to accept the records it received. The unsafe inference is treating structural validity as proof of complete execution.
+
+### 3. Review independent signed-receipt interoperability
+
+Original `-00` evidence:
+
+- [13/13 compatibility report](governex-action-receipts-compatibility.md)
+- [independent verifier](../openpoc/action_receipt_compat.py)
+- [pinned workflow](../.github/workflows/governex-action-receipts.yml)
+- [merged PR #18](https://github.com/safal207/T-Trace/pull/18)
+
+Forthcoming `-01` vector-profile evidence:
+
+- [18/18 compatibility report](governex-action-receipts-v01-compatibility.md)
+- [capture-side review](governex-action-receipts-v01-capture-review.md)
+- [independent verifier](../openpoc/action_receipt_compat_v01.py)
+- [pinned workflow](../.github/workflows/governex-action-receipts-v01.yml)
+- [merged PR #23](https://github.com/safal207/T-Trace/pull/23)
+
+### 4. Run the repository test suite
 
 ```bash
 pip install -e .[dev]
 python -m pytest -q
 ```
 
-Review the protocol and schema:
+Verified result on the Interop-02 merge path:
 
 ```text
-spec/t-trace.md
-schemas/t-trace-record.schema.json
-scripts/validate_ttrace.py
-examples/minimal.ttrace.jsonl
-tests/
-```
-
-## Architecture at a glance
-
-```mermaid
-flowchart LR
-  A[External signal / system event] --> B[Acknowledged T-Trace record]
-  B --> C[Append-only JSONL stream]
-  C --> D[Reference validator]
-  C --> E[Replay / audit tools]
-  C --> F[Storage substrate]
-  D --> G[PASS / FAIL evidence]
-```
-
-The important boundary:
-
-```text
-T-Trace defines trace records and invariants.
-T-Trace does not define the whole storage, replay, crypto, or policy stack.
+49 passed
 ```
 
 ## Current evidence matrix
 
-| Evidence asset | Reviewer question | Path / command | Current status |
-| --- | --- | --- | --- |
-| Protocol spec | Is the trace format documented? | `spec/t-trace.md` | Documented |
-| JSON Schema | Is the record envelope machine-readable? | `schemas/t-trace-record.schema.json` | Implemented |
-| Reference validator | Can traces be checked locally? | `scripts/validate_ttrace.py` | Implemented |
-| Canonical example | Is there a minimal valid trace? | `examples/minimal.ttrace.jsonl` | Implemented |
-| Negative examples | Are forbidden/invalid traces represented? | `examples/`, `tests/fixtures/` | Implemented |
-| Regression tests | Are validator invariants tested? | `python -m pytest -q` | Implemented |
-| CI workflow | Is validation automated in GitHub Actions? | `.github/workflows/ci.yml` | Implemented |
-| Security baseline | Are basic repository security checks configured? | `.github/workflows/security.yml` | Implemented |
-| Contribution process | Are community contribution rules present? | `CONTRIBUTING.md` | Documented |
-| Security policy | Is vulnerability reporting defined? | `SECURITY.md` | Documented |
+| Evidence | Reviewer question | Result |
+|---|---|---|
+| Base protocol and schema | Is the trace format machine-checkable? | Implemented |
+| Reference validator | Can the canonical trace be checked locally? | PASS |
+| OpenPoC-01 | Can a hidden effect coexist with a valid presented trace? | Reproduced |
+| Assurance model | Are structural validity and capture completeness separated? | Implemented |
+| Governex `-00` interoperability | Does an independent verifier match the original public suite without shared verifier code? | **13/13 AGREE** |
+| Governex `-01` interoperability | Does an independent verifier match repetition, ordering, and signed-head outcomes? | **18/18 AGREE** |
+| Focused `-01` regression tests | Are new checks covered locally? | **7 passed** |
+| Full repository tests | Do existing protocol and profile tests remain green? | **49 passed** |
+| Original `-00` pinned workflow | Does the stable earlier evidence remain reproducible? | PASS |
+| New `-01` pinned workflow | Is the new profile reproducible at a fixed upstream commit? | PASS |
+| CI / CodeQL / secret scan | Are quality and baseline security checks green? | PASS |
+| External public reference | Does the upstream vector repository link the independent evidence? | Yes |
+| Planned RFC 7942 credit | Has the draft author confirmed named implementation-status credit? | Yes, for the forthcoming `-01` revision |
 
-## What is already implemented
+## Independent interoperability result
 
-- Append-only JSONL trace framing.
-- Canonical record types: `sense`, `transition`, `commit`.
-- Minimal required fields: `id`, `type`, `ts`, `thread_id`.
-- JSON Schema for record envelope.
-- Reference Python validator.
-- Canonical valid example.
-- Invalid fixtures/tests for duplicate IDs, non-monotonic timestamps, and commit-without-transition.
-- CI workflow validating canonical trace and running tests.
-- Security baseline workflow.
-- Contribution and security documentation.
+### Original `-00` profile
 
-## Core invariants
-
-T-Trace currently checks or documents these core invariants:
+Pinned upstream commit:
 
 ```text
-Each non-empty line must parse as a JSON object.
-Required fields must be present.
-Record type must be in the canonical set.
-Record IDs must be unique within the trace file.
-Timestamp must be ISO 8601 or Unix epoch.
-Timestamp must not move backward within a thread.
-A transition requires prior sense or transition in the same thread.
-A commit requires prior transition in the same thread.
+65836f4e1ecb96ff22e8b4ab6a7c086532ce564c
 ```
 
-These invariants make T-Trace more structured than a generic log stream.
-
-## What T-Trace makes inspectable
-
-T-Trace is designed to make trace structure inspectable, including:
-
-- the continuity thread of a record,
-- whether records are well-formed,
-- whether the record type is allowed,
-- whether timestamps are monotonic per thread,
-- whether transition and commit records have minimal causal predecessors,
-- whether identifiers collide,
-- whether a trace passes deterministic validation.
-
-## Relationship to the Liminal Evidence Stack
-
-T-Trace is the canonical trace-format layer.
-
-- **T-Trace:** append-only JSONL trace format, invariants, schema, and validator.
-- **LTP:** replay, admissibility, semantic inspection, and transport/oversight surfaces.
-- **TTM DB:** stores immutable ground-truth traces and exposes read-time envelopes/projections.
-- **CaPU:** emits lifecycle events for commit-before-effect execution control.
-- **CML/vCML:** defines causal and authorization record semantics and audits causal validity.
-- **DRP/DMP:** preserves decision and consequence memory.
-- **PythiaLabs:** gates high-risk proposed actions before tool execution.
-- **LiminalDB:** stores adaptive timelines, snapshots, and derived evidence views.
-
-Short version:
+Result:
 
 ```text
-T-Trace defines the line format and invariants.
-LTP replays and inspects traces.
-TTM DB stores immutable trace history.
-CML audits causal validity.
-CaPU emits side-effect lifecycle events.
+13/13 AGREE
+0 DISAGREE
+0 UNSUPPORTED
 ```
 
-## What this project does not claim yet
+### Forthcoming `-01` vector profile
 
-T-Trace currently does not claim:
-
-- to be a full observability platform,
-- to replace logs, metrics, spans, or telemetry systems,
-- to define transport or storage semantics,
-- to provide cryptographic signing or seal verification by itself,
-- to perform semantic truth validation,
-- to provide full deterministic replay by itself,
-- to define AI policy or runtime execution control,
-- to be a production compliance system.
-
-The narrower claim is stronger:
+Pinned upstream commit:
 
 ```text
-T-Trace defines a minimal append-only JSONL record format and validator for acknowledged state transitions.
+6e31f1fabe0f5f6de511c5821bdf8b924d8aaa2a
 ```
+
+Result:
+
+```text
+18/18 AGREE
+0 DISAGREE
+0 UNSUPPORTED
+```
+
+The 18 checks comprise 16 receipt-log vectors and 2 signed-head checks. Important cases include:
+
+- repeated `step_id` with valid signatures and intact raw-octet linkage;
+- signed `seq` gap versus signed `seq` reuse/regression;
+- a signed head assertion that matches the complete log and rejects the truncated presentation.
+
+The T-Trace/OpenPoC verifier does not import or execute the upstream verifier. It independently reconstructs signed bytes, verifies Ed25519 signatures, checks exact raw-octet linkage, enforces identifier uniqueness, evaluates signed sequence rules, and verifies the domain-separated head assertion.
+
+## External technical significance
+
+The Governex vector repository publicly links the original T-Trace/OpenPoC compatibility report, verifier, pinned workflow, and review PR as an independent implementation.
+
+The draft author confirmed that the forthcoming `-01` RFC 7942 Implementation Status section will credit:
+
+> **Aleksei Safonov — Independent Researcher and Maintainer of T-Trace/OpenPoC**
+
+Technical feedback from the T-Trace/OpenPoC review informed the new:
+
+- repeated-`step_id` vector;
+- signed-`seq` gap vector;
+- signed-`seq` repeat/regression vector;
+- external signed-head assertion pair.
+
+This is evidence of independent interoperability and useful threat-boundary review. It is not co-authorship, IETF adoption, or endorsement.
+
+## What the current results prove
+
+The current artifacts support these claims:
+
+- presented T-Trace records can be checked for structural and causal validity;
+- a selective-omission bypass can leave the presented trace valid while overall assurance remains insufficient;
+- independently implemented signed-receipt verifiers can agree on canonical signing, signature validity, exact raw-octet linkage, identifier repetition, signed sequence anomalies, and signed-head consistency;
+- stable pinned CI can reproduce both the earlier and newer interoperability profiles;
+- assurance boundaries can be documented without converting them into product guarantees.
+
+## What the current results do not prove
+
+T-Trace/OpenPoC does **not** currently prove:
+
+- that every real-world action entered the receipt path;
+- that a recorder or gate was physically or cryptographically non-bypassable in production;
+- that a fresh `step_id` and valid next `seq` represent a unique real-world effect;
+- that a signed head is the latest head or that the signer did not equivocate;
+- that the draft is correct merely because implementations agree;
+- that a claimed outcome can be independently reproduced without bound inputs, versions, and environment evidence;
+- production compliance, formal certification, or zero vulnerabilities.
+
+## Assurance ladder
+
+| Level | Question | Current artifact |
+|---|---|---|
+| **L1 — Trace validity** | Are presented records structurally and causally valid? | Base T-Trace validator |
+| **L2 — Record integrity** | Were created records altered, reordered, duplicated, or truncated relative to external state? | Governex interoperability profiles |
+| **L3 — Capture completeness** | Did every relevant effect have to pass through the evidence path? | OpenPoC-01 boundary and gated fixture assumptions |
+| **L4 — Independent reproducibility** | Can a third party reproduce or falsify the claimed outcome? | Planned OpenPoC-02 |
 
 ## Why this is grant-relevant
 
-Trace-based evaluation and deterministic oversight depend on stable trace artifacts.
+Monitoring, control, evaluation, and incident-review systems are increasingly part of safety cases for autonomous agents. If those systems treat a valid trace as proof of complete execution, an agent or operator may perform a dangerous action outside the capture boundary while retaining a green audit result.
 
-If a system only emits informal logs, reviewers cannot reliably validate causality, continuity, or replay preconditions.
-
-T-Trace contributes one infrastructure primitive:
+T-Trace/OpenPoC makes this failure mode measurable and provides a path toward testing the minimum evidence needed for stronger claims.
 
 ```text
-machine-checkable transition trace -> deterministic validation -> reusable evidence artifact
+false assurance in audit/control layers
+                ↓
+explicit adversarial fixture
+                ↓
+separate multidimensional verdicts
+                ↓
+reproducible trust assumptions and failure boundaries
 ```
 
-This supports research into replay fidelity, trace-based interpretability, agent oversight, causal memory, and audit-ready tool-use evaluation.
+## Eight-week funding scope
 
-## Research / build roadmap
+The proposed sprint requests **USD 20,000 for 8 weeks** to deliver:
 
-Near-term work can focus on:
+1. at least 12 additional adversarial assurance vectors;
+2. continued reproducibility of the 13/13 `-00` and 18/18 `-01` pinned results;
+3. one versioned external evidence-format adapter into a T-Trace causal projection;
+4. tested trust assumptions for non-bypassable capture, effect identity, head freshness, and anti-equivocation;
+5. OpenPoC-02 for independent replay recipes and environment binding;
+6. external technical review, an integration guide, and a public final report.
 
-1. **Validation expansion** — add more invalid fixtures for transition-without-prior-record, invalid timestamps, empty IDs, and cross-thread edge cases.
-2. **Conformance suite** — define expected PASS/FAIL outputs for canonical valid/invalid traces.
-3. **Trace event compatibility** — document how CaPU lifecycle events should map into T-Trace records.
-4. **Storage boundary** — document how TTM DB stores T-Trace records without owning the format.
-5. **Replay bridge** — document how LTP consumes T-Trace streams for replay/admissibility inspection.
-6. **Schema hardening** — decide which fields remain minimal core vs optional domain payload.
-7. **Reviewer report output** — add an optional validation report mode for grant/evaluation artifacts.
+See:
 
-## Suggested reviewer checklist
-
-A reviewer can ask:
-
-- Can I validate the minimal example locally?
-- Can I run the test suite?
-- Are required fields and allowed types explicit?
-- Are invalid traces represented?
-- Are boundaries against storage/replay/crypto/logging clear?
-- Is the relationship to LTP, TTM DB, CaPU, and CML clear?
-- Are non-claims explicit?
+- [TAIF one-page proposal](taif-openpoc-sprint-one-pager.md)
+- [TAIF application answer pack](taif-application-answer-pack.md)
 
 ## Current strongest positioning
 
-Use this formulation in applications:
+Use this formulation in applications and reviewer conversations:
 
-```text
-T-Trace is an append-only JSONL trace protocol for acknowledged state transitions. It defines a minimal record envelope, causal ordering invariants, schema artifacts, and a reference validator so agentic systems can produce machine-checkable trace evidence instead of relying on narrative-only logs.
-```
+> T-Trace/OpenPoC is an open benchmark and verification layer for distinguishing a valid AI-agent trace from justified evidence of complete capture and independently reproducible outcomes. It already demonstrates a selective-omission bypass, preserves separate assurance verdicts, and independently matches two pinned Governex signed-receipt profiles: 13/13 checks for `-00` and 18/18 checks for the forthcoming `-01` vector profile.
 
 ## Short version
 
 ```text
-T-Trace is not a log stream.
-It is a machine-checkable trace of acknowledged transitions.
+A valid trace proves what is true about the records presented.
+It does not automatically prove that every real-world effect was recorded.
 ```
