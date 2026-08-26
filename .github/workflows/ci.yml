@@ -23,6 +23,9 @@ jobs:
         run: |
           python scripts/verify_portable_causality.py \
             examples/causal-portability/fork-reconciliation.json
+      - name: Verify repeated lineage compaction
+        run: |
+          python scripts/verify_lineage_compaction.py
 
   tests:
     runs-on: ubuntu-latest
