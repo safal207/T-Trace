@@ -36,7 +36,7 @@ Build an open adversarial benchmark and interoperability layer that distinguishe
 
 AI-agent evaluations, monitoring systems, approval layers, and incident reviews often treat a valid audit trail as evidence that the trail is a complete account of execution. That inference can fail: an agent or operator may reach a tool, API, ledger, credential, or other effect-producing resource through a path that bypasses the recorder, while the shorter presented trace remains structurally valid.
 
-T-Trace/OpenPoC makes this failure mode executable. The existing OpenPoC-01 fixture separates `trace_valid` from `capture_complete`, and a new independent verifier agrees with all 13 public signed-action-receipt conformance vectors at a pinned upstream commit. The proposed 8-week sprint will expand the adversarial benchmark, build one external evidence-format adapter, specify the deployment trust model for non-bypassable capture, and add an independent-reproducibility fixture.
+T-Trace/OpenPoC makes this failure mode executable. OpenPoC-01 separates `trace_valid` from `capture_complete`. Two separately pinned, independently implemented receipt verifiers now match all **13/13 Governex `-00` vectors** and **18/18 Governex `-01` checks** without importing or executing the upstream verifier. The proposed 8-week sprint will expand the adversarial benchmark, build one external evidence-format adapter, specify the deployment trust model for non-bypassable capture, and add an independent-reproducibility fixture.
 
 ## Problem and neglectedness
 
@@ -62,7 +62,7 @@ The project focuses on making these assurance levels measurable rather than coll
 
 **Activities**
 
-- build adversarial vectors for bypass, replay, substitution, truncation, split view, and gate failure;
+- build adversarial vectors for bypass, replay, substitution, truncation, split view, stale head state, and gate failure;
 - implement an adapter from one external signed-receipt or transparency-log format;
 - specify trust assumptions required for non-bypassable capture;
 - build independent-reproducibility fixtures;
@@ -73,7 +73,7 @@ The project focuses on making these assurance levels measurable rather than coll
 - a public benchmark with deterministic multidimensional verdicts;
 - a versioned evidence-format adapter;
 - an executable L1–L4 assurance model;
-- a compatibility report and integration guide;
+- compatibility reports and an integration guide;
 - reproducible CI and a reviewer-facing final report.
 
 **Intermediate outcome**
@@ -105,7 +105,7 @@ overall_assurance  = insufficient
 
 This demonstrates that the validator may correctly accept the records presented while the broader assurance claim remains unsupported.
 
-### Independent conformance result
+### Independent conformance — original `-00` suite
 
 Merged PR:
 https://github.com/safal207/T-Trace/pull/18
@@ -121,25 +121,48 @@ Against 13 public conformance vectors for `draft-sahu-agent-action-receipts-00`,
 0 UNSUPPORTED
 ```
 
-The verifier is separately implemented and does not import or execute the upstream verifier. It reconstructs signed bytes, validates Ed25519 signatures, and checks hash-chain linkage over the exact transmitted JSONL octets.
+### Independent conformance — forthcoming `-01` vector profile
+
+Merged PR:
+https://github.com/safal207/T-Trace/pull/23
+
+Compatibility report:
+https://github.com/safal207/T-Trace/blob/main/docs/governex-action-receipts-v01-compatibility.md
+
+Capture-side review:
+https://github.com/safal207/T-Trace/blob/main/docs/governex-action-receipts-v01-capture-review.md
+
+Against the updated public suite pinned at upstream commit `6e31f1fabe0f5f6de511c5821bdf8b924d8aaa2a`:
+
+```text
+18/18 AGREE
+0 DISAGREE
+0 UNSUPPORTED
+```
+
+The 18 checks comprise 16 receipt-log vectors and 2 signed-head checks. They include repeated `step_id`, signed `seq` gap/reuse, and a signed external head that accepts the complete log and rejects the truncated presentation.
+
+Both T-Trace/OpenPoC verifiers are separately implemented. They reconstruct signed bytes, validate Ed25519 signatures, and check hash-chain linkage over the exact transmitted JSONL octets. The `-01` verifier additionally validates uniqueness, per-chain signed sequence rules, and domain-separated signed-head assertions. Neither imports or executes the upstream verifier.
 
 Current verification evidence:
 
-- 17 repository tests passing;
-- 6 focused interoperability tests passing;
-- pinned interoperability workflow passing;
+- **49 repository tests passing**;
+- **7 focused `-01` interoperability tests passing**;
+- original `-00` and new `-01` pinned workflows passing;
 - deterministic report regeneration passing;
-- CodeQL and secret scan passing.
+- CI, CodeQL, and secret scan passing.
 
-A draft author confirmed that OpenPoC-01 captures the intended trace-integrity versus capture-completeness boundary and invited the independent conformance check. The completed 13/13 result has been sent for consideration in the draft's RFC 7942 Implementation Status section.
+The Governex vector repository publicly links the independent T-Trace/OpenPoC result. The draft author confirmed that the forthcoming `-01` RFC 7942 Implementation Status section will credit **Aleksei Safonov — Independent Researcher and Maintainer of T-Trace/OpenPoC**. Technical feedback from this work informed the new repeated-`step_id`, signed-`seq`, and signed-head vectors.
+
+This is interoperability evidence only. It does not prove the draft correct, prove capture completeness, prevent signer equivocation, or bind a fresh record identity to a unique real-world effect.
 
 ## Work plan and milestones
 
 ### Weeks 1–2 — benchmark expansion
 
-- add bypass, replay, substitution, digest mismatch, split-view, truncation, and configuration-drift vectors;
+- add bypass, replay, substitution, effect-digest mismatch, split-view, truncation, stale-head, and configuration-drift vectors;
 - define deterministic expected verdicts for each assurance dimension;
-- preserve existing conformance results in CI.
+- preserve both existing Governex compatibility profiles in CI.
 
 ### Weeks 3–4 — evidence-format adapter
 
@@ -150,7 +173,8 @@ A draft author confirmed that OpenPoC-01 captures the intended trace-integrity v
 ### Weeks 5–6 — trust model and reproducibility
 
 - specify the evidence needed to justify a non-bypassable gate;
-- test stale and replayed pre-commitments, direct-access bypass, and configuration changes;
+- test stale and replayed pre-commitments, direct-access bypass, fresh-identity semantic replay, and configuration changes;
+- define freshness and anti-equivocation requirements for external head state;
 - implement OpenPoC-02 for third-party replay recipes, inputs, versions, and environment evidence.
 
 ### Weeks 7–8 — external review and release
@@ -162,21 +186,21 @@ A draft author confirmed that OpenPoC-01 captures the intended trace-integrity v
 ## Deliverables
 
 1. At least 12 additional adversarial assurance vectors with deterministic expected outcomes.
-2. Continued reproducibility of the current 13/13 external conformance result at its pinned commit.
+2. Continued reproducibility of the current 13/13 `-00` and 18/18 `-01` external interoperability results at their pinned commits.
 3. One versioned external evidence-format adapter.
 4. An executable L1–L4 assurance model.
 5. OpenPoC-02 with positive and negative independent-reproducibility fixtures.
 6. A public compatibility report, integration guide, and reviewer-facing final report.
-7. Green tests, interoperability CI, CodeQL, and secret scanning.
+7. Green tests, both interoperability workflows, CodeQL, and secret scanning.
 
 ## Success criteria
 
 - bypass cases remain structurally valid but cannot receive a complete-assurance verdict;
 - mandatory-gate cases block effects lacking required evidence;
-- replay and substitution attacks produce the expected separate verdicts;
-- the adapter preserves explicit distinctions between signature validity, record integrity, capture completeness, and reproducibility;
-- the 13-vector pinned compatibility result remains reproducible;
-- at least one external implementer reviews a concrete artifact or result;
+- replay, substitution, fresh-identity semantic replay, and stale-head cases produce separate expected verdicts;
+- the adapter preserves explicit distinctions between signature validity, record integrity, capture completeness, effect binding, and reproducibility;
+- both pinned Governex compatibility profiles remain reproducible;
+- at least two external implementers review a concrete artifact or result;
 - all claims state their trust assumptions and non-claims;
 - all public tests and security checks pass.
 
@@ -203,13 +227,15 @@ The relevant execution pattern has already been demonstrated:
 3. encode the boundary as an executable negative fixture;
 4. separate structural validity from broader assurance;
 5. validate interoperability against an external public suite;
-6. publish exact results and limitations.
+6. identify a missing ordering/repetition distinction;
+7. independently verify the resulting `-01` vectors and publish the residual boundary;
+8. publish exact results and limitations.
 
 ## Counterfactual without funding
 
 Without funding, T-Trace/OpenPoC will remain open source and may continue incrementally, but progress will compete with paid QA work and other obligations. The likely result is slower benchmark expansion, no dedicated external-review budget, and reduced ability to build and validate a full adapter and reproducibility layer within a coherent eight-week sprint.
 
-Funding buys concentrated execution, not a speculative idea: the first benchmark, external conformance verifier, CI, and documentation already exist.
+Funding buys concentrated execution, not a speculative idea: the first benchmark, two external conformance profiles, CI, security checks, and documentation already exist.
 
 ## Main risks and mitigations
 
@@ -223,7 +249,7 @@ Funding buys concentrated execution, not a speculative idea: the first benchmark
 
 ### Risk: benchmark agreement is mistaken for correctness
 
-**Mitigation:** report conformance as interoperability evidence only, with explicit non-claims about draft correctness and capture completeness.
+**Mitigation:** report conformance as interoperability evidence only, with explicit non-claims about draft correctness, capture completeness, signer non-equivocation, and effect-level anti-replay.
 
 ### Risk: weak link to catastrophic risk reduction
 
@@ -235,7 +261,7 @@ Funding buys concentrated execution, not a speculative idea: the first benchmark
 
 ## Public summary
 
-T-Trace/OpenPoC is an open-source benchmark and verification project for AI-agent evidence. It tests when a valid trace is insufficient to claim that every safety-relevant action was captured or that a result can be independently reproduced. Existing work demonstrates a selective-omission bypass and independently agrees with all 13 public vectors in a signed-action-receipt conformance suite. The proposed sprint expands the benchmark, adds an external evidence adapter, specifies the trust model for capture completeness, and builds independent-reproducibility fixtures.
+T-Trace/OpenPoC is an open-source benchmark and verification project for AI-agent evidence. It tests when a valid trace is insufficient to claim that every safety-relevant action was captured or that a result can be independently reproduced. Existing work demonstrates a selective-omission bypass and independently matches two pinned signed-action-receipt suites: 13/13 checks for the original `-00` profile and 18/18 checks for the forthcoming `-01` vector profile. The proposed sprint expands the benchmark, adds an external evidence adapter, specifies the trust model for capture completeness, and builds independent-reproducibility fixtures.
 
 ## Personal fields to complete manually before submission
 
