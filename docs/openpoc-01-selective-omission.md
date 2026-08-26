@@ -24,7 +24,7 @@ capture completeness.
 |---|---|---|---:|---|
 | Honest but unattested | valid and matching | captured effect only | no | `unproven` |
 | Selective-omission bypass | valid but incomplete | captured + hidden effect | no | `violated` |
-| Non-bypassable gate | valid and matching | gated effect only | yes | `proven` |
+| Non-bypassable gate | valid and matching | gated effect only | yes | `supported-under-stated-assumptions` |
 
 The `external_effect_ids` in the fixture are independent ground truth used to
 show the hidden effect. A trace-only verifier normally does not have that view
@@ -85,6 +85,9 @@ OpenPoC-01 keeps four questions separate:
 
 The `non_bypassable_gate_attested` field is a fixture input. It is **not** a
 production hardware or cryptographic attestation implementation.
+
+Accordingly, the gated fixture reports
+`supported-under-stated-assumptions`, not an unconditional proof claim.
 
 A real system would still need evidence that:
 

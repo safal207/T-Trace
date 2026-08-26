@@ -32,12 +32,12 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 | AI-agent verification | Executable negative fixtures for stale, replayed, incomplete, or bypassed evidence |
 | Action receipts | Signed-receipt verification and raw-octet hash-chain interoperability |
 | Deterministic replay | Strict record envelopes, causal transition/commit rules, and portable profiles |
-| Audit-trail boundaries | Separate verdicts for trace validity, capture completeness, effect binding, and overall assurance |
+| Audit-trail boundaries | Claim-scoped verdicts for trace validity, capture completeness, effect binding, and reproducibility |
 | Independent evidence | Separate from-scratch verifiers matching **13/13 Governex `-00` vectors** and **18/18 Governex `-01` checks** without importing or executing the upstream verifier |
 
 **External interoperability:** Governex publicly links the independent T-Trace/OpenPoC evidence, and the draft author has confirmed named RFC 7942 Implementation Status credit for the forthcoming `-01` revision. This is independent interoperability and threat-boundary work — not co-authorship, IETF adoption, or endorsement.
 
-**Start here:** [OpenPoC-01 selective omission](docs/openpoc-01-selective-omission.md) · [Governex `-01` compatibility report](docs/governex-action-receipts-v01-compatibility.md) · [Capture-side review](docs/governex-action-receipts-v01-capture-review.md) · [Protocol specification](spec/t-trace.md)
+**Start here:** [OpenPoC-01 selective omission](docs/openpoc-01-selective-omission.md) · [OpenPoC-02 independent reproducibility](docs/openpoc-02-independent-reproducibility.md) · [Governex `-01` compatibility report](docs/governex-action-receipts-v01-compatibility.md) · [Protocol specification](spec/t-trace.md)
 <!-- seo-product-intro:end -->
 
 ## Review links
@@ -51,8 +51,9 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 - Portable causality verifier: [scripts/verify_portable_causality.py](scripts/verify_portable_causality.py)
 - Canonical trace example: [examples/minimal.ttrace.jsonl](examples/minimal.ttrace.jsonl)
 - Canonical fork/reconciliation example: [examples/causal-portability/fork-reconciliation.json](examples/causal-portability/fork-reconciliation.json)
-- Assurance levels: [docs/assurance-levels.md](docs/assurance-levels.md)
+- Assurance dimensions: [docs/assurance-levels.md](docs/assurance-levels.md)
 - OpenPoC-01 selective omission: [docs/openpoc-01-selective-omission.md](docs/openpoc-01-selective-omission.md)
+- OpenPoC-02 independent reproducibility: [docs/openpoc-02-independent-reproducibility.md](docs/openpoc-02-independent-reproducibility.md)
 - Liminal research provenance: [docs/liminal-research-provenance.md](docs/liminal-research-provenance.md)
 - Governex `-00` action-receipt compatibility: [docs/governex-action-receipts-compatibility.md](docs/governex-action-receipts-compatibility.md)
 - Governex `-01` action-receipt compatibility: [docs/governex-action-receipts-v01-compatibility.md](docs/governex-action-receipts-v01-compatibility.md)
@@ -73,6 +74,16 @@ A valid T-Trace proves that the **presented records** satisfy the protocol's str
 ```bash
 python -m openpoc.verify_assurance \
   examples/openpoc-01/bypass.scenario.json
+```
+
+[OpenPoC-02](docs/openpoc-02-independent-reproducibility.md) binds a replay
+recipe, inputs, expected output, and runtime contract. Its key negative fixture
+reproduces the exact claimed relation over an integrity-bound but incomplete
+input while independently failing the capture-completeness claim.
+
+```bash
+python -m openpoc.verify_reproducibility \
+  examples/openpoc-02/incomplete-but-reproducible.scenario.json
 ```
 
 ### Signed action-receipt interoperability

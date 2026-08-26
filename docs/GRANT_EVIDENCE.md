@@ -57,7 +57,27 @@ overall_assurance  = insufficient
 
 The trace validator is correct to accept the records it received. The unsafe inference is treating structural validity as proof of complete execution.
 
-### 3. Review independent signed-receipt interoperability
+### 3. Reproduce OpenPoC-02 claim-scoped replay
+
+```bash
+python -m openpoc.verify_reproducibility \
+  examples/openpoc-02/incomplete-but-reproducible.scenario.json
+```
+
+Expected boundary:
+
+```text
+reproduction_status   = supported-under-stated-assumptions
+capture_status        = violated
+record_integrity_status = assumed-valid-for-boundary-test
+claim_verdict         = violated
+missing_effect_ids    = [effect-hidden]
+```
+
+The supplied computation is reproducible. The broader claim about all
+external effects is still false because the bound input is incomplete.
+
+### 4. Review independent signed-receipt interoperability
 
 Original `-00` evidence:
 
@@ -74,18 +94,21 @@ Forthcoming `-01` vector-profile evidence:
 - [pinned workflow](../.github/workflows/governex-action-receipts-v01.yml)
 - [merged PR #23](https://github.com/safal207/T-Trace/pull/23)
 
-### 4. Run the repository test suite
+### 5. Run the repository test suite
 
 ```bash
 pip install -e .[dev]
 python -m pytest -q
 ```
 
-Verified result on the Interop-02 merge path:
+Historical result on the Interop-02 merge path:
 
 ```text
 49 passed
 ```
+
+That count is a baseline for the historical commit, not evidence about a newer
+head. Use the CI run for the exact commit under review for the current result.
 
 ## Current evidence matrix
 
@@ -94,11 +117,12 @@ Verified result on the Interop-02 merge path:
 | Base protocol and schema | Is the trace format machine-checkable? | Implemented |
 | Reference validator | Can the canonical trace be checked locally? | PASS |
 | OpenPoC-01 | Can a hidden effect coexist with a valid presented trace? | Reproduced |
+| OpenPoC-02 | Can bound replay succeed while a broader capture claim fails? | Reproduced |
 | Assurance model | Are structural validity and capture completeness separated? | Implemented |
 | Governex `-00` interoperability | Does an independent verifier match the original public suite without shared verifier code? | **13/13 AGREE** |
 | Governex `-01` interoperability | Does an independent verifier match repetition, ordering, and signed-head outcomes? | **18/18 AGREE** |
 | Focused `-01` regression tests | Are new checks covered locally? | **7 passed** |
-| Full repository tests | Do existing protocol and profile tests remain green? | **49 passed** |
+| Full repository tests | Do existing protocol and profile tests remain green? | Verify on exact-head CI |
 | Original `-00` pinned workflow | Does the stable earlier evidence remain reproducible? | PASS |
 | New `-01` pinned workflow | Is the new profile reproducible at a fixed upstream commit? | PASS |
 | CI / CodeQL / secret scan | Are quality and baseline security checks green? | PASS |
@@ -170,6 +194,7 @@ The current artifacts support these claims:
 
 - presented T-Trace records can be checked for structural and causal validity;
 - a selective-omission bypass can leave the presented trace valid while overall assurance remains insufficient;
+- a third party can reproduce or falsify a bound relation without treating successful replay as proof of input completeness;
 - independently implemented signed-receipt verifiers can agree on canonical signing, signature validity, exact raw-octet linkage, identifier repetition, signed sequence anomalies, and signed-head consistency;
 - stable pinned CI can reproduce both the earlier and newer interoperability profiles;
 - assurance boundaries can be documented without converting them into product guarantees.
@@ -183,17 +208,19 @@ T-Trace/OpenPoC does **not** currently prove:
 - that a fresh `step_id` and valid next `seq` represent a unique real-world effect;
 - that a signed head is the latest head or that the signer did not equivocate;
 - that the draft is correct merely because implementations agree;
-- that a claimed outcome can be independently reproduced without bound inputs, versions, and environment evidence;
+- that successful replay over bound inputs proves those inputs contain every relevant external effect;
 - production compliance, formal certification, or zero vulnerabilities.
 
-## Assurance ladder
+## Assurance dimensions
+
+The L1-L4 labels are names for separate questions, not a monotonic ladder.
 
 | Level | Question | Current artifact |
 |---|---|---|
 | **L1 — Trace validity** | Are presented records structurally and causally valid? | Base T-Trace validator |
 | **L2 — Record integrity** | Were created records altered, reordered, duplicated, or truncated relative to external state? | Governex interoperability profiles |
 | **L3 — Capture completeness** | Did every relevant effect have to pass through the evidence path? | OpenPoC-01 boundary and gated fixture assumptions |
-| **L4 — Independent reproducibility** | Can a third party reproduce or falsify the claimed outcome? | Planned OpenPoC-02 |
+| **L4 — Independent reproducibility** | Can a third party reproduce or falsify the claimed outcome? | OpenPoC-02 bound replay fixtures |
 
 ## Why this is grant-relevant
 

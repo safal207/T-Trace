@@ -1,0 +1,13 @@
+{
+  "schema": "openpoc-effect-input/v0.1",
+  "effects": [
+    {
+      "effect_id": "effect-captured",
+      "amount": 100
+    },
+    {
+      "effect_id": "effect-hidden",
+      "amount": 900
+    }
+  ]
+}
