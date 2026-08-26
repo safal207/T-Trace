@@ -2,7 +2,8 @@
 # T-Trace — AI Agent Verification, Action Receipts & Deterministic Replay
 
 [![CI](https://github.com/safal207/T-Trace/actions/workflows/ci.yml/badge.svg)](https://github.com/safal207/T-Trace/actions/workflows/ci.yml)
-[![Receipt interop](https://github.com/safal207/T-Trace/actions/workflows/governex-action-receipts.yml/badge.svg)](https://github.com/safal207/T-Trace/actions/workflows/governex-action-receipts.yml)
+[![Receipt interop -00](https://github.com/safal207/T-Trace/actions/workflows/governex-action-receipts.yml/badge.svg)](https://github.com/safal207/T-Trace/actions/workflows/governex-action-receipts.yml)
+[![Receipt interop -01](https://github.com/safal207/T-Trace/actions/workflows/governex-action-receipts-v01.yml/badge.svg)](https://github.com/safal207/T-Trace/actions/workflows/governex-action-receipts-v01.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![Spec](https://img.shields.io/badge/spec-v0.1-blue.svg)](spec/t-trace.md)
 
@@ -32,9 +33,11 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 | Action receipts | Signed-receipt verification and raw-octet hash-chain interoperability |
 | Deterministic replay | Strict record envelopes, causal transition/commit rules, and portable profiles |
 | Audit-trail boundaries | Separate verdicts for trace validity, capture completeness, effect binding, and overall assurance |
-| Independent evidence | A second verifier that matched **13/13** public Governex conformance vectors without importing the reference verifier |
+| Independent evidence | Separate from-scratch verifiers matching **13/13 Governex `-00` vectors** and **18/18 Governex `-01` checks** without importing or executing the upstream verifier |
 
-**Start here:** [OpenPoC-01 selective omission](docs/openpoc-01-selective-omission.md) · [Governex compatibility report](docs/governex-action-receipts-compatibility.md) · [Protocol specification](spec/t-trace.md)
+**External interoperability:** Governex publicly links the independent T-Trace/OpenPoC evidence, and the draft author has confirmed named RFC 7942 Implementation Status credit for the forthcoming `-01` revision. This is independent interoperability and threat-boundary work — not co-authorship, IETF adoption, or endorsement.
+
+**Start here:** [OpenPoC-01 selective omission](docs/openpoc-01-selective-omission.md) · [Governex `-01` compatibility report](docs/governex-action-receipts-v01-compatibility.md) · [Capture-side review](docs/governex-action-receipts-v01-capture-review.md) · [Protocol specification](spec/t-trace.md)
 <!-- seo-product-intro:end -->
 
 ## Review links
@@ -51,7 +54,9 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 - Assurance levels: [docs/assurance-levels.md](docs/assurance-levels.md)
 - OpenPoC-01 selective omission: [docs/openpoc-01-selective-omission.md](docs/openpoc-01-selective-omission.md)
 - Liminal research provenance: [docs/liminal-research-provenance.md](docs/liminal-research-provenance.md)
-- Governex action-receipt compatibility: [docs/governex-action-receipts-compatibility.md](docs/governex-action-receipts-compatibility.md)
+- Governex `-00` action-receipt compatibility: [docs/governex-action-receipts-compatibility.md](docs/governex-action-receipts-compatibility.md)
+- Governex `-01` action-receipt compatibility: [docs/governex-action-receipts-v01-compatibility.md](docs/governex-action-receipts-v01-compatibility.md)
+- Governex `-01` capture-side review: [docs/governex-action-receipts-v01-capture-review.md](docs/governex-action-receipts-v01-capture-review.md)
 
 ## Boundaries
 
@@ -72,9 +77,25 @@ python -m openpoc.verify_assurance \
 
 ### Signed action-receipt interoperability
 
-The separate action-receipt verifier checks Ed25519 signatures and raw-octet hash-chain linkage against a pinned external conformance suite. CI reads the upstream vector data and manifest but does **not** execute the upstream verifier.
+T-Trace/OpenPoC preserves two separate pinned interoperability profiles:
 
-The compatibility report records the expected and observed outcomes for all public vectors, including the intentionally undetectable head-truncation limit and unsigned-extension tampering case.
+- **`-00`: 13/13 vectors agree** at upstream commit `65836f4e1ecb96ff22e8b4ab6a7c086532ce564c`;
+- **`-01`: 18/18 checks agree** — 16 receipt-log vectors plus 2 signed-head checks — at upstream commit `6e31f1fabe0f5f6de511c5821bdf8b924d8aaa2a`.
+
+Both verifiers independently reconstruct signed bytes, validate Ed25519 signatures, and check raw-octet hash-chain linkage. The `-01` profile additionally checks repeated `step_id`, signed `seq` gaps/reuse, and the domain-separated signed-head assertion. CI reads pinned upstream vector data and manifests but does **not** import or execute the upstream verifier.
+
+The compatibility work also records the remaining assurance boundaries:
+
+- a fresh `step_id` and the next valid `seq` do not by themselves prevent replay of the same real-world effect;
+- a signed `seq` gap proves a gap in recorder numbering, not necessarily an unrecorded external effect;
+- a signed head proves consistency with that checkpoint, not checkpoint freshness or signer non-equivocation.
+
+Technical feedback from the T-Trace/OpenPoC review informed the new repeated-`step_id`, signed-`seq` gap/reuse, and signed-head assertion vectors. Governex links the independent evidence from its public vector repository, and the draft author has confirmed named T-Trace/OpenPoC credit in the forthcoming RFC 7942 Implementation Status section.
+
+Evidence:
+
+- [`-00` 13/13 report](docs/governex-action-receipts-compatibility.md) · [`-00` verifier](openpoc/action_receipt_compat.py) · [`-00` pinned workflow](.github/workflows/governex-action-receipts.yml)
+- [`-01` 18/18 report](docs/governex-action-receipts-v01-compatibility.md) · [`-01` capture review](docs/governex-action-receipts-v01-capture-review.md) · [`-01` verifier](openpoc/action_receipt_compat_v01.py) · [`-01` pinned workflow](.github/workflows/governex-action-receipts-v01.yml)
 
 ## Why T-Trace
 
