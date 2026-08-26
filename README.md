@@ -1,15 +1,41 @@
-# T-Trace
+<!-- seo-product-intro:start -->
+# T-Trace — AI Agent Verification, Action Receipts & Deterministic Replay
 
 [![CI](https://github.com/safal207/T-Trace/actions/workflows/ci.yml/badge.svg)](https://github.com/safal207/T-Trace/actions/workflows/ci.yml)
 [![Receipt interop](https://github.com/safal207/T-Trace/actions/workflows/governex-action-receipts.yml/badge.svg)](https://github.com/safal207/T-Trace/actions/workflows/governex-action-receipts.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![Spec](https://img.shields.io/badge/spec-v0.1-blue.svg)](spec/t-trace.md)
 
-T-Trace is an append-only, JSONL protocol for recording acknowledged state transitions over time.
+**An open JSONL protocol and executable benchmark for AI-agent action receipts, causal state transitions, deterministic replay, and assurance-boundary verification.**
 
-It is designed for systems that need deterministic replay, auditability, and continuity of meaning across long-running threads.
+T-Trace helps teams distinguish four claims that are often collapsed into one:
 
-See `examples/minimal.ttrace.jsonl` for the smallest complete T-Trace sequence.
+```text
+presented trace is structurally valid
+               ≠
+evidence is fresh and action-bound
+               ≠
+every real-world effect was captured
+               ≠
+the claimed outcome was independently reproduced
+```
+
+Use T-Trace/OpenPoC to test stale or replayed evidence, selective omission, recorder bypass, causal ordering, signed receipt interoperability, and unsupported success claims.
+
+## Why T-Trace exists
+
+Event logs answer **what was recorded**. T-Trace adds machine-checkable transition semantics and an explicit assurance layer for asking **what the records actually prove**.
+
+| Need | T-Trace/OpenPoC provides |
+|---|---|
+| AI-agent verification | Executable negative fixtures for stale, replayed, incomplete, or bypassed evidence |
+| Action receipts | Signed-receipt verification and raw-octet hash-chain interoperability |
+| Deterministic replay | Strict record envelopes, causal transition/commit rules, and portable profiles |
+| Audit-trail boundaries | Separate verdicts for trace validity, capture completeness, effect binding, and overall assurance |
+| Independent evidence | A second verifier that matched **13/13** public Governex conformance vectors without importing the reference verifier |
+
+**Start here:** [OpenPoC-01 selective omission](docs/openpoc-01-selective-omission.md) · [Governex compatibility report](docs/governex-action-receipts-compatibility.md) · [Protocol specification](spec/t-trace.md)
+<!-- seo-product-intro:end -->
 
 ## Review links
 

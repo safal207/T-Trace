@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use T-Trace or OpenPoC in research or engineering work, please cite this repository."
+title: "T-Trace: AI Agent Action Receipts and Assurance-Boundary Verification"
+type: software
+authors:
+  - family-names: "Safonov"
+    given-names: "Aleksei"
+repository-code: "https://github.com/safal207/T-Trace"
+url: "https://github.com/safal207/T-Trace"
+license: "MIT"
+keywords:
+  - AI agent verification
+  - action receipts
+  - deterministic replay
+  - causal traces
+  - assurance boundaries
+  - interoperability
