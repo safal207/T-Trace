@@ -41,7 +41,9 @@ The validator is correct to accept the records it received. The assurance failur
 
 ### Independent signed-receipt interoperability
 
-[PR #18](https://github.com/safal207/T-Trace/pull/18) adds a separate verifier for the public `draft-sahu-agent-action-receipts-00` conformance suite. Against the upstream repository pinned at commit `65836f4e1ecb96ff22e8b4ab6a7c086532ce564c`, the result is:
+T-Trace/OpenPoC now preserves two separately pinned, independently implemented Governex compatibility profiles. Neither verifier imports or executes the upstream verifier.
+
+**Original `-00` suite — [PR #18](https://github.com/safal207/T-Trace/pull/18):**
 
 ```text
 13/13 AGREE
@@ -49,16 +51,36 @@ The validator is correct to accept the records it received. The assurance failur
 0 UNSUPPORTED
 ```
 
-The verifier independently reconstructs signed bytes, validates Ed25519 signatures, and checks hash-chain links over the exact transmitted JSONL octets. CI reads only the pinned vector data and manifest; it does not execute the upstream verifier.
+Pinned upstream commit: `65836f4e1ecb96ff22e8b4ab6a7c086532ce564c`  
+Evidence: [`-00` compatibility report](governex-action-receipts-compatibility.md)
 
-Evidence:
+**Forthcoming `-01` vector profile — [PR #23](https://github.com/safal207/T-Trace/pull/23):**
 
-- [deterministic compatibility matrix](governex-action-receipts-compatibility.md);
-- **17 repository tests passing**;
-- dedicated pinned interoperability workflow passing;
-- CI, CodeQL, and secret scanning passing on the merged result.
+```text
+18/18 AGREE
+0 DISAGREE
+0 UNSUPPORTED
+```
 
-The draft author confirmed that OpenPoC-01 draws the intended trace-integrity versus capture-completeness boundary and invited this independent conformance check. The 13/13 result has been sent for consideration in the draft's RFC 7942 Implementation Status section.
+This covers 16 receipt-log vectors and 2 signed-head checks at upstream commit `6e31f1fabe0f5f6de511c5821bdf8b924d8aaa2a`, including:
+
+- repeated `step_id` with valid signatures and intact linkage;
+- signed `seq` gap versus signed `seq` reuse/regression;
+- a domain-separated signed head that matches the full log and rejects the truncated presentation.
+
+Evidence: [`-01` compatibility report](governex-action-receipts-v01-compatibility.md) · [capture-side review](governex-action-receipts-v01-capture-review.md)
+
+Current verification evidence:
+
+- **49 repository tests passing**;
+- **7 focused `-01` interoperability tests passing**;
+- original `-00` and new `-01` pinned interoperability workflows passing;
+- deterministic report regeneration passing;
+- CI, CodeQL, and secret scanning passing.
+
+The Governex vector repository publicly links the independent T-Trace/OpenPoC evidence. The draft author confirmed that the forthcoming `-01` RFC 7942 Implementation Status section will name **Aleksei Safonov — Independent Researcher and Maintainer of T-Trace/OpenPoC**. Technical feedback from this review informed the repeated-`step_id`, signed-`seq`, and signed-head vectors.
+
+The non-claim remains explicit: conformance is interoperability evidence only. It does not prove draft correctness, capture completeness, head-signer non-equivocation, or effect-level anti-replay binding.
 
 ## Eight-week research scope
 
@@ -69,9 +91,10 @@ Add at least **12 new T-Trace/OpenPoC vectors** covering:
 - recorder bypass / never-recorded action;
 - stale or replayed pre-commitments;
 - receipt replay and cross-run substitution;
+- fresh-record replay of the same semantic effect;
 - mismatched effect digests;
 - missing, duplicated, reordered, and truncated records;
-- split-view presentations;
+- split-view presentations and stale head assertions;
 - honest-but-unattested capture;
 - mandatory-gate capture and configuration drift.
 
@@ -94,8 +117,10 @@ Define what must be independently justified before a system may claim capture co
 - all relevant effects traverse the gate;
 - direct resource access is disabled;
 - recorder and gate identities are authenticated;
+- sequence or pre-commitment allocation occurs before the effect and cannot be bypassed;
 - pre-commitments and receipts resist forgery, replay, and cross-run substitution;
-- configuration changes are themselves auditable.
+- configuration changes are themselves auditable;
+- external head state has a freshness and anti-equivocation mechanism.
 
 No production TEE, PKI, blockchain, or universal standard is promised within this sprint.
 
@@ -110,7 +135,7 @@ Invite focused review from implementers working on evaluation integrity, action 
 ## Deliverables
 
 1. At least **12 additional adversarial assurance vectors** with deterministic verdicts.
-2. Continued reproducibility of the existing **13/13 external conformance result** at its pinned commit.
+2. Continued reproducibility of the existing **13/13 `-00`** and **18/18 `-01`** pinned interoperability results.
 3. One versioned external evidence-format adapter.
 4. A documented and executable L1–L4 assurance model:
    - L1: trace validity;
@@ -126,9 +151,10 @@ The sprint succeeds if:
 
 - bypass cases remain structurally valid but cannot receive a complete-assurance verdict;
 - mandatory-gate cases block effects lacking required evidence;
-- the new adapter preserves explicit distinctions between signature validity, chain integrity, capture completeness, and reproducibility;
-- the current 13-vector compatibility result remains reproducible from the pinned upstream commit;
-- at least one external implementer reviews a concrete artifact or compatibility result;
+- fresh-identity replay and cross-run substitution produce separate, correct verdicts;
+- the new adapter preserves explicit distinctions between signature validity, chain integrity, capture completeness, effect binding, and reproducibility;
+- both pinned Governex compatibility profiles remain reproducible;
+- at least two external implementers review a concrete artifact or compatibility result;
 - all claims include explicit trust assumptions and non-claims;
 - all public tests and security checks pass in CI.
 
