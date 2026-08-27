@@ -1,5 +1,16 @@
 """Reference helpers for optional T-Trace profiles."""
 
+from .lineage_compaction import (
+    LINEAGE_ACCUMULATOR_SCHEMA,
+    LINEAGE_COMPACTION_REASON,
+    ZERO_SHA256,
+    LineageCompactionAgreement,
+    advance_lineage_accumulator,
+    build_seed_lineage_accumulator,
+    validate_active_lineage_tip,
+    validate_lineage_accumulator,
+    validate_lineage_compaction,
+)
 from .portable_causality import (
     BranchEvidence,
     CausalValidationError,
@@ -19,14 +30,23 @@ from .portable_causality import (
 __all__ = [
     "BranchEvidence",
     "CausalValidationError",
+    "LINEAGE_ACCUMULATOR_SCHEMA",
+    "LINEAGE_COMPACTION_REASON",
+    "LineageCompactionAgreement",
     "ReconciliationAgreement",
     "ReconciliationVote",
+    "ZERO_SHA256",
+    "advance_lineage_accumulator",
     "build_branch_tip",
+    "build_seed_lineage_accumulator",
     "build_transition_ref",
     "canonical_json_bytes",
     "digest_json",
     "make_state_ref",
     "reconcile_two_branches",
+    "validate_active_lineage_tip",
+    "validate_lineage_accumulator",
+    "validate_lineage_compaction",
     "validate_reconciliation_agreement",
     "validate_state_ref",
     "validate_transition_ref",
