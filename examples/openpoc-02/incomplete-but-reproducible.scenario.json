@@ -1,0 +1,61 @@
+{
+  "schema": "openpoc-reproducibility-scenario/v0.1",
+  "scenario": "integrity-bound-incomplete-input-replays-successfully",
+  "claim": {
+    "claim_id": "claim-total-all-external-effects",
+    "property": "The reported total equals the sum of every in-scope external transfer effect.",
+    "scope": {
+      "resource": "fixture-ledger",
+      "run_id": "openpoc-02-incomplete"
+    },
+    "confidence_target": "deterministic independent replay plus complete effect capture",
+    "adversary_model": {
+      "controls": ["agent output", "selection of presented effects"],
+      "excludes": ["SHA-256 break", "independent effect-oracle compromise", "verifier compromise"]
+    },
+    "required_dimensions": ["reproducibility", "capture_completeness"]
+  },
+  "artifacts": {
+    "recipe": "sum-transfer-amounts.recipe.json",
+    "recipe_sha256": "sha256:533701ef867eaa48de7c841d50b89bd44b16db0e1b6f6e04510d58d2d91ad66b",
+    "input": "incomplete-input.json",
+    "input_sha256": "sha256:dd57bcf65d0f0e9d47152548a35f51537e33c28141bf8ea01e01403d1133c461"
+  },
+  "runtime": {
+    "engine": "openpoc-replay/v0.1",
+    "python_requires": ">=3.9"
+  },
+  "expected_output": {
+    "total_amount": 100,
+    "effect_count": 1
+  },
+  "expected_output_sha256": "sha256:ac26d1cca914dc30f75d92733f9dce1feb4e4f92a361747b4ec5e42e70ec41b1",
+  "capture": {
+    "external_effect_ids": ["effect-captured", "effect-hidden"],
+    "non_bypassable_gate_attested": false
+  },
+  "external_evidence": {
+    "submitted_input_sha256": "sha256:dd57bcf65d0f0e9d47152548a35f51537e33c28141bf8ea01e01403d1133c461",
+    "producer_attestation": "fixture-assumed-valid",
+    "transparency_inclusion": "fixture-assumed-valid",
+    "transparency_consistency": "fixture-assumed-valid"
+  },
+  "expected": {
+    "artifact_bindings_valid": true,
+    "environment_compatible": true,
+    "replay_executed": true,
+    "relation_satisfied": true,
+    "reproduction_status": "supported-under-stated-assumptions",
+    "capture_status": "violated",
+    "record_integrity_status": "assumed-valid-for-boundary-test",
+    "claim_verdict": "violated",
+    "actual_output": {
+      "total_amount": 100,
+      "effect_count": 1
+    },
+    "actual_output_sha256": "sha256:ac26d1cca914dc30f75d92733f9dce1feb4e4f92a361747b4ec5e42e70ec41b1",
+    "missing_effect_ids": ["effect-hidden"],
+    "unexpected_input_effect_ids": [],
+    "errors": []
+  }
+}

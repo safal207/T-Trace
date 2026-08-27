@@ -7,9 +7,9 @@
   "expected": {
     "trace_valid": true,
     "capture_complete": true,
-    "capture_status": "proven",
+    "capture_status": "supported-under-stated-assumptions",
     "effect_bound": true,
-    "overall_assurance": "sufficient",
+    "overall_assurance": "sufficient-under-stated-assumptions",
     "missing_effect_ids": []
   }
 }

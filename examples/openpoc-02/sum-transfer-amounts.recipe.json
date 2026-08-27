@@ -1,0 +1,12 @@
+{
+  "schema": "openpoc-replay-recipe/v0.1",
+  "recipe_id": "sum-transfer-amounts-v1",
+  "operation": "sum-integer-field",
+  "collection": "effects",
+  "effect_id_field": "effect_id",
+  "value_field": "amount",
+  "output": {
+    "total_field": "total_amount",
+    "count_field": "effect_count"
+  }
+}

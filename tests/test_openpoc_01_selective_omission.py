@@ -89,9 +89,9 @@ def test_gated_effect_is_precommitted_receipted_and_sufficient():
     assert receipt.effect_digest == effect.digest
 
     report = evaluate_manifest(SCENARIOS / "gated.scenario.json")
-    assert report.capture_status == "proven"
+    assert report.capture_status == "supported-under-stated-assumptions"
     assert report.capture_complete is True
-    assert report.overall_assurance == "sufficient"
+    assert report.overall_assurance == "sufficient-under-stated-assumptions"
 
 
 def test_bypassable_runtime_can_create_hidden_effect_while_receipts_stay_valid():

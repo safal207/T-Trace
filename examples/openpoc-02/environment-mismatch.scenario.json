@@ -1,0 +1,54 @@
+{
+  "schema": "openpoc-reproducibility-scenario/v0.1",
+  "scenario": "declared-runtime-is-unavailable",
+  "claim": {
+    "claim_id": "claim-presented-input-replay",
+    "property": "The reported output can be independently reproduced from the bound artifacts.",
+    "scope": {
+      "resource": "fixture-ledger",
+      "run_id": "openpoc-02-environment-mismatch"
+    },
+    "confidence_target": "deterministic independent replay under the declared runtime contract",
+    "adversary_model": {
+      "controls": ["agent output", "presented artifacts before commitment"],
+      "excludes": ["SHA-256 break", "verifier compromise"]
+    },
+    "required_dimensions": ["reproducibility"]
+  },
+  "artifacts": {
+    "recipe": "sum-transfer-amounts.recipe.json",
+    "recipe_sha256": "sha256:533701ef867eaa48de7c841d50b89bd44b16db0e1b6f6e04510d58d2d91ad66b",
+    "input": "complete-input.json",
+    "input_sha256": "sha256:0cff51271e30583d55b39b73159fb9a0886e09b7ec8a74f43980163619fe2155"
+  },
+  "runtime": {
+    "engine": "openpoc-replay/v0.1",
+    "python_requires": ">=99.0"
+  },
+  "expected_output": {
+    "total_amount": 1000,
+    "effect_count": 2
+  },
+  "expected_output_sha256": "sha256:27711b74f7bd27d9d214943a777b2a33691deb1be345b59e07a10e112c82d8e7",
+  "external_evidence": {
+    "submitted_input_sha256": "sha256:0cff51271e30583d55b39b73159fb9a0886e09b7ec8a74f43980163619fe2155",
+    "producer_attestation": "fixture-assumed-valid",
+    "transparency_inclusion": "fixture-assumed-valid",
+    "transparency_consistency": "fixture-assumed-valid"
+  },
+  "expected": {
+    "artifact_bindings_valid": true,
+    "environment_compatible": false,
+    "replay_executed": false,
+    "relation_satisfied": null,
+    "reproduction_status": "unproven",
+    "capture_status": "unproven",
+    "record_integrity_status": "assumed-valid-for-boundary-test",
+    "claim_verdict": "insufficient",
+    "actual_output": null,
+    "actual_output_sha256": null,
+    "missing_effect_ids": [],
+    "unexpected_input_effect_ids": [],
+    "errors": []
+  }
+}

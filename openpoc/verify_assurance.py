@@ -82,13 +82,15 @@ def assess_assurance(
         capture_status = "violated"
     elif non_bypassable_gate_attested:
         capture_complete = True
-        capture_status = "proven"
+        capture_status = "supported-under-stated-assumptions"
     else:
         capture_complete = False
         capture_status = "unproven"
 
     overall_assurance = (
-        "sufficient" if trace_valid and capture_complete else "insufficient"
+        "sufficient-under-stated-assumptions"
+        if trace_valid and capture_complete
+        else "insufficient"
     )
 
     assumptions = []
