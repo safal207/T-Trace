@@ -1,0 +1,3 @@
+{"id":"comm-1-sender","type":"sense","ts":"2026-08-27T10:00:00Z","thread_id":"cross-source-audit","source_id":"agent-a","side":"sender","correlation_id":"comm-1","action_digest":"sha256:93eb8ac86c8848df5a05c69ce7bdb346c9961a57e9a6f244596ef036bf1c8640"}
+{"id":"comm-1-receiver","type":"sense","ts":"2026-08-27T10:00:01Z","thread_id":"cross-source-audit","source_id":"service-b","side":"receiver","correlation_id":"comm-1","action_digest":"sha256:93eb8ac86c8848df5a05c69ce7bdb346c9961a57e9a6f244596ef036bf1c8640"}
+{"id":"comm-2-sender","type":"sense","ts":"2026-08-27T10:01:00Z","thread_id":"cross-source-audit","source_id":"agent-a","side":"sender","correlation_id":"comm-2","action_digest":"sha256:04f79fe94c2cd897012a54e298f8b54531c95d33ae9a78382364e27478c8e871"}

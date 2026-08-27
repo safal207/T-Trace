@@ -1,0 +1,58 @@
+{
+  "scenario": "cross-source-counterpart-omission",
+  "trace": "counterpart-omission.ttrace.jsonl",
+  "comparison": {
+    "required_sides": {
+      "sender": "agent-a",
+      "receiver": "service-b"
+    },
+    "window_start": "2026-08-27T10:00:00Z",
+    "audit_cutoff": "2026-08-27T10:02:00Z"
+  },
+  "expected": {
+    "trace_valid": true,
+    "pairwise_consistency_status": "violated",
+    "matched_in_supplied_snapshots": [
+      "comm-1"
+    ],
+    "missing_counterparts": [
+      {
+        "correlation_id": "comm-2",
+        "counterpart_status": "missing",
+        "observed_sides": [
+          "sender"
+        ],
+        "missing_sides": [
+          "receiver"
+        ]
+      }
+    ],
+    "digest_conflicts": [],
+    "out_of_scope_records": [],
+    "global_completeness_status": "unproven",
+    "attribution": "undetermined",
+    "overall_assurance": "insufficient-for-global-completeness",
+    "trace_errors": [],
+    "correlation_errors": [],
+    "evidence_scope": {
+      "scope_kind": "supplied-snapshots-only",
+      "window_start": "2026-08-27T10:00:00Z",
+      "audit_cutoff": "2026-08-27T10:02:00Z",
+      "required_sides": {
+        "receiver": "service-b",
+        "sender": "agent-a"
+      },
+      "observed_correlation_ids": [
+        "comm-1",
+        "comm-2"
+      ]
+    },
+    "trust_assumptions": [
+      "declared side-to-source bindings are correct",
+      "supplied snapshots are final at the declared audit cutoff",
+      "equal action_digest values identify the same canonical action projection",
+      "correlation_id uniquely identifies the same action phase across sources",
+      "the declared one-record-per-side cardinality covers retries and fan-out"
+    ]
+  }
+}
