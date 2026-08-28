@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from copy import deepcopy
 import sys
+from copy import deepcopy
 
 import pytest
 
@@ -95,12 +95,14 @@ def _votes(common: dict, branches, cycle: int):
     return tuple(result)
 
 
-def _history(count: int = 5):
+def _history(
+    count: int = 5, *, initial_state_label: str = "epoch-0"
+):
     common = make_state_ref(
         trust_domain="example.procurement",
         logical_state_id="authorization-state",
         causal_epoch=0,
-        semantic_state_sha256=_sha("epoch-0"),
+        semantic_state_sha256=_sha(initial_state_label),
     )
     records = []
     accumulator = None
@@ -162,7 +164,9 @@ def test_middle_cycle_is_proved_without_disclosing_intervening_cycles() -> None:
     assert decision.verified is True
     assert decision.reason == LINEAGE_MEMBERSHIP_REASON
     assert decision.disclosed_cycle_index == 3
-    assert decision.sibling_hash_count == 3
+    assert decision.selected_sibling_hash_count == 3
+    assert decision.current_sibling_hash_count == 3
+    assert decision.sibling_hash_count == 6
 
     serialized = canonical_json_bytes(disclosure).decode("utf-8")
     assert "cycle-3-left" in serialized
@@ -386,6 +390,7 @@ def test_deeply_nested_disclosure_fails_closed() -> None:
 
     decision = verify_selective_lineage_disclosure(disclosure)
     assert decision.verified is False
+    assert decision.reason == "selective_disclosure_too_deep"
 
 
 def test_disclosed_accumulator_must_bind_selected_cycle() -> None:
@@ -421,6 +426,25 @@ def test_builder_rejects_reordered_or_incomplete_history() -> None:
 
 
 def test_builder_rejects_a_non_tip_accumulator() -> None:
+    records, accumulator = _history(5)
+    _, alternate_accumulator = _history(
+        5, initial_state_label="alternate-epoch-0"
+    )
+    assert accumulator != alternate_accumulator
+    assert (
+        accumulator["completed_reconciliation_cycles"]
+        == alternate_accumulator["completed_reconciliation_cycles"]
+    )
+    with pytest.raises(ValueError, match="current_accumulator_not_chain_tip"):
+        build_lineage_membership_anchor(
+            records,
+            alternate_accumulator,
+            membership_contract_sha256=MEMBERSHIP_CONTRACT,
+            authorization_contract_sha256=MEMBERSHIP_AUTHORIZATION,
+        )
+
+
+def test_builder_rejects_accumulator_with_wrong_cycle_count() -> None:
     records, accumulator = _history(5)
     old_accumulator = records[-2]["lineage_accumulator"]
     with pytest.raises(ValueError, match="cycle_count_accumulator_mismatch"):

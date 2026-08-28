@@ -22,7 +22,7 @@ canonical Merkle tree
         ↓
 LineageMembershipAnchor
         ↓
-selected cycle + O(log n) sibling hashes
+selected cycle + two O(log n) sibling paths
 ```
 
 The central rule is:
@@ -330,7 +330,14 @@ For `n` cycles, each sibling path contains approximately:
 ceil(log2(n))
 ```
 
-hashes.
+hashes. The reference disclosure carries two independently checked paths:
+
+- one for the selected historical cycle;
+- one for the current/final cycle that binds the root to the supplied tip.
+
+Therefore the transmitted proof material is still `O(log n)`, with explicit
+counts reported as `selected_sibling_hash_count`,
+`current_sibling_hash_count`, and their total `sibling_hash_count`.
 
 The verifier learns:
 

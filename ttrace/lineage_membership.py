@@ -111,6 +111,8 @@ class LineageMembershipDecision:
     disclosed_cycle_index: Optional[int] = None
     anchor_sha256: Optional[str] = None
     cycle_commitment_sha256: Optional[str] = None
+    selected_sibling_hash_count: Optional[int] = None
+    current_sibling_hash_count: Optional[int] = None
     sibling_hash_count: Optional[int] = None
 
 
@@ -722,7 +724,18 @@ def verify_selective_lineage_disclosure(value: Any) -> LineageMembershipDecision
             disclosed_cycle_index=cycle_index,
             anchor_sha256=digest_json(anchor),
             cycle_commitment_sha256=commitment,
-            sibling_hash_count=len(proof["sibling_path"]),
+            selected_sibling_hash_count=len(proof["sibling_path"]),
+            current_sibling_hash_count=len(
+                proof["current_cycle_sibling_path"]
+            ),
+            sibling_hash_count=(
+                len(proof["sibling_path"])
+                + len(proof["current_cycle_sibling_path"])
+            ),
         )
-    except (KeyError, RecursionError, TypeError, ValueError) as error:
+    except RecursionError:
+        return LineageMembershipDecision(
+            False, "selective_disclosure_too_deep"
+        )
+    except (KeyError, TypeError, ValueError) as error:
         return LineageMembershipDecision(False, str(error))

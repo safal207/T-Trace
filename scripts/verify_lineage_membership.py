@@ -170,6 +170,10 @@ def main() -> int:
             "cycle_commitment_merkle_root_sha256"
         ],
         "disclosed_cycle_commitment_sha256": decision.cycle_commitment_sha256,
+        "selected_sibling_hash_count": (
+            decision.selected_sibling_hash_count
+        ),
+        "current_sibling_hash_count": decision.current_sibling_hash_count,
         "sibling_hash_count": decision.sibling_hash_count,
         "tree_size": proof["tree_size"],
         "current_lineage_root_sha256": accumulator["lineage_root_sha256"],
