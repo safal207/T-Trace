@@ -9,6 +9,7 @@ This directory contains the normative and draft protocol specifications for T-Tr
 - [`portable-causality-profile-v0.1.md`](portable-causality-profile-v0.1.md) — draft canonical identity profile for semantic state, transitions, genuine forks, and explicit two-parent reconciliation.
 - [`lineage-compaction-profile-v0.1.md`](lineage-compaction-profile-v0.1.md) — draft fixed-shape rolling commitment for repeated fork/reconciliation cycles.
 - [`lineage-membership-profile-v0.1.md`](lineage-membership-profile-v0.1.md) — draft Merkle membership profile for selective disclosure of one historical reconciliation cycle without revealing every intervening cycle.
+- [`membership-root-consistency-profile-v0.1.md`](membership-root-consistency-profile-v0.1.md) — draft compact append-only consistency proof between two membership roots with bounded presented-view equivocation evidence.
 
 ## Layering
 
@@ -22,6 +23,8 @@ Portable Causality Profile
 Repeated Lineage Compaction Profile
         ↓
 Lineage Membership / Selective Disclosure Profile
+        ↓
+Membership-Root Consistency / Anti-Equivocation Profile
 ```
 
 The base validator remains unchanged. Profiles add domain payload semantics and focused verifiers without silently changing T-Trace v0.1 wire compatibility.
@@ -35,6 +38,8 @@ The base validator remains unchanged. Profiles add domain payload semantics and 
 > **Active causal identity and complete audit ancestry are different objects.**
 >
 > **A rolling lineage commitment and a historical membership index serve different verification jobs.**
+>
+> **Append-only consistency is a relation between roots, while global non-equivocation requires comparing independently observed authority statements.**
 
 The distributed profiles distinguish:
 
@@ -44,4 +49,6 @@ The distributed profiles distinguish:
 - historical generation from causal epoch;
 - one-parent transition from multi-parent reconciliation;
 - bounded active lineage from externally retained full proof history;
-- rolling tamper evidence from selective historical membership proofs.
+- rolling tamper evidence from selective historical membership proofs;
+- structural root extension from authority-statement comparison;
+- presented conflict detection from global non-equivocation.
