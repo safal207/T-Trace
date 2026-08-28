@@ -60,6 +60,14 @@ from .portable_causality import (
     validate_transition_ref,
 )
 
+verify_authorized_lineage_root_consistency.__doc__ = """Verify append-only roots and direct authority-statement continuity.
+
+This function does not compare statements for conflicts and therefore reports
+``presented_equivocation_detected=False`` on this path. Call
+``detect_lineage_anchor_equivocation`` separately for every pair of presented
+statements that should be compared.
+"""
+
 __all__ = [
     "AuthorizedLineageConsistencyDecision",
     "BranchEvidence",
