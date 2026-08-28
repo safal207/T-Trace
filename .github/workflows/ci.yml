@@ -26,6 +26,9 @@ jobs:
       - name: Verify repeated lineage compaction
         run: |
           python scripts/verify_lineage_compaction.py
+      - name: Verify selective lineage disclosure
+        run: |
+          python scripts/verify_lineage_membership.py
 
   tests:
     runs-on: ubuntu-latest
