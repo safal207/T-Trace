@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Added Membership-Root Consistency / Anti-Equivocation Profile v0.1.
+- Added compact-frontier append-only proofs between existing lineage-membership roots.
+- Added endpoint current-cycle membership binding for both consistency-proof roots.
+- Added normalized externally verified anchor statements and bounded split-view evidence.
+- Preserved `global_non_equivocation_status = unproven` without gossip or witness comparison.
+- Added Lineage Membership / Selective Historical Disclosure Profile v0.1.
+- Added fixed-shape repeated fork/reconciliation lineage compaction.
 - Added OpenPoC-02 claim-scoped independent-reproducibility fixtures.
 - Added bound recipe, input, output, and runtime verification with fail-closed tests.
 - Added a negative vector where replay succeeds over an incomplete input while capture completeness fails.

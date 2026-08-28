@@ -29,6 +29,9 @@ jobs:
       - name: Verify selective lineage disclosure
         run: |
           python scripts/verify_lineage_membership.py
+      - name: Verify membership-root consistency
+        run: |
+          python scripts/verify_lineage_consistency.py
 
   tests:
     runs-on: ubuntu-latest
