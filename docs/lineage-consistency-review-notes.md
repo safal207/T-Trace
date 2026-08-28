@@ -54,17 +54,21 @@ Review that:
 - seed and successor predecessor rules are exact;
 - direct successor sequence is `+1`;
 - authority continuity is mandatory;
+- tree algorithm, membership contract, and authorization contract are
+  statement-bound;
+- direct chain verification does not perform conflict comparison;
 - the result does not claim global non-equivocation.
 
 ### 5. Equivocation evidence
 
 Two statements are comparable only within the same authority, trust domain,
-logical state, and authorization contract.
+logical state, tree algorithm, membership contract, and authorization contract.
 
 Review:
 
 - same-sequence / same-predecessor conflicts;
-- same-size / different-root conflicts;
+- same-size / different-root conflicts inside one exact membership context;
+- membership-contract migrations do not create false equivocation evidence;
 - different authorities do not create attributable equivocation evidence;
 - no-conflict means `not proven`, not global safety.
 
