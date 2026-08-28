@@ -339,12 +339,18 @@ attestation, or equivalent verifier.
   "tree_size": 9,
   "anchor_sha256": "...",
   "membership_root_sha256": "...",
+  "tree_algorithm": "pairwise-duplicate-last-sha256/v0.1",
+  "membership_contract_sha256": "...",
   "authorization_contract_sha256": "..."
 }
 ```
 
 The `verified` field MUST represent a prior external verification step. The T-Trace
 core does not treat an unverified caller assertion as a signature.
+
+The statement binds the complete comparison context: tree algorithm, membership
+contract, and authorization contract. Statements from different membership contexts
+are not comparable equivocation evidence merely because they share an authority ID.
 
 Sequence rules:
 
@@ -354,6 +360,12 @@ Sequence rules:
   - the same authority;
   - `new_sequence = old_sequence + 1`;
   - `new.previous_statement_sha256 = sha256(old_statement)`.
+
+`verify_authorized_lineage_root_consistency` validates this direct chain but does not
+search for conflicting statements. Its `presented_equivocation_detected` field is
+therefore always `false` on that path. Call
+`detect_lineage_anchor_equivocation` separately for every pair of presented views that
+should be compared.
 
 ## 14. Bounded equivocation detection
 
@@ -374,6 +386,8 @@ different anchor digest
 ```text
 same authority
 same trust domain and logical state
+same tree algorithm
+same membership contract
 same authorization contract
 same tree size
 different membership root
