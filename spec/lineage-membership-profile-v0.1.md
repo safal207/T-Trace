@@ -212,13 +212,17 @@ The anchor MUST bind:
 - the membership and authorization contracts.
 
 The current cycle commitment is repeated explicitly so the Merkle tree tip and the
-active accumulator tip cannot silently disagree.
+active accumulator tip cannot silently disagree. Verification MUST recompute the
+current-cycle leaf at `cycle_index == tree_size` and validate its final-leaf sibling
+path against `cycle_commitment_merkle_root_sha256`. Matching the tree size alone is
+not sufficient; a same-size tree that omits the current cycle MUST be rejected.
 
 ## 10. Membership proof
 
 A membership proof contains:
 
 ```text
+schema
 anchor_sha256
 cycle_index
 leaf_index
@@ -227,7 +231,14 @@ tree_algorithm
 cycle_commitment_sha256
 leaf_sha256
 sibling_path
+current_cycle_sibling_path
 ```
+
+`schema` MUST equal `ttrace-lineage-membership-proof/v0.1` exactly.
+`current_cycle_sibling_path` proves the anchor's
+`current_cycle_commitment_sha256` as the final leaf at one-based
+`cycle_index == tree_size`. It is validated independently of `sibling_path`, which
+proves the selectively disclosed cycle.
 
 Each sibling entry is:
 
@@ -293,24 +304,27 @@ A conforming verifier MUST:
 2. validate the exact anchor schema;
 3. bind the anchor to the current accumulator digest and rolling lineage root;
 4. require `tree_size == completed_reconciliation_cycles`;
-5. bind the proof to the exact anchor digest;
-6. require `leaf_index == cycle_index - 1`;
-7. validate the disclosed common state;
-8. independently revalidate the disclosed two-parent reconciliation;
-9. recompute the cycle summary and cycle commitment;
-10. validate the selected cycle's lineage accumulator;
-11. bind that accumulator to the selected state, reconciliation, and commitment;
-12. recompute the membership leaf;
-13. validate every path side and sibling digest;
-14. enforce the duplicate-last rule for odd levels;
-15. recompute the Merkle root and compare it with the anchor;
-16. reject raw evidence or a full-history payload in the disclosure object.
+5. validate the exact membership proof schema;
+6. bind the proof to the exact anchor digest;
+7. require `leaf_index == cycle_index - 1`;
+8. validate the disclosed common state;
+9. independently revalidate the disclosed two-parent reconciliation;
+10. recompute the cycle summary and cycle commitment;
+11. validate the selected cycle's lineage accumulator;
+12. bind that accumulator to the selected state, reconciliation, and commitment;
+13. recompute the disclosed-cycle membership leaf;
+14. validate every disclosed-cycle path side and sibling digest;
+15. enforce the duplicate-last rule for odd levels;
+16. recompute the Merkle root and compare it with the anchor;
+17. recompute the current-cycle leaf at `cycle_index == tree_size`;
+18. validate its final-leaf path against the same Merkle root;
+19. reject raw evidence or a full-history payload in the disclosure object.
 
 No receipt boolean is trusted without recomputation.
 
 ## 13. Complexity and disclosure boundary
 
-For `n` cycles, the sibling path contains approximately:
+For `n` cycles, each sibling path contains approximately:
 
 ```text
 ceil(log2(n))
@@ -333,6 +347,7 @@ The verifier does not receive the semantic contents of intervening cycles.
 The reference verifier rejects at least:
 
 - malformed or extra fields in anchor, proof, or disclosure objects;
+- a missing or incorrect membership proof schema;
 - an invalid current lineage accumulator;
 - anchor/current-accumulator disagreement;
 - tree-size or tree-algorithm disagreement;
@@ -346,6 +361,7 @@ The reference verifier rejects at least:
 - a missing, extra, reordered, or modified sibling;
 - an invalid duplicate-last sibling;
 - a Merkle-root mismatch;
+- a same-size Merkle tree that omits the current cycle;
 - zero membership or authorization contract digests;
 - embedded provider evidence or full cycle history.
 

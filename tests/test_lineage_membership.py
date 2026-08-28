@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import sys
 
 import pytest
+
+import ttrace.lineage_membership as lineage_membership
 
 from ttrace.lineage_compaction import (
     ZERO_SHA256,
@@ -191,6 +194,37 @@ def test_odd_last_leaf_uses_canonical_duplicate_last_rule() -> None:
     assert verify_selective_lineage_disclosure(disclosure).verified is True
 
 
+def test_same_size_tree_omitting_current_cycle_fails_closed() -> None:
+    records, _, disclosure = _disclosure(5, 3)
+    forged_commitments = [
+        record["lineage_accumulator"]["cycle_commitment_sha256"]
+        for record in records
+    ]
+    forged_commitments[-1] = _sha("omitted-current-cycle")
+    forged_leaves = [
+        lineage_membership._leaf_hash(index, commitment)
+        for index, commitment in enumerate(forged_commitments, start=1)
+    ]
+
+    tampered = deepcopy(disclosure)
+    anchor = tampered["anchor"]
+    proof = tampered["membership_proof"]
+    anchor["cycle_commitment_merkle_root_sha256"] = lineage_membership._merkle_root(
+        forged_leaves
+    )
+    proof["anchor_sha256"] = digest_json(anchor)
+    proof["sibling_path"] = lineage_membership._merkle_path(
+        forged_leaves, proof["leaf_index"]
+    )
+    proof["current_cycle_sibling_path"] = lineage_membership._merkle_path(
+        forged_leaves, len(forged_leaves) - 1
+    )
+
+    decision = verify_selective_lineage_disclosure(tampered)
+    assert decision.verified is False
+    assert decision.reason == "current_cycle_membership_path_invalid"
+
+
 def test_provider_evidence_and_full_history_are_not_disclosed() -> None:
     records, _, disclosure = _disclosure(5, 2)
     serialized = canonical_json_bytes(disclosure).decode("utf-8")
@@ -286,6 +320,23 @@ def test_tampering_fails_closed(mutation, reason: str) -> None:
     assert decision.reason == reason
 
 
+def test_membership_proof_schema_is_required_exactly() -> None:
+    _, _, disclosure = _disclosure(5, 3)
+    assert verify_selective_lineage_disclosure(disclosure).verified is True
+
+    missing = deepcopy(disclosure)
+    missing["membership_proof"].pop("schema")
+    missing_decision = verify_selective_lineage_disclosure(missing)
+    assert missing_decision.verified is False
+    assert missing_decision.reason == "membership_proof_shape_invalid"
+
+    altered = deepcopy(disclosure)
+    altered["membership_proof"]["schema"] = "ttrace-lineage-membership-proof/v9.9"
+    altered_decision = verify_selective_lineage_disclosure(altered)
+    assert altered_decision.verified is False
+    assert altered_decision.reason == "membership_proof_schema_invalid"
+
+
 def test_truncated_and_extended_paths_fail_closed() -> None:
     _, _, disclosure = _disclosure(5, 3)
     truncated = deepcopy(disclosure)
@@ -321,6 +372,20 @@ def test_current_accumulator_is_bound_into_anchor() -> None:
     decision = verify_selective_lineage_disclosure(tampered)
     assert decision.verified is False
     assert decision.reason == "membership_anchor_invalid"
+
+
+def test_deeply_nested_disclosure_fails_closed() -> None:
+    _, _, disclosure = _disclosure(5, 3)
+    nested = []
+    cursor = nested
+    for _ in range(sys.getrecursionlimit() + 10):
+        child = []
+        cursor.append(child)
+        cursor = child
+    disclosure["anchor"]["nested"] = nested
+
+    decision = verify_selective_lineage_disclosure(disclosure)
+    assert decision.verified is False
 
 
 def test_disclosed_accumulator_must_bind_selected_cycle() -> None:

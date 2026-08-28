@@ -75,6 +75,7 @@ _PROOF_KEYS = {
     "cycle_commitment_sha256",
     "leaf_sha256",
     "sibling_path",
+    "current_cycle_sibling_path",
 }
 _DISCLOSED_CYCLE_KEYS = {
     "cycle_index",
@@ -575,6 +576,9 @@ def build_selective_lineage_disclosure(
         "cycle_commitment_sha256": selected.cycle_commitment_sha256,
         "leaf_sha256": leaf_sha256,
         "sibling_path": _merkle_path(leaf_hashes, selected_cycle_index - 1),
+        "current_cycle_sibling_path": _merkle_path(
+            leaf_hashes, len(leaf_hashes) - 1
+        ),
     }
     disclosure = {
         "schema": LINEAGE_SELECTIVE_DISCLOSURE_SCHEMA,
@@ -615,6 +619,8 @@ def verify_selective_lineage_disclosure(value: Any) -> LineageMembershipDecision
             raise ValueError("disclosed_cycle_shape_invalid")
         if not isinstance(proof, Mapping) or set(proof) != _PROOF_KEYS:
             raise ValueError("membership_proof_shape_invalid")
+        if proof.get("schema") != LINEAGE_MEMBERSHIP_PROOF_SCHEMA:
+            raise ValueError("membership_proof_schema_invalid")
         assert isinstance(anchor, Mapping)
         assert isinstance(current_accumulator, Mapping)
 
@@ -694,6 +700,22 @@ def verify_selective_lineage_disclosure(value: Any) -> LineageMembershipDecision
         ):
             raise ValueError("membership_path_invalid")
 
+        current_cycle_index = int(anchor["tree_size"])
+        current_cycle_leaf_sha256 = _leaf_hash(
+            current_cycle_index,
+            str(anchor["current_cycle_commitment_sha256"]),
+        )
+        if not _verify_merkle_path(
+            leaf_sha256=current_cycle_leaf_sha256,
+            leaf_index=current_cycle_index - 1,
+            tree_size=current_cycle_index,
+            sibling_path=proof.get("current_cycle_sibling_path"),
+            expected_root_sha256=str(
+                anchor["cycle_commitment_merkle_root_sha256"]
+            ),
+        ):
+            raise ValueError("current_cycle_membership_path_invalid")
+
         return LineageMembershipDecision(
             True,
             LINEAGE_MEMBERSHIP_REASON,
@@ -702,5 +724,5 @@ def verify_selective_lineage_disclosure(value: Any) -> LineageMembershipDecision
             cycle_commitment_sha256=commitment,
             sibling_hash_count=len(proof["sibling_path"]),
         )
-    except (KeyError, TypeError, ValueError) as error:
+    except (KeyError, RecursionError, TypeError, ValueError) as error:
         return LineageMembershipDecision(False, str(error))
