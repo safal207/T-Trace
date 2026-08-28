@@ -206,7 +206,13 @@ def verify_authorized_lineage_root_consistency(
     old_statement: Any,
     new_statement: Any,
 ) -> AuthorizedLineageConsistencyDecision:
-    """Verify append-only roots plus direct context-bound statement continuity."""
+    """Verify append-only roots plus direct context-bound statement continuity.
+
+    This path does not compare statements for conflicts and therefore reports
+    ``presented_equivocation_detected=False`` unconditionally. Call
+    ``detect_lineage_anchor_equivocation`` separately with the statements that
+    should be compared.
+    """
 
     consistency = verify_lineage_root_consistency(package)
     if not consistency.verified:
