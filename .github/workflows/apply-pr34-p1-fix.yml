@@ -1,0 +1,57 @@
+name: Apply PR34 P1 Fix
+
+on:
+  push:
+    branches:
+      - feat/repeated-witness-policy-handoff-chain-v0-1-ready
+    paths:
+      - .pr34-p1-fix-upload/READY
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Assemble and apply exact patch
+        run: |
+          set -euo pipefail
+          cat .pr34-p1-fix-upload/part-* > /tmp/pr34-fix.b64
+          base64 --decode /tmp/pr34-fix.b64 > /tmp/pr34-fix.patch
+          echo "9891e73eecc5e2de5f131f972224ee2d56de30ca6eedd6b5cdcc8fba25c31800  /tmp/pr34-fix.patch" | sha256sum --check --strict
+          git apply --check /tmp/pr34-fix.patch
+          git apply /tmp/pr34-fix.patch
+          git diff --check
+
+      - name: Run focused fail-closed verification
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            ttrace/lineage_witness_handoff_chain.py \
+            ttrace/__init__.py \
+            tests/test_handoff_chain_review_regressions.py
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+          python -m pytest -q \
+            tests/test_lineage_witness_handoff_chain.py \
+            tests/test_handoff_chain_review_regressions.py \
+            tests/test_public_api_exports.py
+          python scripts/verify_witness_policy_handoff_chain.py
+
+      - name: Remove one-shot transport and commit fix
+        run: |
+          set -euo pipefail
+          rm -rf .pr34-p1-fix-upload
+          rm -f .github/workflows/apply-pr34-p1-fix.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix(protocol): harden handoff-chain review boundaries"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
