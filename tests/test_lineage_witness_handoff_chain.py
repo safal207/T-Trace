@@ -142,17 +142,25 @@ def test_tampering_any_root_bound_field_fails(field: str) -> None:
     assert not validate_witness_policy_handoff_chain_ref(tampered)
 
 
-def test_boolean_counters_and_unknown_fields_fail_closed() -> None:
-    _, _, _, third = _chain()
-    for field in (
-        "genesis_policy_epoch",
-        "completed_handoffs",
-        "current_policy_epoch",
-    ):
-        tampered = deepcopy(third.chain_ref)
-        assert tampered is not None
-        tampered[field] = True
-        assert not validate_witness_policy_handoff_chain_ref(tampered)
+def test_non_integer_counters_and_unknown_fields_fail_closed() -> None:
+    _, seed, _, third = _chain()
+    for invalid in (True, 1.0):
+        for field in (
+            "genesis_policy_epoch",
+            "completed_handoffs",
+            "current_policy_epoch",
+        ):
+            tampered = deepcopy(third.chain_ref)
+            assert tampered is not None
+            tampered[field] = invalid
+            assert not validate_witness_policy_handoff_chain_ref(tampered)
+
+    assert seed.step_commitment is not None
+    for field in ("old_policy_epoch", "new_policy_epoch"):
+        tampered_step = deepcopy(seed.step_commitment)
+        tampered_step[field] = float(tampered_step[field])
+        assert not validate_witness_policy_handoff_chain_step(tampered_step)
+
     tampered = deepcopy(third.chain_ref)
     assert tampered is not None
     tampered["extra"] = True

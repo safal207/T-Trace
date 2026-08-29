@@ -268,6 +268,7 @@ def validate_witness_policy_handoff_chain_step(value: Any) -> bool:
         and _positive_int(index)
         and _text(value.get("policy_id"))
         and _positive_int(value.get("old_policy_epoch"))
+        and _positive_int(value.get("new_policy_epoch"))
         and value.get("new_policy_epoch") == value.get("old_policy_epoch") + 1
         and all(
             is_sha256(value.get(key))
@@ -317,6 +318,7 @@ def validate_witness_policy_handoff_chain_ref(value: Any) -> bool:
         and _text(value.get("policy_id"))
         and _positive_int(genesis)
         and _positive_int(count)
+        and _positive_int(current)
         and current == genesis + count
         and all(
             is_sha256(value.get(key))
