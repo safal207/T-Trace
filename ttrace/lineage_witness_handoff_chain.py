@@ -585,13 +585,26 @@ def validate_witness_policy_handoff_chain_agreement(
         )
         if any(item is None for item in values):
             return False
+        if (
+            not _text(chain_id)
+            or not _positive_int(expected_genesis_policy_epoch)
+            or not all(
+                _nonzero_sha(item)
+                for item in (
+                    expected_genesis_policy_sha256,
+                    chain_contract_sha256,
+                    authorization_contract_sha256,
+                )
+            )
+        ):
+            return False
         expected = build_seed_witness_policy_handoff_chain(
             package,
-            chain_id=str(chain_id),
-            expected_genesis_policy_epoch=int(expected_genesis_policy_epoch),
-            expected_genesis_policy_sha256=str(expected_genesis_policy_sha256),
-            chain_contract_sha256=str(chain_contract_sha256),
-            authorization_contract_sha256=str(authorization_contract_sha256),
+            chain_id=chain_id,
+            expected_genesis_policy_epoch=expected_genesis_policy_epoch,
+            expected_genesis_policy_sha256=expected_genesis_policy_sha256,
+            chain_contract_sha256=chain_contract_sha256,
+            authorization_contract_sha256=authorization_contract_sha256,
         )
     else:
         expected = advance_witness_policy_handoff_chain(previous_chain_ref, package)
@@ -707,4 +720,48 @@ def detect_witness_policy_handoff_chain_fork(
         )
     return WitnessPolicyHandoffChainForkDecision(
         True, CHAIN_FORK_REASON, True, evidence
+    )
+
+
+def validate_witness_policy_handoff_chain_fork_evidence(
+    evidence: Any,
+    previous: Mapping[str, Any],
+    package_a: Mapping[str, Any],
+    package_b: Mapping[str, Any],
+) -> bool:
+    """Independently recompute one serialized direct-successor fork proof.
+
+    The supplied predecessor is part of the verification context. A structurally
+    valid evidence object is not trusted merely because its internal digests agree:
+    both candidate handoff packages are revalidated as exact direct successors of
+    the pinned predecessor, and canonical evidence bytes are rebuilt before
+    comparison.
+    """
+
+    if not isinstance(evidence, Mapping) or set(evidence) != FORK_EVIDENCE_KEYS:
+        return False
+    if not (
+        evidence.get("schema") == CHAIN_FORK_EVIDENCE_SCHEMA
+        and evidence.get("verified") is True
+        and evidence.get("reason") == CHAIN_FORK_REASON
+        and evidence.get("fork_detected") is True
+        and _positive_int(evidence.get("old_policy_epoch"))
+        and evidence.get("conditional_handoff_chain_status")
+        == CONDITIONAL_HANDOFF_CHAIN_STATUS
+        and evidence.get("conditional_non_equivocation_status")
+        == CONDITIONAL_NON_EQUIVOCATION_STATUS
+        and evidence.get("global_non_equivocation_status")
+        == GLOBAL_NON_EQUIVOCATION_STATUS
+    ):
+        return False
+
+    decision = detect_witness_policy_handoff_chain_fork(
+        previous, package_a, package_b
+    )
+    return (
+        decision.verified
+        and decision.fork_detected
+        and isinstance(decision.evidence, Mapping)
+        and canonical_json_bytes(dict(evidence))
+        == canonical_json_bytes(decision.evidence)
     )

@@ -183,6 +183,10 @@ different direct successors produce bounded fork evidence containing:
 This proves a fork only for the two supplied direct successors of the same pinned tip.
 It does not prove that no undisclosed successor exists.
 
+Serialized fork evidence is never trusted on shape alone. The standalone verifier
+requires the pinned predecessor and both candidate handoff packages, revalidates both
+direct successors, rebuilds the canonical evidence, and compares exact bytes.
+
 ## 10. Fail-closed conditions
 
 The reference implementation rejects at least:
@@ -200,7 +204,9 @@ The reference implementation rejects at least:
 - contract drift through replacement of the pinned predecessor;
 - reordered, truncated, or unrelated full histories;
 - an expected tip that differs from the rebuilt chain;
-- fork comparison when either candidate is not a valid direct extension.
+- fork comparison when either candidate is not a valid direct extension;
+- Boolean seed epochs passed through the public agreement validator;
+- serialized fork evidence that cannot be independently recomputed.
 
 ## 11. Assurance boundary
 
