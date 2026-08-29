@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added Witness-Quorum Anchor / Conditional Non-Equivocation Profile v0.1.
+- Added exact threshold policies with guaranteed quorum intersection and strict JSON integer semantics.
+- Added canonical externally verified witness observations and recomputed quorum certificates over exact producer anchor statements.
+- Added direct intersecting-witness sequence/predecessor continuity for append-only root transitions.
+- Added bounded producer split-view evidence with attributable overlapping witness observations while preserving `global_non_equivocation_status = unproven`.
 - Added Membership-Root Consistency / Anti-Equivocation Profile v0.1.
 - Added compact-frontier append-only proofs between existing lineage-membership roots.
 - Added endpoint current-cycle membership binding for both consistency-proof roots.

@@ -32,6 +32,9 @@ jobs:
       - name: Verify membership-root consistency
         run: |
           python scripts/verify_lineage_consistency.py
+      - name: Verify witness-quorum anti-equivocation
+        run: |
+          python scripts/verify_lineage_witness_quorum.py
 
   tests:
     runs-on: ubuntu-latest
