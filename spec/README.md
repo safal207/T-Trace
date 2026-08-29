@@ -10,6 +10,7 @@ This directory contains the normative and draft protocol specifications for T-Tr
 - [`lineage-compaction-profile-v0.1.md`](lineage-compaction-profile-v0.1.md) — draft fixed-shape rolling commitment for repeated fork/reconciliation cycles.
 - [`lineage-membership-profile-v0.1.md`](lineage-membership-profile-v0.1.md) — draft Merkle membership profile for selective disclosure of one historical reconciliation cycle without revealing every intervening cycle.
 - [`membership-root-consistency-profile-v0.1.md`](membership-root-consistency-profile-v0.1.md) — draft compact append-only consistency proof between two membership roots with bounded presented-view equivocation evidence.
+- [`witness-quorum-anti-equivocation-profile-v0.1.md`](witness-quorum-anti-equivocation-profile-v0.1.md) — draft threshold-witness acceptance layer for exact lineage-anchor statements, direct intersecting-witness continuity, and attributable supplied-view double-signing evidence.
 
 ## Layering
 
@@ -24,7 +25,9 @@ Repeated Lineage Compaction Profile
         ↓
 Lineage Membership / Selective Disclosure Profile
         ↓
-Membership-Root Consistency / Anti-Equivocation Profile
+Membership-Root Consistency / Presented-View Anti-Equivocation Profile
+        ↓
+Witness-Quorum Anchor / Conditional Non-Equivocation Profile
 ```
 
 The base validator remains unchanged. Profiles add domain payload semantics and focused verifiers without silently changing T-Trace v0.1 wire compatibility.
@@ -40,6 +43,10 @@ The base validator remains unchanged. Profiles add domain payload semantics and 
 > **A rolling lineage commitment and a historical membership index serve different verification jobs.**
 >
 > **Append-only consistency is a relation between roots, while global non-equivocation requires comparing independently observed authority statements.**
+>
+> **A producer statement is structural authority evidence; an intersecting witness quorum is a separate acceptance layer.**
+>
+> **Witness-quorum safety is conditional on authenticated policy and witness evidence and does not prove global non-equivocation.**
 
 The distributed profiles distinguish:
 
@@ -51,4 +58,6 @@ The distributed profiles distinguish:
 - bounded active lineage from externally retained full proof history;
 - rolling tamper evidence from selective historical membership proofs;
 - structural root extension from authority-statement comparison;
-- presented conflict detection from global non-equivocation.
+- producer statement continuity from threshold witness acceptance;
+- presented conflict detection from global non-equivocation;
+- conditional quorum-intersection evidence from Byzantine-consensus claims.
