@@ -38,6 +38,9 @@ jobs:
       - name: Verify witness-policy handoff
         run: |
           python scripts/verify_witness_policy_handoff.py
+      - name: Verify repeated witness-policy handoff chain
+        run: |
+          python scripts/verify_witness_policy_handoff_chain.py
 
   tests:
     runs-on: ubuntu-latest
