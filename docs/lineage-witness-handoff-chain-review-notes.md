@@ -23,6 +23,21 @@ Reviewers should challenge:
 10. wording that might be misread as freshness, global non-equivocation, gossip
     completeness, witness honesty, or cryptographic verification by T-Trace core.
 
+## P1 review hardening
+
+The final fail-closed pass fixed two public-boundary defects before merge:
+
+- `validate_witness_policy_handoff_chain_agreement` now rejects Boolean or otherwise
+  non-canonical genesis epochs before recomputation instead of coercing them with
+  `int(...)`;
+- serialized fork evidence now has an independent validator that requires the pinned
+  predecessor and both candidate handoff packages, revalidates both direct
+  successors, rebuilds canonical evidence, and compares exact bytes.
+
+Regression coverage rejects unknown evidence fields, Boolean evidence epochs,
+rebound candidate digests, evidence checked against another predecessor, and
+identical successors presented as a fork.
+
 ## Independent verification lanes
 
 The focused pytest suite uses deterministic fixture builders and adversarial
