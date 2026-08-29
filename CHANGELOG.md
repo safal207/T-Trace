@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added Witness-Set Rotation / Quorum-Handoff Portability Profile v0.1.
+- Added exact old-policy and new-policy dual-quorum authorization over one lineage view and one policy transition.
+- Added direct old-active→handoff and handoff→new-activation witness predecessor continuity.
+- Added canonical handoff certificates, supplied-view conflicting-rotation evidence, and rejection of unused handoff observations.
+- Preserved `global_non_equivocation_status = unproven` and made policy handoff safety conditional on authenticated evidence and quorum assumptions.
 - Added Witness-Quorum Anchor / Conditional Non-Equivocation Profile v0.1.
 - Added exact threshold policies with guaranteed quorum intersection and strict JSON integer semantics.
 - Added canonical externally verified witness observations and recomputed quorum certificates over exact producer anchor statements.
