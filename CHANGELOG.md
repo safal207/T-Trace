@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Added Repeated Witness-Policy Rotation / Handoff-Chain Consistency Profile v0.1.
+- Added an 18-field fixed-shape rolling chain reference over exact verified handoff packages and certificates.
+- Added pinned genesis-policy binding and exact activation-package/certificate carry-forward between successive handoffs.
+- Added complete-chain rebuild verification with rollback, replay, skipped-epoch, reorder, truncation, and policy-history reset rejection.
+- Added bounded evidence for two conflicting valid direct successors of one exact pinned handoff-chain tip.
+- Preserved `global_non_equivocation_status = unproven`; rollback resistance remains conditional on retaining an authenticated prior chain tip.
 - Added Witness-Set Rotation / Quorum-Handoff Portability Profile v0.1.
 - Added exact old-policy and new-policy dual-quorum authorization over one lineage view and one policy transition.
 - Added direct old-active→handoff and handoff→new-activation witness predecessor continuity.
