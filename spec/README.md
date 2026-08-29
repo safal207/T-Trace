@@ -11,6 +11,7 @@ This directory contains the normative and draft protocol specifications for T-Tr
 - [`lineage-membership-profile-v0.1.md`](lineage-membership-profile-v0.1.md) — draft Merkle membership profile for selective disclosure of one historical reconciliation cycle without revealing every intervening cycle.
 - [`membership-root-consistency-profile-v0.1.md`](membership-root-consistency-profile-v0.1.md) — draft compact append-only consistency proof between two membership roots with bounded presented-view equivocation evidence.
 - [`witness-quorum-anti-equivocation-profile-v0.1.md`](witness-quorum-anti-equivocation-profile-v0.1.md) — draft threshold-witness acceptance layer for exact lineage-anchor statements, direct intersecting-witness continuity, and attributable supplied-view double-signing evidence.
+- [`witness-set-rotation-handoff-profile-v0.1.md`](witness-set-rotation-handoff-profile-v0.1.md) — draft dual-quorum handoff profile that rotates one authenticated witness policy into the next without an unprotected acceptance gap.
 
 ## Layering
 
@@ -28,6 +29,8 @@ Lineage Membership / Selective Disclosure Profile
 Membership-Root Consistency / Presented-View Anti-Equivocation Profile
         ↓
 Witness-Quorum Anchor / Conditional Non-Equivocation Profile
+        ↓
+Witness-Set Rotation / Dual-Quorum Handoff Profile
 ```
 
 The base validator remains unchanged. Profiles add domain payload semantics and focused verifiers without silently changing T-Trace v0.1 wire compatibility.
@@ -47,6 +50,8 @@ The base validator remains unchanged. Profiles add domain payload semantics and 
 > **A producer statement is structural authority evidence; an intersecting witness quorum is a separate acceptance layer.**
 >
 > **Witness-quorum safety is conditional on authenticated policy and witness evidence and does not prove global non-equivocation.**
+>
+> **A witness-policy digest must not change by ordinary continuity; rotation requires one exact view accepted by both the old and the new policy.**
 
 The distributed profiles distinguish:
 
@@ -60,4 +65,5 @@ The distributed profiles distinguish:
 - structural root extension from authority-statement comparison;
 - producer statement continuity from threshold witness acceptance;
 - presented conflict detection from global non-equivocation;
-- conditional quorum-intersection evidence from Byzantine-consensus claims.
+- conditional quorum-intersection evidence from Byzantine-consensus claims;
+- same-policy witness continuity from explicit dual-policy handoff authorization.
