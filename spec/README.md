@@ -13,6 +13,7 @@ This directory contains the normative and draft protocol specifications for T-Tr
 - [`witness-quorum-anti-equivocation-profile-v0.1.md`](witness-quorum-anti-equivocation-profile-v0.1.md) — draft threshold-witness acceptance layer for exact lineage-anchor statements, direct intersecting-witness continuity, and attributable supplied-view double-signing evidence.
 - [`witness-set-rotation-handoff-profile-v0.1.md`](witness-set-rotation-handoff-profile-v0.1.md) — draft dual-quorum handoff profile that rotates one authenticated witness policy into the next without an unprotected acceptance gap.
 - [`repeated-witness-policy-handoff-chain-profile-v0.1.md`](repeated-witness-policy-handoff-chain-profile-v0.1.md) — draft fixed-shape rolling chain for multiple verified witness-policy handoffs with pinned predecessor continuity, rollback rejection, and direct-successor fork evidence.
+- [`witness-policy-handoff-chain-membership-profile-v0.1.md`](witness-policy-handoff-chain-membership-profile-v0.1.md) — draft Merkle membership profile for revalidating and selectively disclosing one historical policy rotation without revealing every intermediate handoff package.
 
 ## Layering
 
@@ -33,7 +34,9 @@ Witness-Quorum Anchor / Conditional Non-Equivocation Profile
         ↓
 Witness-Set Rotation / Dual-Quorum Handoff Profile
         ↓
-Repeated Witness-Policy Handoff-Chain Consistency Profile
+Repeated Witness-Policy Handoff Chain Profile
+        ↓
+Witness-Policy Handoff-Chain Membership / Selective Disclosure Profile
 ```
 
 The base validator remains unchanged. Profiles add domain payload semantics and focused verifiers without silently changing T-Trace v0.1 wire compatibility.
@@ -57,6 +60,8 @@ The base validator remains unchanged. Profiles add domain payload semantics and 
 > **A witness-policy digest must not change by ordinary continuity; rotation requires one exact view accepted by both the old and the new policy.**
 >
 > **A valid policy handoff is one edge; rollback-resistant policy history requires a separately pinned handoff-chain tip.**
+>
+> **A rolling handoff-chain tip and a selective historical handoff index serve different verification jobs.**
 
 The distributed profiles distinguish:
 
@@ -72,4 +77,5 @@ The distributed profiles distinguish:
 - presented conflict detection from global non-equivocation;
 - conditional quorum-intersection evidence from Byzantine-consensus claims;
 - same-policy witness continuity from explicit dual-policy handoff authorization;
-- one valid policy handoff from a pinned, rollback-resistant handoff chain.
+- one valid policy handoff from a pinned, rollback-resistant handoff chain;
+- rolling handoff-chain continuity from selective disclosure of one revalidated historical handoff.
