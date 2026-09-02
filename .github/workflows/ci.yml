@@ -44,6 +44,9 @@ jobs:
       - name: Verify witness-policy handoff-chain selective disclosure
         run: |
           python scripts/verify_witness_policy_handoff_chain_membership.py
+      - name: Verify witness-policy handoff membership-root consistency
+        run: |
+          python scripts/verify_witness_policy_handoff_chain_consistency.py
 
   tests:
     runs-on: ubuntu-latest

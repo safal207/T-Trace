@@ -47,6 +47,7 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 - Causal Execution Graph profile: [spec/causal-execution-graph-v0.1.md](spec/causal-execution-graph-v0.1.md)
 - Portable Causality profile: [spec/portable-causality-profile-v0.1.md](spec/portable-causality-profile-v0.1.md)
 - Witness-policy handoff-chain membership profile: [spec/witness-policy-handoff-chain-membership-profile-v0.1.md](spec/witness-policy-handoff-chain-membership-profile-v0.1.md)
+- Witness-policy handoff membership-root consistency profile: [spec/witness-policy-handoff-chain-membership-root-consistency-profile-v0.1.md](spec/witness-policy-handoff-chain-membership-root-consistency-profile-v0.1.md)
 - JSON Schema: [schemas/t-trace-record.schema.json](schemas/t-trace-record.schema.json)
 - Reference validator: [scripts/validate_ttrace.py](scripts/validate_ttrace.py)
 - Portable causality verifier: [scripts/verify_portable_causality.py](scripts/verify_portable_causality.py)
@@ -174,8 +175,10 @@ The base T-Trace v0.1 validator is intentionally unchanged; profile objects are 
 - `scripts/validate_ttrace.py` - base reference validator
 - `scripts/verify_portable_causality.py` - focused portable-causality verifier
 - `scripts/verify_witness_policy_handoff_chain_membership.py` - selective historical witness-policy rotation verifier
+- `scripts/verify_witness_policy_handoff_chain_consistency.py` - append-only handoff membership-root consistency verifier
 - `ttrace/portable_causality.py` - provider-agnostic reference implementation
 - `ttrace/lineage_witness_handoff_chain_membership.py` - handoff-chain membership anchor and selective-disclosure implementation
+- `ttrace/lineage_witness_handoff_chain_consistency.py` - handoff membership-root consistency, authority continuity, and bounded equivocation implementation
 - `openpoc/` - executable assurance-boundary and interoperability fixtures
 - `examples/` - canonical traces and profile examples
 - `tests/` - validator, OpenPoC, interoperability, and profile regression tests
