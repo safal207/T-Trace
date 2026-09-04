@@ -6,10 +6,15 @@ import pytest
 from openpoc.asqav_omission_compat import (
     CrosswalkError,
     SELECTED_VECTOR_IDS,
+    UPSTREAM_COMMIT,
     canonical_payload,
     evaluate_bundle,
     verify_chain,
     verify_document_signature,
+)
+from openpoc.asqav_upstream_binding import (
+    SourceBindingError,
+    verify_upstream_binding,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,6 +23,45 @@ FIXTURES = ROOT / "examples" / "asqav-selective-omission"
 
 def _load(relative: str) -> dict:
     return json.loads((FIXTURES / relative).read_text(encoding="utf-8"))
+
+
+def _build_synthetic_upstream(tmp_path: Path) -> Path:
+    upstream = tmp_path / "asqav-sdk"
+    pins = _load("pins.json")
+
+    lock_records: list[dict] = []
+    for local_relative, expected in pins["files"].items():
+        local_raw = (FIXTURES / local_relative).read_bytes()
+        for upstream_relative in expected["upstream_paths"]:
+            destination = upstream / upstream_relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(local_raw)
+            lock_records.append(
+                {
+                    "path": upstream_relative.removeprefix(
+                        "verifier/conformance-vectors/"
+                    ),
+                    "sha256": expected["sha256"],
+                    "bytes": expected["bytes"],
+                }
+            )
+
+    manifest = []
+    for vector in pins["vectors"]:
+        record = _load(f"{vector['id']}/expected.json")
+        manifest.append({"dir": vector["id"], **record})
+
+    manifest_path = upstream / pins["source_manifest"]
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    lock_path = upstream / pins["source_manifest_lock"]
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path.write_text(
+        json.dumps({"files": lock_records}),
+        encoding="utf-8",
+    )
+    return upstream
 
 
 def test_selected_vectors_independently_agree_with_frozen_upstream():
@@ -36,19 +80,21 @@ def test_silent_omission_keeps_chain_valid_without_upgrading_completeness():
     vector = report.vectors[0]
 
     assert vector.semantic == "silent-omission"
-    assert vector.observed_state == "valid-chain-silent-about-never-signed-action"
-    assert "capture completeness remains unproven" in vector.claim_ceiling
+    assert vector.observed_state == (
+        "valid-selected-two-receipt-chain-without-act-2-receipt"
+    )
+    assert "does not prove whether act_2 reached any signer" in vector.claim_ceiling
 
 
-def test_unsigned_gap_reports_signer_outage_not_policy_evaluation():
+def test_unsigned_gap_reports_signed_marker_not_external_outage_fact():
     report = evaluate_bundle(FIXTURES)
     vector = report.vectors[1]
 
     assert vector.semantic == "signer-outage-observed"
     assert vector.observed_state == (
-        "verified-signer-outage-marker-without-policy-claim"
+        "verified-unsigned-gap-marker-without-policy-or-execution-claim"
     )
-    assert "does not prove" in vector.claim_ceiling
+    assert "does not independently prove a signer outage" in vector.claim_ceiling
 
 
 def test_chain_emission_block_is_visible_but_gate_non_bypassability_is_external():
@@ -100,6 +146,37 @@ def test_raw_file_tamper_fails_the_sha_and_git_blob_pin(tmp_path: Path):
 
     with pytest.raises(CrosswalkError, match="bytes"):
         evaluate_bundle(target)
+
+
+def test_exact_upstream_binding_checks_raw_manifest_and_lock_records(tmp_path: Path):
+    upstream = _build_synthetic_upstream(tmp_path)
+
+    report = verify_upstream_binding(
+        FIXTURES,
+        upstream,
+        observed_commit=UPSTREAM_COMMIT,
+    )
+
+    assert report.verified is True
+    assert report.raw_paths_compared == 12
+    assert report.manifest_records_compared == 3
+    assert report.lock_records_compared == 12
+
+
+def test_exact_upstream_binding_rejects_raw_drift(tmp_path: Path):
+    upstream = _build_synthetic_upstream(tmp_path)
+    target = (
+        upstream
+        / "verifier/conformance-vectors/asqav-14-omitted-action-chain/receipt.json"
+    )
+    target.write_bytes(target.read_bytes() + b" ")
+
+    with pytest.raises(SourceBindingError, match="raw source mismatch"):
+        verify_upstream_binding(
+            FIXTURES,
+            upstream,
+            observed_commit=UPSTREAM_COMMIT,
+        )
 
 
 def test_report_is_deterministic():
