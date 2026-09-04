@@ -4,7 +4,8 @@
   "non_claims": [
     "This is an independent verification of three frozen Asqav vectors, not the complete Asqav corpus.",
     "Wire-level receipt validity does not prove capture completeness.",
-    "A gap marker does not prove the missing actions were policy-evaluated or executed.",
+    "Absence from the selected two-receipt slice does not prove an action never reached any signer.",
+    "A signed unsigned_gap marker does not independently prove a signer outage, policy evaluation, or execution.",
     "A blocked-emission receipt proves prevention only under a separately justified non-bypassable enforcement assumption.",
     "This report is interoperability evidence, not certification or endorsement."
   ],
@@ -15,8 +16,8 @@
   "vectors": [
     {
       "chain_valid": true,
-      "claim_ceiling": "receipt-chain integrity only; capture completeness remains unproven without independent effect evidence",
-      "observed_state": "valid-chain-silent-about-never-signed-action",
+      "claim_ceiling": "the selected two-receipt slice contains no act_2 receipt; upstream declares the omitted-action scenario, but this verifier does not prove whether act_2 reached any signer or whether capture was complete",
+      "observed_state": "valid-selected-two-receipt-chain-without-act-2-receipt",
       "semantic": "silent-omission",
       "signatures_valid": true,
       "status": "agree",
@@ -25,8 +26,8 @@
     },
     {
       "chain_valid": true,
-      "claim_ceiling": "the signed gap reports missing receipt emission; it does not prove the unsigned actions were evaluated or executed",
-      "observed_state": "verified-signer-outage-marker-without-policy-claim",
+      "claim_ceiling": "the signed unsigned_gap marker declares count=2; it does not independently prove a signer outage, policy evaluation, or execution of the missing actions",
+      "observed_state": "verified-unsigned-gap-marker-without-policy-or-execution-claim",
       "semantic": "signer-outage-observed",
       "signatures_valid": true,
       "status": "agree",
