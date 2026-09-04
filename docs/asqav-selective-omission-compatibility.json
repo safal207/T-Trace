@@ -1,0 +1,48 @@
+{
+  "agree_count": 3,
+  "all_agree": true,
+  "non_claims": [
+    "This is an independent verification of three frozen Asqav vectors, not the complete Asqav corpus.",
+    "Wire-level receipt validity does not prove capture completeness.",
+    "Absence from the selected two-receipt slice does not prove an action never reached any signer.",
+    "A signed unsigned_gap marker does not independently prove a signer outage, policy evaluation, or execution.",
+    "A blocked-emission receipt proves prevention only under a separately justified non-bypassable enforcement assumption.",
+    "This report is interoperability evidence, not certification or endorsement."
+  ],
+  "pinned_file_count": 10,
+  "schema": "ttrace.asqav-selective-omission-crosswalk/v1",
+  "source_commit": "17c814f9e2e51f005faa707d44adec0316534da8",
+  "source_repository": "https://github.com/jagmarques/asqav-sdk",
+  "vectors": [
+    {
+      "chain_valid": true,
+      "claim_ceiling": "the selected two-receipt slice contains no act_2 receipt; upstream declares the omitted-action scenario, but this verifier does not prove whether act_2 reached any signer or whether capture was complete",
+      "observed_state": "valid-selected-two-receipt-chain-without-act-2-receipt",
+      "semantic": "silent-omission",
+      "signatures_valid": true,
+      "status": "agree",
+      "upstream_outcome": "verified",
+      "vector_id": "asqav-14-omitted-action-chain"
+    },
+    {
+      "chain_valid": true,
+      "claim_ceiling": "the signed unsigned_gap marker declares count=2; it does not independently prove a signer outage, policy evaluation, or execution of the missing actions",
+      "observed_state": "verified-unsigned-gap-marker-without-policy-or-execution-claim",
+      "semantic": "signer-outage-observed",
+      "signatures_valid": true,
+      "status": "agree",
+      "upstream_outcome": "verified",
+      "vector_id": "asqav-15-unsigned-gap"
+    },
+    {
+      "chain_valid": true,
+      "claim_ceiling": "the lifecycle receipt makes the blocked interval visible; prevention of every external effect still depends on a non-bypassable enforcement point",
+      "observed_state": "verified-lifecycle-denial-for-chain-emission-block",
+      "semantic": "fail-closed-interval-observed",
+      "signatures_valid": true,
+      "status": "agree",
+      "upstream_outcome": "verified",
+      "vector_id": "asqav-16-chain-emission-blocked"
+    }
+  ]
+}
