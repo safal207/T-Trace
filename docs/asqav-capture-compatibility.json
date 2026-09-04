@@ -1,0 +1,69 @@
+{
+  "claim_boundary": {
+    "independent_checks": [
+      "Ed25519 signature over the canonical predecessor payload",
+      "Ed25519 signature over the canonical receipt payload",
+      "SHA-256 previousReceiptHash linkage",
+      "presence and shape of the vector-specific observability marker"
+    ],
+    "not_proved": [
+      "global capture completeness",
+      "deployment-level non-bypassability",
+      "policy evaluation of unsigned actions",
+      "absence of effects outside the receipt path",
+      "endorsement by the upstream author"
+    ]
+  },
+  "observations": [
+    {
+      "chain_link": "valid",
+      "claim_ceiling": "integrity_of_presented_receipts_only",
+      "error": null,
+      "expected_outcome": "verified",
+      "local_outcome": "verified",
+      "marker": "none",
+      "observability": "silent_without_external_ground_truth",
+      "predecessor_signature": "valid",
+      "receipt_signature": "valid",
+      "status": "agree",
+      "ttrace_mapping": "trace_valid=true; capture_status=violated_under_fixture_truth; overall_assurance=insufficient",
+      "vector": "asqav-14-omitted-action-chain"
+    },
+    {
+      "chain_link": "valid",
+      "claim_ceiling": "does_not_prove_unsigned_actions_were_policy_evaluated",
+      "error": null,
+      "expected_outcome": "verified",
+      "local_outcome": "verified",
+      "marker": "unsigned_gap(count=2)",
+      "observability": "signer_outage_window_declared",
+      "predecessor_signature": "valid",
+      "receipt_signature": "valid",
+      "status": "agree",
+      "ttrace_mapping": "trace_valid=true; capture_status=partially_observable; effect_binding=indeterminate",
+      "vector": "asqav-15-unsigned-gap"
+    },
+    {
+      "chain_link": "valid",
+      "claim_ceiling": "recorded_fail_closed_recovery_event_not_deployment_non_bypassability",
+      "error": null,
+      "expected_outcome": "verified",
+      "local_outcome": "verified",
+      "marker": "chain_emission_blocked",
+      "observability": "blocked_emission_interval_detectable_after_resume",
+      "predecessor_signature": "valid",
+      "receipt_signature": "valid",
+      "status": "agree",
+      "ttrace_mapping": "trace_valid=true; fail_closed_recovery_evidence=present; gate_non_bypassability=assumption",
+      "vector": "asqav-16-chain-emission-blocked"
+    }
+  ],
+  "source_commit": "17c814f9e2e51f005faa707d44adec0316534da8",
+  "source_repository": "jagmarques/asqav-sdk",
+  "summary": {
+    "agree": 3,
+    "disagree": 0,
+    "total": 3,
+    "unsupported": 0
+  }
+}
