@@ -1,0 +1,48 @@
+name: Asqav selective-omission interop
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/asqav-selective-omission.yml"
+      - "openpoc/asqav_omission_compat.py"
+      - "examples/asqav-selective-omission/**"
+      - "docs/asqav-selective-omission-compatibility.json"
+      - "tests/test_asqav_omission_compat.py"
+  pull_request:
+    paths:
+      - ".github/workflows/asqav-selective-omission.yml"
+      - "openpoc/asqav_omission_compat.py"
+      - "examples/asqav-selective-omission/**"
+      - "docs/asqav-selective-omission-compatibility.json"
+      - "tests/test_asqav_omission_compat.py"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install verification dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[dev]'
+      - name: Run focused negative controls
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_asqav_omission_compat.py
+      - name: Regenerate deterministic report
+        run: |
+          set -euo pipefail
+          python -m openpoc.asqav_omission_compat \
+            examples/asqav-selective-omission \
+            --write /tmp/asqav-selective-omission-compatibility.json
+          diff -u \
+            docs/asqav-selective-omission-compatibility.json \
+            /tmp/asqav-selective-omission-compatibility.json
