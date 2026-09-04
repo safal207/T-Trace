@@ -70,7 +70,8 @@ class CrosswalkReport:
             "non_claims": [
                 "This is an independent verification of three frozen Asqav vectors, not the complete Asqav corpus.",
                 "Wire-level receipt validity does not prove capture completeness.",
-                "A gap marker does not prove the missing actions were policy-evaluated or executed.",
+                "Absence from the selected two-receipt slice does not prove an action never reached any signer.",
+                "A signed unsigned_gap marker does not independently prove a signer outage, policy evaluation, or execution.",
                 "A blocked-emission receipt proves prevention only under a separately justified non-bypassable enforcement assumption.",
                 "This report is interoperability evidence, not certification or endorsement.",
             ],
@@ -290,7 +291,7 @@ def _semantic_observation(
             raise CrosswalkError(f"{vector_id}: omitted action is present")
         if "unsigned_gap" in receipt_payload or "reason" in receipt_payload:
             raise CrosswalkError(f"{vector_id}: silent omission gained an explicit marker")
-        return "valid-chain-silent-about-never-signed-action"
+        return "valid-selected-two-receipt-chain-without-act-2-receipt"
 
     if semantic == "signer-outage-observed":
         gap = receipt_payload.get("unsigned_gap")
@@ -300,7 +301,7 @@ def _semantic_observation(
             raise CrosswalkError(f"{vector_id}: unsigned_gap count changed")
         if not isinstance(gap.get("from"), str) or not isinstance(gap.get("to"), str):
             raise CrosswalkError(f"{vector_id}: unsigned_gap interval malformed")
-        return "verified-signer-outage-marker-without-policy-claim"
+        return "verified-unsigned-gap-marker-without-policy-or-execution-claim"
 
     if semantic == "fail-closed-interval-observed":
         for key in ("type", "decision", "reason"):
