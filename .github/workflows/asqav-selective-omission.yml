@@ -6,15 +6,19 @@ on:
     paths:
       - ".github/workflows/asqav-selective-omission.yml"
       - "openpoc/asqav_omission_compat.py"
+      - "openpoc/asqav_upstream_binding.py"
       - "examples/asqav-selective-omission/**"
       - "docs/asqav-selective-omission-compatibility.json"
+      - "docs/asqav-selective-omission-cross-verification.md"
       - "tests/test_asqav_omission_compat.py"
   pull_request:
     paths:
       - ".github/workflows/asqav-selective-omission.yml"
       - "openpoc/asqav_omission_compat.py"
+      - "openpoc/asqav_upstream_binding.py"
       - "examples/asqav-selective-omission/**"
       - "docs/asqav-selective-omission-compatibility.json"
+      - "docs/asqav-selective-omission-cross-verification.md"
       - "tests/test_asqav_omission_compat.py"
 
 permissions:
@@ -24,20 +28,47 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout T-Trace exact PR subject
+        uses: actions/checkout@v4
+        with:
+          path: ttrace
+          persist-credentials: false
+
+      - name: Checkout exact Asqav source subject
+        uses: actions/checkout@v4
+        with:
+          repository: jagmarques/asqav-sdk
+          ref: 17c814f9e2e51f005faa707d44adec0316534da8
+          path: upstream-asqav
+          persist-credentials: false
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
       - name: Install verification dependencies
+        working-directory: ttrace
         run: |
           set -euo pipefail
           python -m pip install --upgrade pip
           python -m pip install -e '.[dev]'
+
+      - name: Verify exact upstream bytes, manifest, and lock records
+        working-directory: ttrace
+        run: |
+          set -euo pipefail
+          python -m openpoc.asqav_upstream_binding \
+            examples/asqav-selective-omission \
+            ../upstream-asqav
+
       - name: Run focused negative controls
+        working-directory: ttrace
         run: |
           set -euo pipefail
           python -m pytest -q tests/test_asqav_omission_compat.py
+
       - name: Regenerate deterministic report
+        working-directory: ttrace
         run: |
           set -euo pipefail
           python -m openpoc.asqav_omission_compat \
