@@ -118,6 +118,23 @@ external execution still need separate evidence.
 
 ## 5. Read the claim map before integrating
 
+### Compare two supplied source snapshots
+
+```bash
+python -m openpoc.verify_cross_source examples/openpoc-03/counterpart-omission.scenario.json
+python -m openpoc.verify_cross_source examples/openpoc-03/nonfinal-snapshots.scenario.json
+python -m openpoc.verify_cross_source examples/openpoc-03/delayed-observation.scenario.json
+```
+
+The first and third fixtures report `pairwise_consistency_status=violated`;
+the second reports `insufficient-snapshot-finality`. All keep
+`global_completeness_status=unproven`. A late-observed record cannot repair a
+past cutoff. A successful fixture exit is not a completeness verdict.
+
+Read the [OpenPoC-03 contract](openpoc-03-cross-source-correlation.md) for
+the explicit clock/finality assumptions and the distinction between a
+missing counterpart, presented digest conflict, and insufficient evidence.
+
 | Question | Implemented evidence | Boundary |
 |---|---|---|
 | Do the presented records follow the rules? | Base validator | Only supplied records, not every external event |
@@ -127,6 +144,7 @@ external execution still need separate evidence.
 | Is this the latest trusted state now? | Not established by root consistency alone | Requires a freshness policy and appropriate external state |
 | Were all relevant effects captured? | OpenPoC-01/02 inventory and gate assumptions | Not a proof of a non-bypassable production deployment |
 | Can the claimed computation be reproduced? | OpenPoC-02 bound recipe | Does not establish input completeness or broader policy meaning |
+| Do two supplied snapshots agree at the audit cutoff? | OpenPoC-03 comparison | Declared clocks, identities, and finality; no authentication or global coverage |
 
 The L1–L4 names in [assurance dimensions](assurance-levels.md) are separate
 questions, not a maturity ladder. Authority statements carrying `verified=true`
@@ -156,9 +174,8 @@ alone are not a rerun of those external corpora.
 
 ## Next, not yet an integration guarantee
 
-As of 2026-09-06, [OpenPoC-03 / PR #26](https://github.com/safal207/T-Trace/pull/26)
-is an open draft for bounded cross-source comparison. It is not part of this
-reviewer path's merged baseline. The next integration milestone is one package
+OpenPoC-03 supplies bounded cross-source comparison, not a production capture
+guarantee. The next integration milestone is one package
 checked by another party with explicit inputs, trust assumptions, and audit
 cutoff. Offline archival completeness, current freshness, production capture,
 and independently operated observers are not promised by this document.

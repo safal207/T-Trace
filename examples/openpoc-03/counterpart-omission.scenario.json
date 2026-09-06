@@ -1,4 +1,5 @@
 {
+  "schema": "ttrace.openpoc-cross-source/v1",
   "scenario": "cross-source-counterpart-omission",
   "trace": "counterpart-omission.ttrace.jsonl",
   "comparison": {
@@ -7,7 +8,8 @@
       "receiver": "service-b"
     },
     "window_start": "2026-08-27T10:00:00Z",
-    "audit_cutoff": "2026-08-27T10:02:00Z"
+    "audit_cutoff": "2026-08-27T10:02:00Z",
+    "snapshots_final_at_cutoff": true
   },
   "expected": {
     "trace_valid": true,
@@ -38,6 +40,7 @@
       "scope_kind": "supplied-snapshots-only",
       "window_start": "2026-08-27T10:00:00Z",
       "audit_cutoff": "2026-08-27T10:02:00Z",
+      "snapshots_final_at_cutoff": true,
       "required_sides": {
         "receiver": "service-b",
         "sender": "agent-a"
@@ -49,7 +52,8 @@
     },
     "trust_assumptions": [
       "declared side-to-source bindings are correct",
-      "supplied snapshots are final at the declared audit cutoff",
+      "snapshot finality is caller-declared, not independently authenticated",
+      "record and observation timestamps use the declared comparable clock basis",
       "equal action_digest values identify the same canonical action projection",
       "correlation_id uniquely identifies the same action phase across sources",
       "the declared one-record-per-side cardinality covers retries and fan-out"

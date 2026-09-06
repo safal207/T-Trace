@@ -37,7 +37,7 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 
 **External interoperability:** The recorded Governex review includes a public link to the independent T-Trace/OpenPoC evidence and the draft author's confirmation of planned RFC 7942 Implementation Status credit for `-01`. That historical confirmation is not a claim about publication status today, co-authorship, IETF adoption, or endorsement.
 
-**Start here:** [Reviewer path: run, interpret, and bound the result](docs/reviewer-path.md). It connects the base trace, OpenPoC-01/02, and pinned external receipts without turning one successful check into a broader assurance claim.
+**Start here:** [Reviewer path: run, interpret, and bound the result](docs/reviewer-path.md). It connects the base trace, OpenPoC-01/02/03, and pinned external receipts without turning one successful check into a broader assurance claim.
 <!-- seo-product-intro:end -->
 
 ## Review links
