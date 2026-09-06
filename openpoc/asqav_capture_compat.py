@@ -251,16 +251,17 @@ def _marker_agrees(marker: str, marker_kind: str) -> bool:
     return marker == marker_kind or marker.startswith(f"{marker_kind}(")
 
 
-def verify_vector(root: Path, vector_name: str) -> VectorObservation:
+def verify_vector_documents(
+    vector_name: str,
+    predecessor: dict[str, Any],
+    receipt: dict[str, Any],
+    jwks: dict[str, Any],
+    expected: dict[str, Any],
+) -> VectorObservation:
+    """Check already acquired documents without reopening mutable source files."""
     semantic = SEMANTIC_CONTRACT[vector_name]
 
     try:
-        vector_root = root / vector_name
-        predecessor = _load_object(vector_root / "predecessor.json")
-        receipt = _load_object(vector_root / "receipt.json")
-        jwks = _load_object(vector_root / "jwks.json")
-        expected = _load_object(vector_root / "expected.json")
-
         if expected.get("format") != "asqav-native":
             raise ValueError("expected.json does not declare asqav-native")
         expected_outcome = expected.get("outcome")
@@ -307,6 +308,24 @@ def verify_vector(root: Path, vector_name: str) -> VectorObservation:
             status="unsupported",
             error=str(exc),
         )
+
+
+def verify_vector(root: Path, vector_name: str) -> VectorObservation:
+    try:
+        vector_root = root / vector_name
+        documents = [_load_object(vector_root / name) for name in (
+            "predecessor.json", "receipt.json", "jwks.json", "expected.json",
+        )]
+    except (OSError, ValueError) as exc:
+        semantic = SEMANTIC_CONTRACT[vector_name]
+        return VectorObservation(
+            vector=vector_name, expected_outcome="unknown", local_outcome="unverified",
+            predecessor_signature="unknown", receipt_signature="unknown",
+            chain_link="unknown", marker="unknown",
+            observability=semantic["observability"], claim_ceiling=semantic["claim_ceiling"],
+            ttrace_mapping=semantic["ttrace_mapping"], status="unsupported", error=str(exc),
+        )
+    return verify_vector_documents(vector_name, *documents)
 
 
 def verify_suite(
