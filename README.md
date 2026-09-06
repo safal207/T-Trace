@@ -23,6 +23,9 @@ the claimed outcome was independently reproduced
 
 Use T-Trace/OpenPoC to test stale or replayed evidence, selective omission, recorder bypass, causal ordering, signed receipt interoperability, and unsupported success claims.
 
+For a saved two-party artifact example, see the [handoff guide](docs/artifact-handoff.md)
+and its [standalone Node verifier](docs/artifact-handoff-node.md).
+
 ## Why T-Trace exists
 
 Event logs answer **what was recorded**. T-Trace adds machine-checkable transition semantics and an explicit assurance layer for asking **what the records actually prove**.

@@ -272,6 +272,13 @@ def _iso(milliseconds: int) -> str:
     return instant.isoformat(timespec="milliseconds").replace("+00:00", "Z")
 
 
+def _at_cutoff(context: dict, receipt: dict, details: dict) -> bool:
+    expected = context["expected"]
+    observed = details["observed_at_ms"]
+    return (observed is not None and observed <= expected["audit_cutoff_ms"]
+            and expected["window_start_ms"] <= receipt["ts_ms"] <= expected["audit_cutoff_ms"])
+
+
 def _projection(context: dict, receipts: dict, details: dict) -> dict:
     from openpoc.verify_cross_source import assess_cross_source
 
@@ -282,7 +289,8 @@ def _projection(context: dict, receipts: dict, details: dict) -> dict:
     expected = context["expected"]
     # A wrong correlation/source is a signed claim mismatch, not a different
     # expected handoff to silently compare. Artifact differences remain visible.
-    if any(receipt["params"]["correlation_id"] != expected["correlation_id"] for receipt in receipts.values()):
+    if any(receipt["params"]["correlation_id"] != expected["correlation_id"]
+           and _at_cutoff(context, receipt, details[role]) for role, receipt in receipts.items()):
         result["status"] = "not-evaluable-claim-binding"
         return result
     records = [{"id": receipt["step_id"], "type": "sense", "ts": _iso(receipt["ts_ms"]),
@@ -358,9 +366,10 @@ def verify_artifact_handoff(files: dict[str, bytes], receiver_context: bytes) ->
                          "historical_authority": _historical(context, role, receipt, observed, signature),
                          "current_authority": _current(context, role, receipt, signature)}
     projection = _projection(context, receipts, details)
-    authenticated_mismatch = any(item["claim_binding"] == "mismatch" and
-                                 item["historical_authority"] == "authorized-at-observation"
-                                 for item in details.values())
+    authenticated_mismatch = any(details[role]["claim_binding"] == "mismatch" and
+                                 details[role]["historical_authority"] == "authorized-at-observation" and
+                                 _at_cutoff(context, receipt, details[role])
+                                 for role, receipt in receipts.items())
     if not artifact_match or not manifest_match or authenticated_mismatch:
         handoff = "violated-expected-claim"
     elif projection["status"] == "violated":

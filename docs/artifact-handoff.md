@@ -1,5 +1,9 @@
 # Review a controlled artifact handoff across time
 
+The selected profile also has a [standalone Node implementation](artifact-handoff-node.md)
+with full-report comparison across every frozen corpus case. Python is not
+needed to run that verifier.
+
 This path answers one bounded question: do the authenticated declarations in
 these supplied snapshots support transfer of this expected artifact by the
 cutoff, under the receiver's chosen trust context? It separately reports whether
@@ -101,8 +105,8 @@ prove truthful source behavior or every real-world effect.
 
 ## Frozen decision corpus
 
-The [corpus manifest](../examples/artifact-handoff-v0.1/corpus.json) declares 40
-cases with hand-written expected dimensions or error codes. It contains 11
+The [corpus manifest](../examples/artifact-handoff-v0.1/corpus.json) now declares 59
+cases with hand-written expected dimensions or error codes. It contains 18
 distinct original-byte packages, plus separate contexts. Case IDs cover policy
 and key rotation, expiry/revocation/compromise, missing archives/observations,
 fresh/stale/future status, delayed delivery, inclusive cutoff, nonfinal snapshots,
@@ -118,9 +122,10 @@ derive expected decisions by asking the verifier. Regression tests regenerate
 the corpus and compare every file's bytes. Additional API/CLI tests cover the
 selected type, cardinality, path, signature, time and resource boundaries.
 
-The same complete declared corpus is the input contract for the planned second
-implementation. Agreement by this implementation alone is not that independent
-implementation gate. A public test key never becomes a production trust root.
+The same complete declared corpus is now checked by the separate
+[Node implementation](artifact-handoff-node.md), with full report and typed-error
+comparison. This is implementation diversity, not an external pilot. A public
+test key never becomes a production trust root.
 
 ## Local installation verification (2026-09-06)
 
@@ -136,7 +141,7 @@ core installation gate also retained its seven module and four console results.
 CI repeats the installed-handoff gate on Linux. The build/acquisition stage may
 use the network; the separate recipient installation and verification stage uses
 `--no-index --no-deps` and local wheels. This is an internally operated portability
-check, not the planned independent implementation or external-user gate.
+check, separate from the second-implementation and external-user gates.
 
 ## Disclosure inventory and remaining gates
 
@@ -146,8 +151,8 @@ outcomes. It includes no user production traces, private keys with real authorit
 credentials, user conversations or personal data. Do not substitute real data
 without a new disclosure review and the relevant participant's permission.
 
-Still separate from this internal controlled workflow: a second implementation,
-measured verification budgets, an externally operated pilot with a useful decision,
+The second-implementation evidence has its [own comparison record](artifact-handoff-node.md).
+Still separate from this internal workflow: measured verification budgets, an externally operated pilot with a useful decision,
 a new reviewer's timed setup, and a supported release candidate. These are not
 established by running two processes, passing CI, or merging this implementation.
 Global capture completeness, production non-bypassability and real-world effect

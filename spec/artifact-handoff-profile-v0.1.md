@@ -149,6 +149,14 @@ called a missing receiver. A genuinely absent counterpart is distinguished
 from a present unverified one. Known late/out-of-window receipts are excluded
 by the existing cutoff rules. Equal declared digests are not proof of effects.
 
+Cutoff clarification: an otherwise authenticated but excluded receipt keeps its
+visible signature, claim and authority fields, but its claim mismatch cannot
+establish `violated-expected-claim` at that earlier cutoff. This applies equally
+to wrong digests, correlations and declared failure. Expected artifact/manifest
+binding is still checked separately. Final snapshots with a missing in-scope
+counterpart can violate the supplied-snapshot contract; nonfinal snapshots
+remain insufficient. A receipt exactly at the inclusive cutoff remains in scope.
+
 Results separately expose manifest integrity, expected artifact binding,
 native signature validity, signed claim binding, trusted observation status,
 historical authority, current authority, pairwise snapshot consistency and
