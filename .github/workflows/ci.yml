@@ -19,6 +19,11 @@ jobs:
       - name: Validate canonical example
         run: |
           python scripts/validate_ttrace.py examples/minimal.ttrace.jsonl
+      - name: Verify bounded cross-source snapshots
+        run: |
+          python -m openpoc.verify_cross_source examples/openpoc-03/counterpart-omission.scenario.json
+          python -m openpoc.verify_cross_source examples/openpoc-03/nonfinal-snapshots.scenario.json
+          python -m openpoc.verify_cross_source examples/openpoc-03/delayed-observation.scenario.json
       - name: Verify portable causality example
         run: |
           python scripts/verify_portable_causality.py \

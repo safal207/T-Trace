@@ -1,0 +1,20 @@
+{
+  "schema": "ttrace.openpoc-cross-source/v1",
+  "scenario": "cross-source-delayed-observation",
+  "trace": "delayed-observation.ttrace.jsonl",
+  "comparison": {
+    "required_sides": {"sender": "agent-a", "receiver": "service-b"},
+    "window_start": "2026-08-27T10:00:00Z",
+    "audit_cutoff": "2026-08-27T10:02:00Z",
+    "snapshots_final_at_cutoff": true
+  },
+  "expected": {
+    "trace_valid": true,
+    "pairwise_consistency_status": "violated",
+    "matched_in_supplied_snapshots": ["comm-1"],
+    "missing_counterparts": [{"correlation_id": "comm-2", "counterpart_status": "missing", "observed_sides": ["sender"], "missing_sides": ["receiver"]}],
+    "out_of_scope_records": [{"id": "comm-2-receiver", "correlation_id": "comm-2", "source_id": "service-b", "side": "receiver", "ts": "2026-08-27T10:01:01Z", "observed_at": "2026-08-27T10:03:00Z", "reason": "observed-after-audit-cutoff"}],
+    "global_completeness_status": "unproven",
+    "attribution": "undetermined"
+  }
+}

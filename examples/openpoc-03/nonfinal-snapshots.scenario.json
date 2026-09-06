@@ -1,0 +1,19 @@
+{
+  "schema": "ttrace.openpoc-cross-source/v1",
+  "scenario": "cross-source-nonfinal-snapshots",
+  "trace": "counterpart-omission.ttrace.jsonl",
+  "comparison": {
+    "required_sides": {"sender": "agent-a", "receiver": "service-b"},
+    "window_start": "2026-08-27T10:00:00Z",
+    "audit_cutoff": "2026-08-27T10:02:00Z",
+    "snapshots_final_at_cutoff": false
+  },
+  "expected": {
+    "trace_valid": true,
+    "pairwise_consistency_status": "insufficient-snapshot-finality",
+    "matched_in_supplied_snapshots": ["comm-1"],
+    "missing_counterparts": [{"correlation_id": "comm-2", "counterpart_status": "pending-finality", "observed_sides": ["sender"], "missing_sides": ["receiver"]}],
+    "global_completeness_status": "unproven",
+    "attribution": "undetermined"
+  }
+}

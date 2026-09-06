@@ -37,12 +37,13 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 
 **External interoperability:** The recorded Governex review includes a public link to the independent T-Trace/OpenPoC evidence and the draft author's confirmation of planned RFC 7942 Implementation Status credit for `-01`. That historical confirmation is not a claim about publication status today, co-authorship, IETF adoption, or endorsement.
 
-**Start here:** [Reviewer path: run, interpret, and bound the result](docs/reviewer-path.md). It connects the base trace, OpenPoC-01/02, and pinned external receipts without turning one successful check into a broader assurance claim.
+**Start here:** [Reviewer path: run, interpret, and bound the result](docs/reviewer-path.md). It connects the base trace, OpenPoC-01/02/03, and pinned external receipts without turning one successful check into a broader assurance claim.
 <!-- seo-product-intro:end -->
 
 ## Review links
 
 - Reviewer path and claim map: [docs/reviewer-path.md](docs/reviewer-path.md)
+- OpenPoC-03 cross-source correlation: [docs/openpoc-03-cross-source-correlation.md](docs/openpoc-03-cross-source-correlation.md)
 - Grant evidence: [docs/GRANT_EVIDENCE.md](docs/GRANT_EVIDENCE.md)
 - Protocol spec: [spec/t-trace.md](spec/t-trace.md)
 - Causal Execution Graph profile: [spec/causal-execution-graph-v0.1.md](spec/causal-execution-graph-v0.1.md)
@@ -57,6 +58,7 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 - Assurance dimensions: [docs/assurance-levels.md](docs/assurance-levels.md)
 - OpenPoC-01 selective omission: [docs/openpoc-01-selective-omission.md](docs/openpoc-01-selective-omission.md)
 - OpenPoC-02 independent reproducibility: [docs/openpoc-02-independent-reproducibility.md](docs/openpoc-02-independent-reproducibility.md)
+- OpenPoC-03 cross-source correlation: [docs/openpoc-03-cross-source-correlation.md](docs/openpoc-03-cross-source-correlation.md)
 - Liminal research provenance: [docs/liminal-research-provenance.md](docs/liminal-research-provenance.md)
 - Governex `-00` action-receipt compatibility: [docs/governex-action-receipts-compatibility.md](docs/governex-action-receipts-compatibility.md)
 - Governex `-01` action-receipt compatibility: [docs/governex-action-receipts-v01-compatibility.md](docs/governex-action-receipts-v01-compatibility.md)
@@ -89,6 +91,15 @@ input while independently failing the capture-completeness claim.
 ```bash
 python -m openpoc.verify_reproducibility \
   examples/openpoc-02/incomplete-but-reproducible.scenario.json
+```
+
+[OpenPoC-03](docs/openpoc-03-cross-source-correlation.md) correlates two
+supplied source snapshots. It can falsify their declared pairwise counterpart
+contract while keeping global completeness and mismatch attribution unproven.
+
+```bash
+python -m openpoc.verify_cross_source \
+  examples/openpoc-03/counterpart-omission.scenario.json
 ```
 
 ### Signed action-receipt interoperability
