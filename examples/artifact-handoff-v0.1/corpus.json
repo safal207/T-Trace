@@ -1,0 +1,400 @@
+{
+  "cases": [
+    {
+      "context": "contexts/matching.json",
+      "expected": {
+        "cross_source.status": "consistent-in-supplied-snapshots",
+        "handoff_at_cutoff": "supported-under-receiver-context",
+        "receipts.sender.current_authority": "authorized-for-current-policy",
+        "receipts.sender.historical_authority": "authorized-at-observation"
+      },
+      "expected_error_code": null,
+      "id": "matching",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/policy-key-rotation.json",
+      "expected": {
+        "handoff_at_cutoff": "supported-under-receiver-context",
+        "receipts.sender.current_authority": "not-authorized-current-policy",
+        "receipts.sender.historical_authority": "authorized-at-observation"
+      },
+      "expected_error_code": null,
+      "id": "policy-key-rotation",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/policy-epoch-rotation-same-key.json",
+      "expected": {
+        "handoff_at_cutoff": "supported-under-receiver-context",
+        "receipts.receiver.current_authority": "not-authorized-current-policy"
+      },
+      "expected_error_code": null,
+      "id": "policy-epoch-rotation-same-key",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/revoked-at-observation.json",
+      "expected": {
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.sender.current_authority": "not-authorized-key-event",
+        "receipts.sender.historical_authority": "not-authorized-revoked"
+      },
+      "expected_error_code": null,
+      "id": "revoked-at-observation",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/revoked-after-observation.json",
+      "expected": {
+        "handoff_at_cutoff": "supported-under-receiver-context",
+        "receipts.sender.current_authority": "not-authorized-key-event",
+        "receipts.sender.historical_authority": "authorized-at-observation"
+      },
+      "expected_error_code": null,
+      "id": "revoked-after-observation",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/compromised-at-observation.json",
+      "expected": {
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.sender.current_authority": "not-authorized-key-event",
+        "receipts.sender.historical_authority": "indeterminate-after-compromise"
+      },
+      "expected_error_code": null,
+      "id": "compromised-at-observation",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/compromised-after-observation.json",
+      "expected": {
+        "handoff_at_cutoff": "supported-under-receiver-context",
+        "receipts.sender.current_authority": "not-authorized-key-event",
+        "receipts.sender.historical_authority": "authorized-at-observation"
+      },
+      "expected_error_code": null,
+      "id": "compromised-after-observation",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/key-expired-at-observation.json",
+      "expected": {
+        "receipts.sender.current_authority": "not-authorized-at-evaluation",
+        "receipts.sender.historical_authority": "not-authorized-at-observation"
+      },
+      "expected_error_code": null,
+      "id": "key-expired-at-observation",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/key-expired-after-observation.json",
+      "expected": {
+        "receipts.sender.current_authority": "not-authorized-at-evaluation",
+        "receipts.sender.historical_authority": "authorized-at-observation"
+      },
+      "expected_error_code": null,
+      "id": "key-expired-after-observation",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/policy-expired-now.json",
+      "expected": {
+        "handoff_at_cutoff": "supported-under-receiver-context",
+        "receipts.receiver.current_authority": "not-authorized-at-evaluation"
+      },
+      "expected_error_code": null,
+      "id": "policy-expired-now",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/missing-archive.json",
+      "expected": {
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.sender.current_authority": "authorized-for-current-policy",
+        "receipts.sender.historical_authority": "insufficient-policy-archive"
+      },
+      "expected_error_code": null,
+      "id": "missing-archive",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/missing-observation.json",
+      "expected": {
+        "cross_source.missing_sides": [],
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.receiver.historical_authority": "insufficient-trusted-observation"
+      },
+      "expected_error_code": null,
+      "id": "missing-observation",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/missing-current-policy.json",
+      "expected": {
+        "handoff_at_cutoff": "supported-under-receiver-context",
+        "receipts.sender.current_authority": "insufficient-fresh-current-policy"
+      },
+      "expected_error_code": null,
+      "id": "missing-current-policy",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/stale-current-policy.json",
+      "expected": {
+        "handoff_at_cutoff": "supported-under-receiver-context",
+        "receipts.sender.current_authority": "insufficient-fresh-current-policy"
+      },
+      "expected_error_code": null,
+      "id": "stale-current-policy",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/future-current-policy.json",
+      "expected": {
+        "handoff_at_cutoff": "supported-under-receiver-context",
+        "receipts.sender.current_authority": "insufficient-fresh-current-policy"
+      },
+      "expected_error_code": null,
+      "id": "future-current-policy",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/missing-key-status.json",
+      "expected": {
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.sender.current_authority": "insufficient-fresh-key-status"
+      },
+      "expected_error_code": null,
+      "id": "missing-key-status",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/stale-key-status.json",
+      "expected": {
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.sender.current_authority": "insufficient-fresh-key-status"
+      },
+      "expected_error_code": null,
+      "id": "stale-key-status",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/future-key-status.json",
+      "expected": {
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.sender.current_authority": "insufficient-fresh-key-status"
+      },
+      "expected_error_code": null,
+      "id": "future-key-status",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/missing-receiver-final.json",
+      "expected": {
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "handoff_at_cutoff": "violated-supplied-snapshot-contract"
+      },
+      "expected_error_code": null,
+      "id": "missing-receiver-final",
+      "package": "packages/p002"
+    },
+    {
+      "context": "contexts/missing-receiver-nonfinal.json",
+      "expected": {
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "handoff_at_cutoff": "insufficient-evidence"
+      },
+      "expected_error_code": null,
+      "id": "missing-receiver-nonfinal",
+      "package": "packages/p002"
+    },
+    {
+      "context": "contexts/matching-nonfinal.json",
+      "expected": {
+        "cross_source.status": "insufficient-snapshot-finality",
+        "handoff_at_cutoff": "insufficient-evidence"
+      },
+      "expected_error_code": null,
+      "id": "matching-nonfinal",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/late-receiver.json",
+      "expected": {
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "handoff_at_cutoff": "violated-supplied-snapshot-contract",
+        "receipts.receiver.historical_authority": "authorized-at-observation"
+      },
+      "expected_error_code": null,
+      "id": "late-receiver",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/receiver-at-cutoff.json",
+      "expected": {
+        "handoff_at_cutoff": "supported-under-receiver-context"
+      },
+      "expected_error_code": null,
+      "id": "receiver-at-cutoff",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/clock-contradiction.json",
+      "expected": {
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.sender.historical_authority": "contradictory-observation-time"
+      },
+      "expected_error_code": null,
+      "id": "clock-contradiction",
+      "package": "packages/p003"
+    },
+    {
+      "context": "contexts/before-window.json",
+      "expected": {
+        "cross_source.excluded_sides": [
+          "sender"
+        ],
+        "handoff_at_cutoff": "violated-supplied-snapshot-contract"
+      },
+      "expected_error_code": null,
+      "id": "before-window",
+      "package": "packages/p004"
+    },
+    {
+      "context": "contexts/signed-conflict.json",
+      "expected": {
+        "cross_source.conflicting_digests": true,
+        "handoff_at_cutoff": "violated-expected-claim",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "signed-conflict",
+      "package": "packages/p005"
+    },
+    {
+      "context": "contexts/unsigned-conflict.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.receiver.signature": "invalid"
+      },
+      "expected_error_code": null,
+      "id": "unsigned-conflict",
+      "package": "packages/p006"
+    },
+    {
+      "context": "contexts/wrong-correlation.json",
+      "expected": {
+        "cross_source.status": "not-evaluable-claim-binding",
+        "handoff_at_cutoff": "violated-expected-claim"
+      },
+      "expected_error_code": null,
+      "id": "wrong-correlation",
+      "package": "packages/p007"
+    },
+    {
+      "context": "contexts/declared-failure.json",
+      "expected": {
+        "handoff_at_cutoff": "violated-expected-claim",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "declared-failure",
+      "package": "packages/p008"
+    },
+    {
+      "context": "contexts/untrusted-key.json",
+      "expected": {
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.sender.historical_authority": "not-authorized-role-binding",
+        "receipts.sender.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "untrusted-key",
+      "package": "packages/p009"
+    },
+    {
+      "context": "contexts/wrong-expected-artifact.json",
+      "expected": {
+        "expected_artifact_binding": "mismatch",
+        "handoff_at_cutoff": "violated-expected-claim"
+      },
+      "expected_error_code": null,
+      "id": "wrong-expected-artifact",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/bool-epoch.json",
+      "expected": {},
+      "expected_error_code": "invalid-integer",
+      "id": "bool-epoch",
+      "package": "packages/p010"
+    },
+    {
+      "context": "contexts/bool-finality.json",
+      "expected": {},
+      "expected_error_code": "invalid-boolean",
+      "id": "bool-finality",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/policy-epoch-conflict.json",
+      "expected": {},
+      "expected_error_code": "policy-epoch-conflict",
+      "id": "policy-epoch-conflict",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/duplicate-json-key.json",
+      "expected": {},
+      "expected_error_code": "duplicate-json-key",
+      "id": "duplicate-json-key",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/exponent-number.json",
+      "expected": {},
+      "expected_error_code": "invalid-number",
+      "id": "exponent-number",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/nonfinite-number.json",
+      "expected": {},
+      "expected_error_code": "invalid-number",
+      "id": "nonfinite-number",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/unsafe-integer.json",
+      "expected": {},
+      "expected_error_code": "invalid-integer",
+      "id": "unsafe-integer",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/unknown-context-version.json",
+      "expected": {},
+      "expected_error_code": "unsupported-schema",
+      "id": "unknown-context-version",
+      "package": "packages/p001"
+    },
+    {
+      "context": "contexts/raw-artifact-drift.json",
+      "expected": {},
+      "expected_error_code": "integrity-mismatch",
+      "id": "raw-artifact-drift",
+      "package": "packages/p011"
+    }
+  ],
+  "keys": "public-test-keys-only",
+  "schema": "ttrace.artifact-handoff-corpus/v1",
+  "time_basis": "synthetic-fixture"
+}

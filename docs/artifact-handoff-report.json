@@ -1,0 +1,53 @@
+{
+  "audit_cutoff_ms": 1788694202000,
+  "cross_source": {
+    "conflicting_digests": false,
+    "excluded_sides": [],
+    "matched_correlations": [
+      "controlled-handoff-001"
+    ],
+    "missing_sides": [],
+    "status": "consistent-in-supplied-snapshots"
+  },
+  "evaluation_time_ms": 1788694204000,
+  "expected_artifact_binding": "match",
+  "expected_correlation_binding": "match",
+  "global_capture_completeness": "unproven",
+  "handoff_at_cutoff": "supported-under-receiver-context",
+  "historical_time_basis": "authority at accepted observation, not independently proved execution/signing time",
+  "non_claims": [
+    "real-world effect truth",
+    "production non-bypassability",
+    "automatic authority from bundled keys",
+    "permission to execute a new action",
+    "external pilot or independent organizations"
+  ],
+  "package_manifest_sha256": "377066ece738ca2775663a37978d648a87c399964d89dfe690dc9174f45e117f",
+  "profile": "ttrace.artifact-handoff/v1",
+  "receipts": {
+    "receiver": {
+      "claim_binding": "matches-expected-handoff",
+      "current_authority": "authorized-for-current-policy",
+      "historical_authority": "authorized-at-observation",
+      "observed_at_ms": 1788694201300,
+      "present": true,
+      "receipt_sha256": "fb0f16f4d5b8ac8098fba6ee7f31c327b6d3e960ec51a2a33439a1fd8663738d",
+      "signature": "valid",
+      "time_binding": "observed-by-cutoff"
+    },
+    "sender": {
+      "claim_binding": "matches-expected-handoff",
+      "current_authority": "authorized-for-current-policy",
+      "historical_authority": "authorized-at-observation",
+      "observed_at_ms": 1788694200300,
+      "present": true,
+      "receipt_sha256": "1c9aa75b6951bd9424fb4a76132660946705782c30fe96816e574c32dc81248b",
+      "signature": "valid",
+      "time_binding": "observed-by-cutoff"
+    }
+  },
+  "receiver_context_sha256": "2de8aebacc8d2b28d5e0f50032d6eb3bd6ded106c7d40eb95163e40e20430840",
+  "schema": "ttrace.artifact-handoff-report/v1",
+  "transport_integrity": "matches-declared-manifest",
+  "trust_basis": "receiver independently accepts policy archives, status completeness, observations and finality"
+}

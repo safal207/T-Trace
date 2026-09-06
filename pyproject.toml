@@ -19,6 +19,7 @@ ttrace-validate = "ttrace.validation:main"
 ttrace-assurance = "openpoc.verify_assurance:main"
 ttrace-reproducibility = "openpoc.verify_reproducibility:main"
 ttrace-cross-source = "openpoc.verify_cross_source:main"
+ttrace-handoff = "openpoc.verify_artifact_handoff:main"
 
 [project.optional-dependencies]
 receipts = ["cryptography>=43.0"]

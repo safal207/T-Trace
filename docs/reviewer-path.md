@@ -4,6 +4,10 @@ This is the entry point for reviewing the implemented T-Trace/OpenPoC path.
 The goal is to check a stated claim from supplied evidence, not to inherit a
 producer's unconditional `verified` label.
 
+For the controlled sender → receiver → later reviewer workflow, start with
+the [artifact-handoff guide](artifact-handoff.md). It preserves original signed
+bytes and separates historical authority from current policy and freshness.
+
 ## 1. Prepare the checkout
 
 From the repository root, record the revision and install the development
