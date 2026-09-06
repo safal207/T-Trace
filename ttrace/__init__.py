@@ -1,5 +1,6 @@
 """Reference helpers for optional T-Trace profiles."""
 
+from .artifact_handoff import HandoffValidationError, verify_artifact_handoff
 from .lineage_compaction import (
     LINEAGE_ACCUMULATOR_SCHEMA,
     LINEAGE_COMPACTION_REASON,
@@ -167,6 +168,8 @@ from .portable_causality import (
 )
 
 __all__ = [
+    "HandoffValidationError",
+    "verify_artifact_handoff",
     "AuthorizedLineageConsistencyDecision",
     "AuthorizedWitnessPolicyHandoffChainMembershipRootConsistencyDecision",
     "BranchEvidence",

@@ -1,0 +1,19 @@
+{
+  "correlation_id": "controlled-handoff-001",
+  "files": {
+    "artifact.bin": {
+      "bytes": 75,
+      "sha256": "1f722dc1e85f074cb3800ed3b99fd1419b622cd12738685262bdf4046b718678"
+    },
+    "receiver.jsonl": {
+      "bytes": 591,
+      "sha256": "819761ae71dcc05eee358a2d5c49bb33302e38a56e8bd136af8ec1425ab6f7a8"
+    },
+    "sender.jsonl": {
+      "bytes": 582,
+      "sha256": "1c9aa75b6951bd9424fb4a76132660946705782c30fe96816e574c32dc81248b"
+    }
+  },
+  "profile": "ttrace.artifact-handoff/v1",
+  "schema": "ttrace.artifact-handoff-package/v1"
+}

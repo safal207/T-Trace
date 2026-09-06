@@ -51,7 +51,7 @@ The gate creates a fresh temporary environment, installs only the supplied
 wheel with `--no-index --no-deps`, and copies fixture inputs outside the source
 checkout. It removes inherited Python path overrides, verifies imported module
 locations, runs seven isolated module commands (`python -I`), and exercises
-all four installed console entry points. It checks actual JSON verdict fields,
+all four installed core console entry points. It checks actual JSON verdict fields,
 including violated and insufficient outcomes, not just successful exit codes.
 Temporary environment and fixture copies are removed on completion.
 
@@ -63,3 +63,10 @@ This is an installation/packaging check, not an independently operated review,
 an authenticated portable proof, a freshness mechanism, or a production
 capture-completeness claim. See the [reviewer path](reviewer-path.md) for
 interpreting the fixture results.
+
+The optional `ttrace-handoff` command additionally needs receipt dependencies.
+Its separate gate, `scripts/verify_installed_handoff.py`, takes a built wheel
+and a directory of already acquired dependency wheels. It installs with no
+index/dependency resolution, checks dependency consistency, runs the complete
+frozen handoff corpus with `python -I` outside the checkout, and compares the
+console/module outputs plus a human report. See the [handoff guide](artifact-handoff.md).

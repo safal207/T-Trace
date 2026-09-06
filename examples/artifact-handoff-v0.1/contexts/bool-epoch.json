@@ -1,0 +1,73 @@
+{
+  "current_policy": {
+    "as_of_ms": 1788694203000,
+    "epoch": 1,
+    "next_update_ms": 1788694300000,
+    "roles": {
+      "receiver": {
+        "not_after_ms": 1788694300000,
+        "not_before_ms": 1788694200000,
+        "public_key": "5e212c0980e4b39fc09721134aa02109374edfd260c0d3d03cb501c8d65457a9",
+        "source_id": "receiver-demo"
+      },
+      "sender": {
+        "not_after_ms": 1788694300000,
+        "not_before_ms": 1788694200000,
+        "public_key": "48075a597e721a156e2e0799de5cc0c5324dc6e7eaf1cdd46250868ec53215dd",
+        "source_id": "sender-demo"
+      }
+    },
+    "valid_from_ms": 1788694200000,
+    "valid_until_ms": 1788694300000
+  },
+  "evaluation_time_ms": 1788694204000,
+  "expected": {
+    "artifact_bytes": 75,
+    "artifact_sha256": "1f722dc1e85f074cb3800ed3b99fd1419b622cd12738685262bdf4046b718678",
+    "audit_cutoff_ms": 1788694202000,
+    "correlation_id": "controlled-handoff-001",
+    "roles": {
+      "receiver": "receiver-demo",
+      "sender": "sender-demo"
+    },
+    "snapshots_final_at_cutoff": true,
+    "window_start_ms": 1788694200000
+  },
+  "historical_policies": [
+    {
+      "epoch": 1,
+      "roles": {
+        "receiver": {
+          "not_after_ms": 1788694300000,
+          "not_before_ms": 1788694200000,
+          "public_key": "5e212c0980e4b39fc09721134aa02109374edfd260c0d3d03cb501c8d65457a9",
+          "source_id": "receiver-demo"
+        },
+        "sender": {
+          "not_after_ms": 1788694300000,
+          "not_before_ms": 1788694200000,
+          "public_key": "48075a597e721a156e2e0799de5cc0c5324dc6e7eaf1cdd46250868ec53215dd",
+          "source_id": "sender-demo"
+        }
+      },
+      "valid_from_ms": 1788694200000,
+      "valid_until_ms": 1788694300000
+    }
+  ],
+  "key_status": {
+    "as_of_ms": 1788694203000,
+    "events": [],
+    "next_update_ms": 1788694300000
+  },
+  "observations": [
+    {
+      "observed_at_ms": 1788694200300,
+      "receipt_sha256": "84cb7954d98c778d0823e60f5930163006b3b373de1dd18c1aa834d2e6e8cf2c"
+    },
+    {
+      "observed_at_ms": 1788694201300,
+      "receipt_sha256": "fb0f16f4d5b8ac8098fba6ee7f31c327b6d3e960ec51a2a33439a1fd8663738d"
+    }
+  ],
+  "schema": "ttrace.handoff-receiver-context/v1"
+}

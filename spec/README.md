@@ -4,6 +4,7 @@ This directory contains the normative and draft protocol specifications for T-Tr
 
 ## Specifications
 
+- [`artifact-handoff-profile-v0.1.md`](artifact-handoff-profile-v0.1.md) — selected controlled artifact handoff using existing -01 receipt signatures, separate receiver context, historical/current authority, and OpenPoC-03 snapshot comparison.
 - [`t-trace.md`](t-trace.md) — T-Trace v0.1 base specification for append-only acknowledged state transitions.
 - [`causal-execution-graph-v0.1.md`](causal-execution-graph-v0.1.md) — draft distributed execution profile for causal ordering, retries, re-resolution, fork/merge, recovery, and portable verification.
 - [`portable-causality-profile-v0.1.md`](portable-causality-profile-v0.1.md) — draft canonical identity profile for semantic state, transitions, genuine forks, and explicit two-parent reconciliation.
@@ -17,6 +18,10 @@ This directory contains the normative and draft protocol specifications for T-Tr
 - [`witness-policy-handoff-chain-membership-root-consistency-profile-v0.1.md`](witness-policy-handoff-chain-membership-root-consistency-profile-v0.1.md) — draft compact append-only consistency proof between two handoff-membership roots with separate authority continuity and bounded presented-view equivocation evidence.
 
 ## Layering
+
+The artifact-handoff profile is a bounded application path, not an additional
+witness/lineage level. It does not inherit the full-history builders' guarantees
+or authenticate externally selected policy archives by merely carrying them.
 
 ```text
 T-Trace v0.1 record envelope
