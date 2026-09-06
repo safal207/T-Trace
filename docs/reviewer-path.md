@@ -18,6 +18,10 @@ The package declares Python 3.9 or later; the current CI uses Python 3.11.
 Keep the actual Python version and dependency versions with your result. A
 successful run on one environment is not a check of every supported runtime.
 
+For a non-editable wheel installation, use the [installed verifier
+guide](installed-verifiers.md). Its isolated packaging gate runs outside the
+checkout; the following examples assume you also have the fixture inputs.
+
 Installation and fetching external fixtures require network access. The local
 examples below use committed fixture data after installation; they do not
 execute real external actions.
