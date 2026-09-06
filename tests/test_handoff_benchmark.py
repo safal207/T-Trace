@@ -165,3 +165,14 @@ def test_missing_node_does_not_silently_skip_or_create_a_result(tmp_path):
     with pytest.raises(RuntimeError, match="Node is required"):
         run_benchmark(output, "not-a-real-ttrace-node-executable")
     assert not output.exists()
+
+
+def test_committed_baseline_reproduces_sources_inputs_statistics_and_human_report():
+    root = ROOT / "docs/benchmarks/artifact-handoff-v0.1/windows"
+    report = json.loads((root / "report.json").read_bytes())
+    assert report["mode"] == "baseline"
+    validate_report(report, check_sources=True)
+    assert len(report["runs"]) == 12
+    assert sum(len(run["worker"]["samples_ns"]) for run in report["runs"]) == 360
+    assert sum(len(run["fresh_cli_samples_ns"]) for run in report["runs"]) == 60
+    assert render_markdown(report) == (root / "report.md").read_text(encoding="utf-8")

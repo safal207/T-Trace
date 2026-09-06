@@ -8,6 +8,16 @@ gates still test portability; installation/download cost is excluded here.
 
 ## Run
 
+The recorded Windows baseline is available as a
+[human report](benchmarks/artifact-handoff-v0.1/windows/report.md) and
+[machine record with every sample](benchmarks/artifact-handoff-v0.1/windows/report.json).
+It uses Python 3.12.14, Node 24.19.0 and cryptography 46.0.4, with two full
+rounds on source commit `fb1868108748584ded59e826a5d993029fa3403e`.
+The measured-source inventory is
+`09d6fb2af50577359dfe21867f280715061503df828d4d425927040fbe9eeb30`.
+The committed record can be checked with the validator below; fixture bytes
+are reproducibly regenerated and their identities compared, not assumed.
+
 From the selected source checkout, use the tested Python/Node runtime and pinned
 receipt dependencies from the [second-implementation guide](artifact-handoff-node.md).
 Use a new output directory; an existing directory is rejected, not overwritten.
@@ -25,6 +35,9 @@ The 64 KiB and 1 MiB artifacts are the byte sequence 0..255 repeated exactly;
 each has freshly generated deterministic public-test-key signatures and the
 fixed synthetic context. All inputs are harmless public benchmark data.
 These generated signing fixtures are not a claim of three real deployments.
+Only artifact size varies here: receipt count, policy archive shape and key
+status remain the controlled example's fixed values. The 1 MiB case is not a
+claim of worst-case performance over every admitted context or malformed input.
 
 Before timing, the two implementations must reproduce the same **complete**
 report and a supported-under-receiver-context outcome with both native signatures

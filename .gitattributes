@@ -7,3 +7,5 @@ docs/artifact-handoff-implementation-comparison.json text eol=lf
 scripts/benchmark_artifact_handoff.py text eol=lf
 scripts/benchmark_handoff_worker.py text eol=lf
 scripts/handoff_benchmark_support.py text eol=lf
+docs/benchmarks/artifact-handoff-v0.1/windows/*.json text eol=lf
+docs/benchmarks/artifact-handoff-v0.1/windows/*.md text eol=lf
