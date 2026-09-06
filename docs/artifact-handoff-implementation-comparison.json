@@ -1,0 +1,218 @@
+{
+  "agree_count": 40,
+  "case_count": 40,
+  "cases": [
+    {
+      "full_report_sha256": "a94ff4a5cd0164d7402ab637cbfdcd87d1cfc2b736b318f4149343eff600a2be",
+      "id": "matching",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "5b9a5e0867ef21fbd8ce38c121886c2c2b848cb5c9c65ef9c2f1cb78aba3fb63",
+      "id": "policy-key-rotation",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "013927ccff85d6c11b6b6906a0fdfe37bf45e8bd164e42874ee2460f40e1784d",
+      "id": "policy-epoch-rotation-same-key",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "4c823527f0f2e8a71ddfeafde2f61bc86936d70358966a1ffb879ec1aaa170de",
+      "id": "revoked-at-observation",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "f6dc7036c19638ceb2b1b2b09d377bdf84007857580adf3b3b301abef378defa",
+      "id": "revoked-after-observation",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "b48ef054a290eae332398fd3eb04d770dcc28cf9a08e4305b9b3b21c67e4e11f",
+      "id": "compromised-at-observation",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "3eb85e34d19583d6542e830d1a5e2989c190d6308332c121330691d0c2695e97",
+      "id": "compromised-after-observation",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "101866a4c2de753d6123dea59defd7fcbcc22dd822509e6216fac7fe4fe37000",
+      "id": "key-expired-at-observation",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "73cbfa625730a5e7d90512443dac769111c78503b6705e861a1216a12dff4714",
+      "id": "key-expired-after-observation",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "478aeb73dfa224bba35b163385bce215377edc41ba808ebb0816752d69b82951",
+      "id": "policy-expired-now",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "4f67a4172e5fb94826ede7c2beceb5eb316c7980eca3bb8aa2513911aeeaa218",
+      "id": "missing-archive",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "69696f879d8854ec0c4e3416064d099c2c94454b5bfddbd751b8487972d84b10",
+      "id": "missing-observation",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "dd8ba6c80b6954da5d40b8862a415d31522fe22dd729a5babe37e1c37853e855",
+      "id": "missing-current-policy",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "7db278dd1244efb1d0b15f5173e5334521bdc296b2a978b66e55a5dd11305e04",
+      "id": "stale-current-policy",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "d9555dd34bc00eca7a66e2c0c94981dc0412e75da5b06e1ba51c3a36816014aa",
+      "id": "future-current-policy",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "523e6ddf50385bffa494692839900d5b6b5a92a45faae19b9c836d3b1871d932",
+      "id": "missing-key-status",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "2b9b9f5fe4a602f764283fec0abe4a86081a46de8f8cb3e7120890f7e95cd7ad",
+      "id": "stale-key-status",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "0b8595de5e4ce8e2d535d6720559e8ff1491f7e1a4899282408bcbd35c174528",
+      "id": "future-key-status",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "8de6d274af936dc50075f2d94a9345e453bc253f3f7e0d961da33577d99e8cf7",
+      "id": "missing-receiver-final",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "63ce286d74d92b09b976cd4062b4bc592bdd4eb53a52dc891144a66d0cb8a0dd",
+      "id": "missing-receiver-nonfinal",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "92ebd37a417e1f4ec1c00b04e3239da843cd4619818cf193ecf0cd3d52723c03",
+      "id": "matching-nonfinal",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "87f86a2177f640d35057aefaa380f903c3ec0eabcc025831ad456a0465fce66f",
+      "id": "late-receiver",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "9e9010a07234ee456a724922fe69ed605ef9b9a275934c7e50328ca3fe08aac0",
+      "id": "receiver-at-cutoff",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "d25aae11d3d736aeaed616de3997f7b24ef6b78bc209d6bac95b38223006a8ae",
+      "id": "clock-contradiction",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "b9f1ab196fee32c9daea2f59933c9873836f71a7be99cdcb9c9f92e3a2e520bb",
+      "id": "before-window",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "c2b2647b7d18679f2f1b43e654ea367da000a123b45e451edb994656d0002198",
+      "id": "signed-conflict",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "63743b50bf640984db2c81977b98cac86965dbe888200dc8bfc196828f90a484",
+      "id": "unsigned-conflict",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "cf702c768f3b3bdb03e60234ca5ce5d2af81d573abcfef55f818f62f1ac05b3c",
+      "id": "wrong-correlation",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "1d0d7acf6fd61291daabadc4e6345fb0c62df48feace40786884ad7259683c71",
+      "id": "declared-failure",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "c752c264eeb1fccdd017a292bffa0add1f5c175da69baf13487d8a2cd6ca0ce0",
+      "id": "untrusted-key",
+      "status": "agree"
+    },
+    {
+      "full_report_sha256": "835c6aa00d8eed7857bd4e48783eb4715853a56ad13fc2e12b07b7ef1e3c72c4",
+      "id": "wrong-expected-artifact",
+      "status": "agree"
+    },
+    {
+      "error_code": "invalid-integer",
+      "id": "bool-epoch",
+      "status": "agree"
+    },
+    {
+      "error_code": "invalid-boolean",
+      "id": "bool-finality",
+      "status": "agree"
+    },
+    {
+      "error_code": "policy-epoch-conflict",
+      "id": "policy-epoch-conflict",
+      "status": "agree"
+    },
+    {
+      "error_code": "duplicate-json-key",
+      "id": "duplicate-json-key",
+      "status": "agree"
+    },
+    {
+      "error_code": "invalid-number",
+      "id": "exponent-number",
+      "status": "agree"
+    },
+    {
+      "error_code": "invalid-number",
+      "id": "nonfinite-number",
+      "status": "agree"
+    },
+    {
+      "error_code": "invalid-integer",
+      "id": "unsafe-integer",
+      "status": "agree"
+    },
+    {
+      "error_code": "unsupported-schema",
+      "id": "unknown-context-version",
+      "status": "agree"
+    },
+    {
+      "error_code": "integrity-mismatch",
+      "id": "raw-artifact-drift",
+      "status": "agree"
+    }
+  ],
+  "corpus_sha256": "0a587a0ee28fb1fb830e809eb17ed772f1a5b8318a80372e180bdcc45e9f2f8e",
+  "full_report_comparison": true,
+  "isolated_node_corpus": true,
+  "node_reads_restricted_to_copied_inputs": true,
+  "node_subprocess_permission": false,
+  "node_verifier_sha256": "5bfc696859ff86d6abc65edf273feba1c7701f1b3a32d244dd4edc75bfd6b00e",
+  "node_version": "v24.19.0",
+  "non_claim": "separate implementation; not independent organizations, a separate cryptographic backend, or an external pilot",
+  "platform": "Windows",
+  "profile": "ttrace.artifact-handoff/v1",
+  "python_version": "3.12.14",
+  "schema": "ttrace.handoff-implementation-comparison/v1"
+}
