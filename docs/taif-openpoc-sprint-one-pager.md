@@ -5,6 +5,12 @@
 **Proposed duration:** 8 weeks  
 **Funding request:** **USD 20,000**
 
+**Draft status, refreshed 2026-09-06:** the amount and eight-week duration
+remain proposal parameters, not a funded commitment. The application route
+and funding availability have not been revalidated. See the [reviewer
+path](reviewer-path.md) for the implemented baseline; new work must extend,
+not re-count, existing OpenPoC-02 and interoperability results.
+
 ## Problem
 
 Agent evaluations, monitoring systems, approval layers, and incident reviews often treat a valid audit trail as evidence that the trail is a complete account of execution. That inference is unsafe.
@@ -54,7 +60,7 @@ T-Trace/OpenPoC now preserves two separately pinned, independently implemented G
 Pinned upstream commit: `65836f4e1ecb96ff22e8b4ab6a7c086532ce564c`  
 Evidence: [`-00` compatibility report](governex-action-receipts-compatibility.md)
 
-**Forthcoming `-01` vector profile — [PR #23](https://github.com/safal207/T-Trace/pull/23):**
+**Pinned `-01` vector profile — [PR #23](https://github.com/safal207/T-Trace/pull/23):**
 
 ```text
 18/18 AGREE
@@ -70,17 +76,29 @@ This covers 16 receipt-log vectors and 2 signed-head checks at upstream commit `
 
 Evidence: [`-01` compatibility report](governex-action-receipts-v01-compatibility.md) · [capture-side review](governex-action-receipts-v01-capture-review.md)
 
-Current verification evidence:
+The repository contains focused regressions and pinned report-regeneration
+workflows. Check the full suite, interoperability jobs, CodeQL, and secret
+scanning for the exact commit under review; historical counts or green runs
+do not establish current verification status.
 
-- **49 repository tests passing**;
-- **7 focused `-01` interoperability tests passing**;
-- original `-00` and new `-01` pinned interoperability workflows passing;
-- deterministic report regeneration passing;
-- CI, CodeQL, and secret scanning passing.
-
-The Governex vector repository publicly links the independent T-Trace/OpenPoC evidence. The draft author confirmed that the forthcoming `-01` RFC 7942 Implementation Status section will name **Aleksei Safonov — Independent Researcher and Maintainer of T-Trace/OpenPoC**. Technical feedback from this review informed the repeated-`step_id`, signed-`seq`, and signed-head vectors.
+The recorded Governex review includes an upstream public reference and the
+draft author's confirmation of planned `-01` RFC 7942 credit for **Aleksei
+Safonov — Independent Researcher and Maintainer of T-Trace/OpenPoC**. This is
+historical review evidence, not a live claim about publication status.
+Technical feedback informed the repeated-`step_id`, signed-`seq`, and
+signed-head vectors.
 
 The non-claim remains explicit: conformance is interoperability evidence only. It does not prove draft correctness, capture completeness, head-signer non-equivocation, or effect-level anti-replay binding.
+
+### Additional implemented baseline
+
+- **OpenPoC-02:** bound replay fixtures already distinguish reproduction of
+  the supplied computation from completeness of its inputs. [Evidence](openpoc-02-independent-reproducibility.md).
+- **Asqav 14–16:** **3/3 AGREE** at upstream commit
+  `17c814f9e2e51f005faa707d44adec0316534da8`, with independent signature,
+  predecessor-link, and signed-marker checks. This does not establish
+  production capture completeness or the external cause of a signed gap.
+  [Evidence](asqav-capture-compatibility.md).
 
 ## Eight-week research scope
 
@@ -124,9 +142,12 @@ Define what must be independently justified before a system may claim capture co
 
 No production TEE, PKI, blockchain, or universal standard is promised within this sprint.
 
-### 4. OpenPoC-02 — independent reproducibility
+### 4. Extend OpenPoC-02 — independent reproducibility
 
-Test the difference between a prover supplying a trace and a prover supplying a trace plus the recipe, inputs, versions, and environment evidence required for a third party to reproduce or falsify the claimed transition.
+The base positive and negative replay-recipe fixtures are already implemented.
+Extend them through the selected evidence adapter and an independently run
+reviewer path. Define the new artifact/environment cases before counting them
+as sprint deliverables; successful replay must still not imply complete input.
 
 ### 5. External review and public report
 
@@ -135,14 +156,14 @@ Invite focused review from implementers working on evaluation integrity, action 
 ## Deliverables
 
 1. At least **12 additional adversarial assurance vectors** with deterministic verdicts.
-2. Continued reproducibility of the existing **13/13 `-00`** and **18/18 `-01`** pinned interoperability results.
+2. Continued reproducibility of the existing **13/13 `-00`**, **18/18 `-01`**, and **3/3 selected Asqav** pinned interoperability results.
 3. One versioned external evidence-format adapter.
 4. A documented and executable L1–L4 assurance model:
    - L1: trace validity;
    - L2: record integrity;
    - L3: capture completeness;
    - L4: independent reproducibility.
-5. OpenPoC-02 with positive and negative replay-recipe fixtures.
+5. Extensions to the implemented OpenPoC-02 fixtures through the selected adapter and external reviewer path.
 6. Reproducible CI, a reviewer-facing final report, and an integration guide for evaluation and agent-control developers.
 
 ## Success criteria
@@ -153,7 +174,7 @@ The sprint succeeds if:
 - mandatory-gate cases block effects lacking required evidence;
 - fresh-identity replay and cross-run substitution produce separate, correct verdicts;
 - the new adapter preserves explicit distinctions between signature validity, chain integrity, capture completeness, effect binding, and reproducibility;
-- both pinned Governex compatibility profiles remain reproducible;
+- both pinned Governex profiles and the selected Asqav comparison remain reproducible;
 - at least two external implementers review a concrete artifact or compatibility result;
 - all claims include explicit trust assumptions and non-claims;
 - all public tests and security checks pass in CI.

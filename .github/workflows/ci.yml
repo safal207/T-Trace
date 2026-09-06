@@ -26,6 +26,27 @@ jobs:
       - name: Verify repeated lineage compaction
         run: |
           python scripts/verify_lineage_compaction.py
+      - name: Verify selective lineage disclosure
+        run: |
+          python scripts/verify_lineage_membership.py
+      - name: Verify membership-root consistency
+        run: |
+          python scripts/verify_lineage_consistency.py
+      - name: Verify witness-quorum anti-equivocation
+        run: |
+          python scripts/verify_lineage_witness_quorum.py
+      - name: Verify witness-policy handoff
+        run: |
+          python scripts/verify_witness_policy_handoff.py
+      - name: Verify repeated witness-policy handoff chain
+        run: |
+          python scripts/verify_witness_policy_handoff_chain.py
+      - name: Verify witness-policy handoff-chain selective disclosure
+        run: |
+          python scripts/verify_witness_policy_handoff_chain_membership.py
+      - name: Verify witness-policy handoff membership-root consistency
+        run: |
+          python scripts/verify_witness_policy_handoff_chain_consistency.py
 
   tests:
     runs-on: ubuntu-latest

@@ -1,0 +1,58 @@
+name: Asqav Capture Boundary Compatibility
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  asqav-capture-boundaries:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out T-Trace
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Check out pinned Asqav vectors
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          repository: jagmarques/asqav-sdk
+          ref: 17c814f9e2e51f005faa707d44adec0316534da8
+          path: external/asqav-sdk
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11.13"
+
+      - name: Install pinned verifier dependencies
+        run: >-
+          python -m pip install --disable-pip-version-check
+          'pytest==8.4.2'
+          'cryptography==46.0.4'
+
+      - name: Run pinned omission and recovery comparison
+        run: |
+          python -m openpoc.asqav_capture_compat \
+            --vectors-root external/asqav-sdk/verifier/conformance-vectors \
+            --source-commit 17c814f9e2e51f005faa707d44adec0316534da8 \
+            --json-out /tmp/asqav-capture-compatibility.json \
+            --markdown-out /tmp/asqav-capture-compatibility.md
+
+      - name: Require deterministic committed reports
+        run: |
+          diff -u \
+            docs/asqav-capture-compatibility.json \
+            /tmp/asqav-capture-compatibility.json
+          diff -u \
+            docs/asqav-capture-compatibility.md \
+            /tmp/asqav-capture-compatibility.md
+
+      - name: Run local regression tests
+        run: python -m pytest tests/test_asqav_capture_compat.py
