@@ -22,6 +22,10 @@ For a non-editable wheel installation, use the [installed verifier
 guide](installed-verifiers.md). Its isolated packaging gate runs outside the
 checkout; the following examples assume you also have the fixture inputs.
 
+For the selected external Asqav fixtures, use the [frozen source-package
+guide](asqav-frozen-package.md) to acquire original bytes once and verify them
+later using separately accepted receiver pins. It retains the same receipt verifier.
+
 Installation and fetching external fixtures require network access. The local
 examples below use committed fixture data after installation; they do not
 execute real external actions.

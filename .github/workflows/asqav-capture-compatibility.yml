@@ -55,4 +55,21 @@ jobs:
             /tmp/asqav-capture-compatibility.md
 
       - name: Run local regression tests
-        run: python -m pytest tests/test_asqav_capture_compat.py
+        run: python -m pytest tests/test_asqav_capture_compat.py tests/test_asqav_frozen_package.py
+
+      - name: Export exact source objects with the original license
+        run: |
+          python -m openpoc.asqav_frozen_package export \
+            external/asqav-sdk /tmp/asqav-frozen-source \
+            --trusted-pins profiles/asqav-source-selection-v1.json
+
+      - name: Verify the frozen package without reading the source checkout
+        run: |
+          python -m openpoc.asqav_frozen_package verify /tmp/asqav-frozen-source \
+            --trusted-pins profiles/asqav-source-selection-v1.json \
+            > /tmp/asqav-frozen-package-report.json
+          python -m openpoc.asqav_frozen_package verify /tmp/asqav-frozen-source \
+            --trusted-pins profiles/asqav-source-selection-v1.json --format markdown \
+            > /tmp/asqav-frozen-package-report.md
+          diff -u docs/asqav-frozen-package-report.json /tmp/asqav-frozen-package-report.json
+          diff -u docs/asqav-frozen-package-report.md /tmp/asqav-frozen-package-report.md

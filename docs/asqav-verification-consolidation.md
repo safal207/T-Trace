@@ -1,7 +1,8 @@
 # Asqav verification-path consolidation
 
-Comparison date: 2026-09-06. This is a documentation decision and scoped
-follow-up plan, not a merge, closure, or security approval of the open PR.
+Comparison date: 2026-09-06. Source consolidation is implemented by the
+[frozen package path](asqav-frozen-package.md); merging/closing the older PR
+remains a separately recorded GitHub action, not an implied security approval.
 
 ## Exact compared revisions
 
@@ -61,5 +62,29 @@ is already suitable for arbitrary untrusted input packages.
 - [ ] Preserve the current pinned execution setup when consolidating CI.
 - [ ] Link the completed work from #37 before deciding its disposition. Until
   then, leave the PR open; this document does not close or approve it.
+
+## Implemented consolidation
+
+The default receipt implementation is retained. The frozen package path keeps
+all 12 original vector paths (10 unique byte sequences), original manifests,
+and LICENSE. Receiver-selected pins stay outside the package. The exporter
+reads the exact Git objects; offline verification checks byte counts, SHA-256,
+Git blobs, outcome fields, and lock records before reusing the existing receipt
+implementation on the same acquired bytes.
+
+The old binder's full-record equality is not retained: the actual pinned
+manifest and expected files use different narrative notes for all three
+vectors. Machine outcome fields agree; both original narratives remain pinned.
+Synthetic controls now include that distinction. Source pins are an explicit
+receiver input, not a claim that a self-contained package authenticates itself.
+
+The separate old receipt CLI, its competing workflow, and a second copy of the
+three-vector reports are not adopted. Existing action/dependency pins and the
+original deterministic comparison gate remain in place. New deterministic
+source-package reports and regression tests exercise the retained unique work.
+
+Once this consolidation has passed exact-head CI and merged, link it from #37
+and close that superseded alternative without merging duplicate code. Until
+then, leave #37 open. This document alone does not perform that action.
 
 No new witness, gossip, or transparency protocol is needed for this step.
