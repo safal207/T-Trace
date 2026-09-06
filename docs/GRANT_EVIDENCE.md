@@ -4,6 +4,12 @@
 **Applicant:** Aleksei Safonov — Independent Researcher and Maintainer of T-Trace/OpenPoC  
 **Repository:** https://github.com/safal207/T-Trace
 
+Evidence inventory refreshed on 2026-09-06 against main
+`3126937608ab5c8164ace103f3cfb08e2ad852b6`. Start with the
+[reviewer path](reviewer-path.md) for commands and claim boundaries. This is
+an inventory of committed evidence, not a live CI attestation or confirmation
+of funding availability.
+
 ## One-sentence claim
 
 T-Trace/OpenPoC is an open protocol and executable benchmark that separates **trace validity**, **record integrity**, **capture completeness**, and **independent reproducibility** instead of collapsing them into one overloaded `PASS` result.
@@ -86,7 +92,7 @@ Original `-00` evidence:
 - [pinned workflow](../.github/workflows/governex-action-receipts.yml)
 - [merged PR #18](https://github.com/safal207/T-Trace/pull/18)
 
-Forthcoming `-01` vector-profile evidence:
+Pinned `-01` vector-profile evidence:
 
 - [18/18 compatibility report](governex-action-receipts-v01-compatibility.md)
 - [capture-side review](governex-action-receipts-v01-capture-review.md)
@@ -94,23 +100,35 @@ Forthcoming `-01` vector-profile evidence:
 - [pinned workflow](../.github/workflows/governex-action-receipts-v01.yml)
 - [merged PR #23](https://github.com/safal207/T-Trace/pull/23)
 
-### 5. Run the repository test suite
+### 5. Review selected Asqav omission/recovery evidence
+
+- [3/3 compatibility report](asqav-capture-compatibility.md)
+- [independent verifier](../openpoc/asqav_capture_compat.py)
+- [pinned workflow](../.github/workflows/asqav-capture-compatibility.yml)
+- [merged PR #38](https://github.com/safal207/T-Trace/pull/38)
+
+The subject is vectors 14, 15, and 16 at upstream commit
+`17c814f9e2e51f005faa707d44adec0316534da8`. Verified signatures, links, and
+signed markers do not independently establish the scenario's real-world
+cause or production non-bypassability. The [reviewer path](reviewer-path.md#4-review-external-receipts)
+documents reproduction and source-binding limits.
+
+### 6. Run the repository test suite
 
 ```bash
 pip install -e .[dev]
 python -m pytest -q
 ```
 
-Historical result on the Interop-02 merge path:
+Record the exact T-Trace revision, environment, test result, and hosted CI run
+and attempt for the commit under review. Historical test counts and earlier
+green workflows are not verification of a newer head. The full local suite
+does not replace report regeneration against pinned external inputs.
 
-```text
-49 passed
-```
+## Committed evidence matrix
 
-That count is a baseline for the historical commit, not evidence about a newer
-head. Use the CI run for the exact commit under review for the current result.
-
-## Current evidence matrix
+Results below describe the linked fixture/corpus artifacts. Current CI and
+security-check status must be read for the exact revision under review.
 
 | Evidence | Reviewer question | Result |
 |---|---|---|
@@ -121,13 +139,15 @@ head. Use the CI run for the exact commit under review for the current result.
 | Assurance model | Are structural validity and capture completeness separated? | Implemented |
 | Governex `-00` interoperability | Does an independent verifier match the original public suite without shared verifier code? | **13/13 AGREE** |
 | Governex `-01` interoperability | Does an independent verifier match repetition, ordering, and signed-head outcomes? | **18/18 AGREE** |
-| Focused `-01` regression tests | Are new checks covered locally? | **7 passed** |
+| Asqav 14–16 interoperability | Do the selected omission/recovery vectors agree? | **3/3 AGREE**, limited to this pinned subject |
+| Focused interoperability regressions | Are the receipt boundaries covered by tests? | Tests committed; rerun for the selected revision |
 | Full repository tests | Do existing protocol and profile tests remain green? | Verify on exact-head CI |
-| Original `-00` pinned workflow | Does the stable earlier evidence remain reproducible? | PASS |
-| New `-01` pinned workflow | Is the new profile reproducible at a fixed upstream commit? | PASS |
-| CI / CodeQL / secret scan | Are quality and baseline security checks green? | PASS |
+| Original `-00` pinned workflow | Does the stable earlier evidence remain reproducible? | Verify on exact-head CI |
+| `-01` pinned workflow | Is the profile reproducible at a fixed upstream commit? | Verify on exact-head CI |
+| Asqav pinned workflow | Do both reports regenerate from exact external inputs? | Verify on exact-head CI |
+| CI / CodeQL / secret scan | Are quality and baseline security checks green? | Verify on exact-head CI |
 | External public reference | Does the upstream vector repository link the independent evidence? | Yes |
-| Planned RFC 7942 credit | Has the draft author confirmed named implementation-status credit? | Yes, for the forthcoming `-01` revision |
+| Planned RFC 7942 credit | Was named implementation-status credit confirmed during review? | Historical confirmation; not a live publication-status check |
 
 ## Independent interoperability result
 
@@ -147,7 +167,7 @@ Result:
 0 UNSUPPORTED
 ```
 
-### Forthcoming `-01` vector profile
+### Pinned `-01` vector profile
 
 Pinned upstream commit:
 
@@ -175,7 +195,8 @@ The T-Trace/OpenPoC verifier does not import or execute the upstream verifier. I
 
 The Governex vector repository publicly links the original T-Trace/OpenPoC compatibility report, verifier, pinned workflow, and review PR as an independent implementation.
 
-The draft author confirmed that the forthcoming `-01` RFC 7942 Implementation Status section will credit:
+At the time of the Interop-02 review, the draft author confirmed planned
+`-01` RFC 7942 Implementation Status credit for:
 
 > **Aleksei Safonov — Independent Researcher and Maintainer of T-Trace/OpenPoC**
 
@@ -243,10 +264,10 @@ reproducible trust assumptions and failure boundaries
 The proposed sprint requests **USD 20,000 for 8 weeks** to deliver:
 
 1. at least 12 additional adversarial assurance vectors;
-2. continued reproducibility of the 13/13 `-00` and 18/18 `-01` pinned results;
+2. continued reproducibility of the 13/13 `-00`, 18/18 `-01`, and 3/3 selected Asqav pinned results;
 3. one versioned external evidence-format adapter into a T-Trace causal projection;
 4. tested trust assumptions for non-bypassable capture, effect identity, head freshness, and anti-equivocation;
-5. OpenPoC-02 for independent replay recipes and environment binding;
+5. extensions to the already implemented OpenPoC-02 replay and environment-binding fixtures;
 6. external technical review, an integration guide, and a public final report.
 
 See:
@@ -254,11 +275,16 @@ See:
 - [TAIF one-page proposal](taif-openpoc-sprint-one-pager.md)
 - [TAIF application answer pack](taif-application-answer-pack.md)
 
+This funding scope is a draft proposal, not a funded commitment. OpenPoC-02
+already exists, and the three-vector Asqav comparison is part of the baseline.
+Reconcile any additional deliverables with that baseline before submitting;
+the budget and application route have not been revalidated here.
+
 ## Current strongest positioning
 
 Use this formulation in applications and reviewer conversations:
 
-> T-Trace/OpenPoC is an open benchmark and verification layer for distinguishing a valid AI-agent trace from justified evidence of complete capture and independently reproducible outcomes. It already demonstrates a selective-omission bypass, preserves separate assurance verdicts, and independently matches two pinned Governex signed-receipt profiles: 13/13 checks for `-00` and 18/18 checks for the forthcoming `-01` vector profile.
+> T-Trace/OpenPoC is an open benchmark and verification layer for distinguishing a valid AI-agent trace from justified evidence of complete capture and independently reproducible outcomes. Its committed evidence includes OpenPoC-01/02, separate assurance verdicts, two pinned Governex comparisons (13/13 `-00` and 18/18 `-01`), and a three-vector Asqav omission/recovery comparison (3/3). These are bounded fixture and interoperability results, not production capture or deployment guarantees.
 
 ## Short version
 

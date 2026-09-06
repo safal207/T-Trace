@@ -33,15 +33,16 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 | Action receipts | Signed-receipt verification and raw-octet hash-chain interoperability |
 | Deterministic replay | Strict record envelopes, causal transition/commit rules, and portable profiles |
 | Audit-trail boundaries | Claim-scoped verdicts for trace validity, capture completeness, effect binding, and reproducibility |
-| Independent evidence | Separate from-scratch verifiers matching **13/13 Governex `-00` vectors** and **18/18 Governex `-01` checks** without importing or executing the upstream verifier |
+| Independent evidence | Separate verifiers matching **13/13 Governex `-00` vectors**, **18/18 Governex `-01` checks**, and **3/3 selected Asqav omission/recovery vectors**, each at its pinned upstream commit without importing or executing the upstream verifier |
 
-**External interoperability:** Governex publicly links the independent T-Trace/OpenPoC evidence, and the draft author has confirmed named RFC 7942 Implementation Status credit for the forthcoming `-01` revision. This is independent interoperability and threat-boundary work — not co-authorship, IETF adoption, or endorsement.
+**External interoperability:** The recorded Governex review includes a public link to the independent T-Trace/OpenPoC evidence and the draft author's confirmation of planned RFC 7942 Implementation Status credit for `-01`. That historical confirmation is not a claim about publication status today, co-authorship, IETF adoption, or endorsement.
 
-**Start here:** [OpenPoC-01 selective omission](docs/openpoc-01-selective-omission.md) · [OpenPoC-02 independent reproducibility](docs/openpoc-02-independent-reproducibility.md) · [Governex `-01` compatibility report](docs/governex-action-receipts-v01-compatibility.md) · [Protocol specification](spec/t-trace.md)
+**Start here:** [Reviewer path: run, interpret, and bound the result](docs/reviewer-path.md). It connects the base trace, OpenPoC-01/02, and pinned external receipts without turning one successful check into a broader assurance claim.
 <!-- seo-product-intro:end -->
 
 ## Review links
 
+- Reviewer path and claim map: [docs/reviewer-path.md](docs/reviewer-path.md)
 - Grant evidence: [docs/GRANT_EVIDENCE.md](docs/GRANT_EVIDENCE.md)
 - Protocol spec: [spec/t-trace.md](spec/t-trace.md)
 - Causal Execution Graph profile: [spec/causal-execution-graph-v0.1.md](spec/causal-execution-graph-v0.1.md)
@@ -60,6 +61,8 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 - Governex `-00` action-receipt compatibility: [docs/governex-action-receipts-compatibility.md](docs/governex-action-receipts-compatibility.md)
 - Governex `-01` action-receipt compatibility: [docs/governex-action-receipts-v01-compatibility.md](docs/governex-action-receipts-v01-compatibility.md)
 - Governex `-01` capture-side review: [docs/governex-action-receipts-v01-capture-review.md](docs/governex-action-receipts-v01-capture-review.md)
+- Asqav omission/recovery compatibility: [docs/asqav-capture-compatibility.md](docs/asqav-capture-compatibility.md)
+- Asqav verification-path consolidation: [docs/asqav-verification-consolidation.md](docs/asqav-verification-consolidation.md)
 
 ## Boundaries
 
@@ -103,12 +106,31 @@ The compatibility work also records the remaining assurance boundaries:
 - a signed `seq` gap proves a gap in recorder numbering, not necessarily an unrecorded external effect;
 - a signed head proves consistency with that checkpoint, not checkpoint freshness or signer non-equivocation.
 
-Technical feedback from the T-Trace/OpenPoC review informed the new repeated-`step_id`, signed-`seq` gap/reuse, and signed-head assertion vectors. Governex links the independent evidence from its public vector repository, and the draft author has confirmed named T-Trace/OpenPoC credit in the forthcoming RFC 7942 Implementation Status section.
+Technical feedback from the T-Trace/OpenPoC review informed the repeated-`step_id`, signed-`seq` gap/reuse, and signed-head assertion vectors. The recorded review also documents the upstream public reference and planned implementation-status credit; it is not a live publication-status check.
 
 Evidence:
 
 - [`-00` 13/13 report](docs/governex-action-receipts-compatibility.md) · [`-00` verifier](openpoc/action_receipt_compat.py) · [`-00` pinned workflow](.github/workflows/governex-action-receipts.yml)
 - [`-01` 18/18 report](docs/governex-action-receipts-v01-compatibility.md) · [`-01` capture review](docs/governex-action-receipts-v01-capture-review.md) · [`-01` verifier](openpoc/action_receipt_compat_v01.py) · [`-01` pinned workflow](.github/workflows/governex-action-receipts-v01.yml)
+
+### Asqav omission and recovery boundaries
+
+The independent comparison in [PR #38](https://github.com/safal207/T-Trace/pull/38)
+records **3/3 AGREE** for `asqav-14`, `asqav-15`, and `asqav-16` at upstream
+commit `17c814f9e2e51f005faa707d44adec0316534da8`. It verifies the presented
+Ed25519 signatures, predecessor links, and vector-specific signed markers.
+
+A valid receipt chain can remain silent about an omitted action. A signed gap
+or lifecycle denial makes a declaration inspectable; it does not independently
+prove the outage cause, execution of missing actions, or non-bypassability of a
+deployment. The comparison covers these three vectors, not the entire Asqav
+verifier or a production system.
+
+Evidence: [report](docs/asqav-capture-compatibility.md) ·
+[verifier](openpoc/asqav_capture_compat.py) ·
+[pinned workflow](.github/workflows/asqav-capture-compatibility.yml).
+See the [reviewer path](docs/reviewer-path.md#4-review-external-receipts) for
+reproduction and source-binding limitations.
 
 ## Why T-Trace
 
