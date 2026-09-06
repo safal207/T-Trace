@@ -14,7 +14,14 @@ authors = [
 ]
 keywords = ["trace", "jsonl", "protocol", "audit", "continuity", "causality"]
 
+[project.scripts]
+ttrace-validate = "ttrace.validation:main"
+ttrace-assurance = "openpoc.verify_assurance:main"
+ttrace-reproducibility = "openpoc.verify_reproducibility:main"
+ttrace-cross-source = "openpoc.verify_cross_source:main"
+
 [project.optional-dependencies]
+receipts = ["cryptography>=43.0"]
 dev = [
   "pytest>=8.0",
   "cryptography>=43.0"

@@ -1,26 +1,12 @@
 from __future__ import annotations
 
 import argparse
-import importlib.util
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
-ROOT = Path(__file__).resolve().parents[1]
-VALIDATOR_PATH = ROOT / "scripts" / "validate_ttrace.py"
-
-
-def _load_validator() -> Any:
-    spec = importlib.util.spec_from_file_location("validate_ttrace", VALIDATOR_PATH)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"cannot load validator from {VALIDATOR_PATH}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-_VALIDATOR = _load_validator()
+from ttrace import validation as _VALIDATOR
 
 
 @dataclass(frozen=True)

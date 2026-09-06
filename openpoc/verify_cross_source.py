@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import importlib.util
 import json
 import math
 import re
@@ -10,8 +9,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Mapping
 
-ROOT = Path(__file__).resolve().parents[1]
-VALIDATOR_PATH = ROOT / "scripts" / "validate_ttrace.py"
+from ttrace import validation as _VALIDATOR
+
 DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 TIMESTAMP_RE = re.compile(
     r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$"
@@ -25,18 +24,6 @@ RECORD_FIELDS = {
 COMPARISON_FIELDS = {
     "required_sides", "window_start", "audit_cutoff", "snapshots_final_at_cutoff",
 }
-
-
-def _load_validator() -> Any:
-    spec = importlib.util.spec_from_file_location("validate_ttrace", VALIDATOR_PATH)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"cannot load validator from {VALIDATOR_PATH}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-_VALIDATOR = _load_validator()
 
 
 def _jsonable(value: Any) -> Any:
