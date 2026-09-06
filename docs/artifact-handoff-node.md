@@ -65,7 +65,7 @@ On Windows, use the actual `node.exe` path. The harness:
 4. Checks each Node result against the hand-written expectations and compares
    all report fields, including hashes, trust assumptions, exclusions and
    non-claims; malformed cases must have the same typed error code.
-5. Rejects missing/duplicate cases, different corpus hashes, changed report
+5. Rejects missing/duplicate cases, different corpus/fixture hashes, changed report
    members and empty declarations. It never silently skips a missing runtime.
 
 The permission controls are additional execution guardrails, not a claim of an
@@ -77,17 +77,36 @@ by its separate file location.
 ## Recorded evidence
 
 The [machine comparison](artifact-handoff-implementation-comparison.json) records
-40/40 agreement on the entire frozen corpus, with a canonical full-report
+59/59 agreement on the entire frozen corpus, with a canonical full-report
 SHA-256 for each evaluated case and a code for each malformed case. The corpus
-and Node source hashes bind the record to the actual inputs and implementation.
+manifest and Node source hashes identify those specific files. In addition,
+`input_files` records the exact byte length and SHA-256 of every referenced
+package/context file, including malformed cases, and the corpus manifest.
+`corpus_inputs_sha256` hashes that full inventory as sorted compact JSON.
+Node computes the inventory from the same buffers it actually evaluates;
+Python independently compares all of it. `corpus_sha256` alone denotes only
+the manifest and is not a fingerprint of the complete input set.
 It was generated on Windows with Python 3.12.14 and Node 24.19.0; fresh CI
 repeats the comparison on Linux with Python 3.11 and Node 24.19.0.
 
-The local Node controls passed 47 tests, with one Windows symlink-creation
+The local Node controls passed 49 tests, with one Windows symlink-creation
 privilege skip. Linux CI runs that same control without the Windows restriction.
 Tests cover strict parsing, signed bytes, signature changes, context ambiguity,
 limits, path separation and non-vacuous corpus coverage. A separate Python test
 protects the comparison gate against incomplete reports and false agreement.
+
+Codex review of PR #43 found a shared cutoff error in both implementations:
+an authenticated but excluded receipt's claim mismatch could override the
+earlier handoff conclusion. The fix preserves its visible claim/authority
+fields but applies mismatch violations only within the cutoff projection.
+Nineteen new cases cover wrong digests/correlations/failure declarations before
+the window, after cutoff, or observed late, both finalities, and the inclusive
+cutoff boundary. All original forty case input bytes are retained unchanged.
+Review also led to pre-open rejection of nonregular files (with a retained
+post-open type check) and full raw-fixture fingerprinting, not just manifest
+hashing. Tests assert that a forbidden file type is rejected without opening
+it, and that changing a malformed fixture changes the fingerprint even if its
+error code and manifest are unchanged.
 
 This closes only the second-implementation gate when merged and fresh CI is
 confirmed. External participant decisions, first-time reviewer timing,

@@ -392,6 +392,378 @@
       "expected_error_code": "integrity-mismatch",
       "id": "raw-artifact-drift",
       "package": "packages/p011"
+    },
+    {
+      "context": "contexts/excluded-late-observation-digest-nonfinal.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "insufficient-snapshot-finality",
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-late-observation-digest-nonfinal",
+      "package": "packages/p005"
+    },
+    {
+      "context": "contexts/excluded-late-observation-digest-final.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "violated",
+        "handoff_at_cutoff": "violated-supplied-snapshot-contract",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-late-observation-digest-final",
+      "package": "packages/p005"
+    },
+    {
+      "context": "contexts/excluded-late-observation-correlation-nonfinal.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "insufficient-snapshot-finality",
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-late-observation-correlation-nonfinal",
+      "package": "packages/p012"
+    },
+    {
+      "context": "contexts/excluded-late-observation-correlation-final.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "violated",
+        "handoff_at_cutoff": "violated-supplied-snapshot-contract",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-late-observation-correlation-final",
+      "package": "packages/p012"
+    },
+    {
+      "context": "contexts/excluded-late-observation-failure-nonfinal.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "insufficient-snapshot-finality",
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-late-observation-failure-nonfinal",
+      "package": "packages/p008"
+    },
+    {
+      "context": "contexts/excluded-late-observation-failure-final.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "violated",
+        "handoff_at_cutoff": "violated-supplied-snapshot-contract",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-late-observation-failure-final",
+      "package": "packages/p008"
+    },
+    {
+      "context": "contexts/excluded-before-window-digest-nonfinal.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "insufficient-snapshot-finality",
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-before-window-digest-nonfinal",
+      "package": "packages/p013"
+    },
+    {
+      "context": "contexts/excluded-before-window-digest-final.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "violated",
+        "handoff_at_cutoff": "violated-supplied-snapshot-contract",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-before-window-digest-final",
+      "package": "packages/p013"
+    },
+    {
+      "context": "contexts/excluded-before-window-correlation-nonfinal.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "insufficient-snapshot-finality",
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-before-window-correlation-nonfinal",
+      "package": "packages/p014"
+    },
+    {
+      "context": "contexts/excluded-before-window-correlation-final.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "violated",
+        "handoff_at_cutoff": "violated-supplied-snapshot-contract",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-before-window-correlation-final",
+      "package": "packages/p014"
+    },
+    {
+      "context": "contexts/excluded-before-window-failure-nonfinal.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "insufficient-snapshot-finality",
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-before-window-failure-nonfinal",
+      "package": "packages/p015"
+    },
+    {
+      "context": "contexts/excluded-before-window-failure-final.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "violated",
+        "handoff_at_cutoff": "violated-supplied-snapshot-contract",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-before-window-failure-final",
+      "package": "packages/p015"
+    },
+    {
+      "context": "contexts/excluded-after-cutoff-digest-nonfinal.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "insufficient-snapshot-finality",
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-after-cutoff-digest-nonfinal",
+      "package": "packages/p016"
+    },
+    {
+      "context": "contexts/excluded-after-cutoff-digest-final.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "violated",
+        "handoff_at_cutoff": "violated-supplied-snapshot-contract",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-after-cutoff-digest-final",
+      "package": "packages/p016"
+    },
+    {
+      "context": "contexts/excluded-after-cutoff-correlation-nonfinal.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "insufficient-snapshot-finality",
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-after-cutoff-correlation-nonfinal",
+      "package": "packages/p017"
+    },
+    {
+      "context": "contexts/excluded-after-cutoff-correlation-final.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "violated",
+        "handoff_at_cutoff": "violated-supplied-snapshot-contract",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-after-cutoff-correlation-final",
+      "package": "packages/p017"
+    },
+    {
+      "context": "contexts/excluded-after-cutoff-failure-nonfinal.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "insufficient-snapshot-finality",
+        "handoff_at_cutoff": "insufficient-evidence",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-after-cutoff-failure-nonfinal",
+      "package": "packages/p018"
+    },
+    {
+      "context": "contexts/excluded-after-cutoff-failure-final.json",
+      "expected": {
+        "cross_source.conflicting_digests": false,
+        "cross_source.excluded_sides": [
+          "receiver"
+        ],
+        "cross_source.missing_sides": [
+          "receiver"
+        ],
+        "cross_source.status": "violated",
+        "handoff_at_cutoff": "violated-supplied-snapshot-contract",
+        "receipts.receiver.claim_binding": "mismatch",
+        "receipts.receiver.historical_authority": "authorized-at-observation",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "excluded-after-cutoff-failure-final",
+      "package": "packages/p018"
+    },
+    {
+      "context": "contexts/conflict-at-inclusive-cutoff.json",
+      "expected": {
+        "cross_source.conflicting_digests": true,
+        "cross_source.excluded_sides": [],
+        "handoff_at_cutoff": "violated-expected-claim",
+        "receipts.receiver.signature": "valid"
+      },
+      "expected_error_code": null,
+      "id": "conflict-at-inclusive-cutoff",
+      "package": "packages/p005"
     }
   ],
   "keys": "public-test-keys-only",

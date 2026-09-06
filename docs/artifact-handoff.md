@@ -105,8 +105,8 @@ prove truthful source behavior or every real-world effect.
 
 ## Frozen decision corpus
 
-The [corpus manifest](../examples/artifact-handoff-v0.1/corpus.json) declares 40
-cases with hand-written expected dimensions or error codes. It contains 11
+The [corpus manifest](../examples/artifact-handoff-v0.1/corpus.json) now declares 59
+cases with hand-written expected dimensions or error codes. It contains 18
 distinct original-byte packages, plus separate contexts. Case IDs cover policy
 and key rotation, expiry/revocation/compromise, missing archives/observations,
 fresh/stale/future status, delayed delivery, inclusive cutoff, nonfinal snapshots,
@@ -151,8 +151,8 @@ outcomes. It includes no user production traces, private keys with real authorit
 credentials, user conversations or personal data. Do not substitute real data
 without a new disclosure review and the relevant participant's permission.
 
-Still separate from this internal controlled workflow: a second implementation,
-measured verification budgets, an externally operated pilot with a useful decision,
+The second-implementation evidence has its [own comparison record](artifact-handoff-node.md).
+Still separate from this internal workflow: measured verification budgets, an externally operated pilot with a useful decision,
 a new reviewer's timed setup, and a supported release candidate. These are not
 established by running two processes, passing CI, or merging this implementation.
 Global capture completeness, production non-bypassability and real-world effect

@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import { syncBuiltinESMExports } from 'node:module';
 import { readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, symlinkSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -118,8 +120,8 @@ test('bounded byte API rejects unsupported files and invalid representations', (
 
 test('all declared corpus expectations pass', () => {
   const result = runCorpus(corpusPath);
-  assert.equal(result.case_count, 40); assert.equal(result.agree_count, 40);
-  assert.equal(new Set(result.cases.map(c => c.id)).size, 40);
+  assert.equal(result.case_count, 59); assert.equal(result.agree_count, 59);
+  assert.equal(new Set(result.cases.map(c => c.id)).size, 59);
 });
 
 for (const [context, conclusion] of [['matching', 'supported-under-receiver-context'], ['revoked-at-observation', 'insufficient-evidence']]) {
@@ -144,6 +146,21 @@ function temporary(t) {
   const root = mkdtempSync(join(process.env.TTRACE_TEST_TMP || tmpdir(), 'ttrace-node-test-'));
   t.after(() => rmSync(root, { recursive: true })); return root;
 }
+test('nonregular input is rejected before open, without constructing a blocking special file', t => {
+  const root = temporary(t), context = join(root, 'context.json');
+  cpSync(join(corpusPath, 'contexts/matching.json'), context);
+  const originalStat = fs.lstatSync, originalOpen = fs.openSync;
+  let opened = false;
+  t.mock.method(fs, 'lstatSync', path => path === context ? { isFile: () => false, isSymbolicLink: () => false } : originalStat(path));
+  t.mock.method(fs, 'openSync', (path, ...args) => {
+    if (path === context) { opened = true; throw new Error('must not open nonregular input'); }
+    return originalOpen(path, ...args);
+  });
+  syncBuiltinESMExports();
+  t.after(() => { t.mock.restoreAll(); syncBuiltinESMExports(); });
+  rejects(() => verifyDirectory(join(corpusPath, 'packages/p001'), context), 'invalid-filesystem-entry');
+  assert.equal(opened, false);
+});
 test('filesystem checks separate context, unexpected paths and oversize reads', t => {
   const root = temporary(t); const pkg = join(root, 'package');
   cpSync(join(corpusPath, 'packages/p001'), pkg, { recursive: true });
@@ -175,4 +192,15 @@ test('empty, duplicated or escaping corpus cannot report full agreement', t => {
   manifest.cases[0].package = join(corpusPath, 'packages/p001');
   writeFileSync(join(root, 'corpus.json'), encode(manifest));
   rejects(() => runCorpus(root), 'invalid-corpus');
+});
+
+test('input fingerprint changes even when malformed-case error and manifest stay the same', t => {
+  const root = temporary(t); cpSync(corpusPath, root, { recursive: true });
+  const before = runCorpus(root);
+  writeFileSync(join(root, 'contexts/duplicate-json-key.json'), '{"different":1,"different":2}');
+  const after = runCorpus(root);
+  assert.deepEqual(before.cases, after.cases);
+  assert.equal(before.corpus_sha256, after.corpus_sha256);
+  assert.notEqual(before.corpus_inputs_sha256, after.corpus_inputs_sha256);
+  assert.notDeepEqual(before.input_files, after.input_files);
 });

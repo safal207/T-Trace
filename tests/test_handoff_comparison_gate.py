@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.compare_handoff_implementations import canonical, compare_results, python_results
+from scripts.compare_handoff_implementations import canonical, compare_results, input_inventory, python_results
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -63,4 +63,21 @@ def test_saved_comparison_covers_current_full_python_reports_and_node_source():
     assert saved["cases"] == compare_results([case["id"] for case in corpus["cases"]], first, normalized)
     assert saved["corpus_sha256"] == hashlib.sha256(raw).hexdigest()
     assert saved["node_verifier_sha256"] == hashlib.sha256((ROOT / "verifiers/node/artifact-handoff.mjs").read_bytes()).hexdigest()
-    assert saved["case_count"] == saved["agree_count"] == len(corpus["cases"]) == 40
+    inventory = input_inventory(corpus, root)
+    assert saved["input_files"] == inventory
+    assert saved["corpus_inputs_sha256"] == hashlib.sha256(canonical(inventory)).hexdigest()
+    assert saved["case_count"] == saved["agree_count"] == len(corpus["cases"]) == 59
+
+
+def test_malformed_case_bytes_change_inventory_even_when_the_error_code_is_unchanged(tmp_path):
+    from openpoc.artifact_handoff_corpus import generate_corpus
+    root = tmp_path / "corpus"
+    generate_corpus(root)
+    corpus = json.loads((root / "corpus.json").read_bytes())
+    before = input_inventory(corpus, root)
+    first = python_results(corpus, root)
+    (root / "contexts/duplicate-json-key.json").write_bytes(b'{"other":1,"other":2}')
+    after = input_inventory(corpus, root)
+    assert first == python_results(corpus, root)
+    assert before != after
+    assert hashlib.sha256(canonical(before)).digest() != hashlib.sha256(canonical(after)).digest()

@@ -254,14 +254,14 @@ function compareSnapshots(context, receipts, details) {
   const present = ROLES.filter(role => own(receipts, role));
   if (present.some(role => details[role].historical_authority !== 'authorized-at-observation')) return comparison;
   const expected = context.expected;
-  if (present.some(role => receipts[role].params.correlation_id !== expected.correlation_id)) {
+  if (present.some(role => receipts[role].params.correlation_id !== expected.correlation_id
+    && atCutoff(context, receipts[role], details[role]))) {
     comparison.status = 'not-evaluable-claim-binding'; return comparison;
   }
   // Derive the selected two-source comparison directly, without an OpenPoC import.
   const included = [];
   for (const role of present) {
-    const at = receipts[role].ts_ms;
-    if (at < expected.window_start_ms || at > expected.audit_cutoff_ms || details[role].observed_at_ms > expected.audit_cutoff_ms) comparison.excluded_sides.push(role);
+    if (!atCutoff(context, receipts[role], details[role])) comparison.excluded_sides.push(role);
     else included.push(role);
   }
   comparison.excluded_sides.sort();
@@ -274,6 +274,12 @@ function compareSnapshots(context, receipts, details) {
   comparison.status = comparison.conflicting_digests || (included.length !== 2 && expected.snapshots_final_at_cutoff) ? 'violated'
     : !expected.snapshots_final_at_cutoff ? 'insufficient-snapshot-finality' : 'consistent-in-supplied-snapshots';
   return comparison;
+}
+
+function atCutoff(context, receipt, details) {
+  const expected = context.expected;
+  return details.observed_at_ms !== null && details.observed_at_ms <= expected.audit_cutoff_ms
+    && expected.window_start_ms <= receipt.ts_ms && receipt.ts_ms <= expected.audit_cutoff_ms;
 }
 
 export function verifyHandoff(inputFiles, inputContext) {
@@ -323,7 +329,8 @@ export function verifyHandoff(inputFiles, inputContext) {
       historical_authority: historical, current_authority: current };
   }
   const comparison = compareSnapshots(context, receipts, details);
-  const mismatch = Object.values(details).some(item => item.claim_binding === 'mismatch' && item.historical_authority === 'authorized-at-observation');
+  const mismatch = Object.keys(receipts).some(role => details[role].claim_binding === 'mismatch'
+    && details[role].historical_authority === 'authorized-at-observation' && atCutoff(context, receipts[role], details[role]));
   const verdict = !artifactMatch || !correlationMatch || mismatch ? 'violated-expected-claim'
     : comparison.status === 'violated' ? 'violated-supplied-snapshot-contract'
     : comparison.status === 'consistent-in-supplied-snapshots' ? 'supported-under-receiver-context' : 'insufficient-evidence';
@@ -339,7 +346,8 @@ export function verifyHandoff(inputFiles, inputContext) {
 
 function within(root, path) { const child = relative(root, path); return child === '' || (!isAbsolute(child) && child !== '..' && !child.startsWith('..\\') && !child.startsWith('../')); }
 function boundedRead(path, maximum) {
-  requireValue(!lstatSync(path).isSymbolicLink(), 'invalid-filesystem-entry');
+  const entry = lstatSync(path);
+  requireValue(entry.isFile() && !entry.isSymbolicLink(), 'invalid-filesystem-entry');
   const fd = openSync(path, 'r');
   try {
     const size = fstatSync(fd);
@@ -349,7 +357,7 @@ function boundedRead(path, maximum) {
     requireValue(offset <= maximum, 'input-limit'); return bytes.subarray(0, offset);
   } finally { closeSync(fd); }
 }
-export function verifyDirectory(packagePath, contextPath) {
+function readDirectory(packagePath, contextPath) {
   const root = realpathSync(packagePath), context = realpathSync(contextPath);
   requireValue(!within(root, context), 'self-supplied-context'); requireValue(lstatSync(root).isDirectory(), 'invalid-package-files');
   const names = [], directory = opendirSync(root);
@@ -366,14 +374,19 @@ export function verifyDirectory(packagePath, contextPath) {
     requireValue(!lstatSync(path).isSymbolicLink() && within(root, realpathSync(path)), 'invalid-filesystem-entry');
     files[name] = boundedRead(path, LIMITS[name]);
   }
-  return verifyHandoff(files, boundedRead(context, 131072));
+  return { files, contextBytes: boundedRead(context, 131072), root, context };
+}
+export function verifyDirectory(packagePath, contextPath) {
+  const input = readDirectory(packagePath, contextPath);
+  return verifyHandoff(input.files, input.contextBytes);
 }
 
 export function runCorpus(rootPath) {
   const root = realpathSync(rootPath), raw = boundedRead(join(root, 'corpus.json'), 131072), corpus = parseStrictJSON(raw);
   fields(corpus, ['schema', 'keys', 'time_basis', 'cases']);
   requireValue(corpus.schema === 'ttrace.artifact-handoff-corpus/v1' && Array.isArray(corpus.cases) && corpus.cases.length > 0 && corpus.cases.length <= 1000, 'invalid-corpus');
-  const cases = [], names = new Set();
+  const cases = [], names = new Set(), inputFiles = Object.create(null);
+  inputFiles['corpus.json'] = { bytes: raw.length, sha256: sha(raw) };
   for (const item of corpus.cases) {
     fields(item, ['id', 'package', 'context', 'expected', 'expected_error_code']); identifier(item.id);
     requireValue(!names.has(item.id) && object(item.expected), 'invalid-corpus'); names.add(item.id);
@@ -381,8 +394,14 @@ export function runCorpus(rootPath) {
     requireValue(typeof item.package === 'string' && typeof item.context === 'string', 'invalid-corpus');
     const packagePath = realpathSync(resolve(root, item.package)), contextPath = realpathSync(resolve(root, item.context));
     requireValue(within(root, packagePath) && within(root, contextPath), 'invalid-corpus');
+    const input = readDirectory(packagePath, contextPath);
+    for (const [path, bytes] of [[input.context, input.contextBytes], ...Object.entries(input.files).map(([name, bytes]) => [join(input.root, name), bytes])]) {
+      const name = relative(root, path).split('\\').join('/'), descriptor = { bytes: bytes.length, sha256: sha(bytes) };
+      requireValue(!own(inputFiles, name) || orderedJSON(inputFiles[name]) === orderedJSON(descriptor), 'corpus-input-changed');
+      inputFiles[name] = descriptor;
+    }
     let report;
-    try { report = verifyDirectory(packagePath, contextPath); }
+    try { report = verifyHandoff(input.files, input.contextBytes); }
     catch (error) {
       if (!(error instanceof HandoffError) || error.code !== item.expected_error_code) throw error;
       cases.push({ id: item.id, status: 'agree', error_code: error.code }); continue;
@@ -396,7 +415,9 @@ export function runCorpus(rootPath) {
     requireValue(report.global_capture_completeness === 'unproven', 'corpus-disagreement');
     cases.push({ id: item.id, status: 'agree', report });
   }
-  return { schema: 'ttrace.handoff-node-corpus-report/v1', corpus_sha256: sha(raw), case_count: cases.length, agree_count: cases.length, cases,
+  return { schema: 'ttrace.handoff-node-corpus-report/v1', corpus_sha256: sha(raw),
+    corpus_inputs_sha256: sha(Buffer.from(orderedJSON(inputFiles))), input_files: inputFiles,
+    case_count: cases.length, agree_count: cases.length, cases,
     non_claim: 'separate implementation; not independent organizations, a separate cryptographic backend, or an external pilot' };
 }
 

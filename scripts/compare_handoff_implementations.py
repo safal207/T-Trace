@@ -24,6 +24,25 @@ def canonical(value) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode()
 
 
+def input_inventory(corpus: dict, root: Path) -> dict:
+    root = root.resolve(strict=True)
+    paths = {root / "corpus.json"}
+    for case in corpus["cases"]:
+        package = (root / case["package"]).resolve(strict=True)
+        context = (root / case["context"]).resolve(strict=True)
+        if not package.is_relative_to(root) or not context.is_relative_to(root):
+            raise RuntimeError("corpus input outside selected root")
+        paths.add(context)
+        paths.update(package.iterdir())
+    result = {}
+    for path in sorted(paths):
+        if path.is_symlink() or not path.is_file():
+            raise RuntimeError("corpus inventory accepts only regular files")
+        raw = path.read_bytes()
+        result[path.relative_to(root).as_posix()] = {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+    return result
+
+
 def python_results(corpus: dict, root: Path) -> list[dict]:
     results = []
     for case in corpus["cases"]:
@@ -79,6 +98,7 @@ def compare(node: str, work_root: Path | None = None) -> dict:
     corpus_bytes = (corpus_root / "corpus.json").read_bytes()
     corpus = json.loads(corpus_bytes)
     expected_ids = [case["id"] for case in corpus["cases"]]
+    inventory = input_inventory(corpus, corpus_root)
     first = python_results(corpus, corpus_root)
     # Only the standalone JS file and public data are copied. No Python module,
     # node_modules, package metadata or first-verifier outputs are available there.
@@ -105,10 +125,16 @@ def compare(node: str, work_root: Path | None = None) -> dict:
         digest = hashlib.sha256(corpus_bytes).hexdigest()
         if second.get("corpus_sha256") != digest:
             raise RuntimeError("Node verified a different corpus manifest")
+        inputs_digest = hashlib.sha256(canonical(inventory)).hexdigest()
+        if second.get("input_files") != inventory or second.get("corpus_inputs_sha256") != inputs_digest:
+            raise RuntimeError("Node verified different corpus fixture bytes")
+        if input_inventory(corpus, corpus_root) != inventory:
+            raise RuntimeError("source corpus changed during comparison")
         results = compare_results(expected_ids, first, second)
     version = subprocess.run([executable, "--version"], text=True, capture_output=True, check=True, timeout=10).stdout.strip()
     return {"schema": "ttrace.handoff-implementation-comparison/v1", "profile": "ttrace.artifact-handoff/v1",
             "corpus_sha256": digest, "node_verifier_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+            "corpus_inputs_sha256": inputs_digest, "input_files": inventory,
             "python_version": platform.python_version(), "node_version": version, "platform": platform.system(),
             "case_count": len(results), "agree_count": len(results), "full_report_comparison": True,
             "isolated_node_corpus": True, "node_reads_restricted_to_copied_inputs": True,
@@ -125,7 +151,7 @@ def main() -> int:
     report = compare(args.node, args.work_root)
     output = json.dumps(report, indent=2, sort_keys=True) + "\n"
     if args.output:
-        args.output.write_text(output, encoding="utf-8", newline="\n")
+        args.output.write_bytes(output.encode("utf-8"))
         print(json.dumps({key: value for key, value in report.items() if key != "cases"}, sort_keys=True))
     else:
         print(output, end="")

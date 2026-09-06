@@ -139,6 +139,34 @@ def declared_cases():
     add("unsafe-integer", lambda f, c: b'{"schema":9007199254740992}', error="invalid-integer")
     add("unknown-context-version", lambda f, c: c.update(schema="unknown/v2"), error="unsupported-schema")
     add("raw-artifact-drift", lambda f, c: f.update({"artifact.bin": ARTIFACT + b"!"}), error="integrity-mismatch")
+    # Append review regressions without changing any original forty case bytes.
+    for timing in ("late-observation", "before-window", "after-cutoff"):
+        for claim in ("digest", "correlation", "failure"):
+            for final in (False, True):
+                def excluded_mismatch(files, context, timing=timing, claim=claim, final=final):
+                    def change(receipt):
+                        if claim == "digest": receipt["params"]["artifact_sha256"] = "0" * 64
+                        elif claim == "correlation": receipt["params"]["correlation_id"] = "different"
+                        else: receipt["success"] = False
+                        if timing == "before-window": receipt["ts_ms"] = BASE_TIME - 1
+                        elif timing == "after-cutoff": receipt["ts_ms"] = BASE_TIME + 2_001
+                    _receipt_edit(files, context, "receiver", change)
+                    if timing != "before-window": context["observations"][1]["observed_at_ms"] = BASE_TIME + 2_002
+                    context["expected"]["snapshots_final_at_cutoff"] = final
+                add("excluded-" + timing + "-" + claim + ("-final" if final else "-nonfinal"), excluded_mismatch, {
+                    "handoff_at_cutoff": "violated-supplied-snapshot-contract" if final else "insufficient-evidence",
+                    "receipts.receiver.claim_binding": "mismatch", "receipts.receiver.signature": "valid",
+                    "receipts.receiver.historical_authority": "authorized-at-observation",
+                    "cross_source.excluded_sides": ["receiver"], "cross_source.missing_sides": ["receiver"],
+                    "cross_source.conflicting_digests": False,
+                    "cross_source.status": "violated" if final else "insufficient-snapshot-finality"})
+    def exact_cutoff_conflict(files, context):
+        _receipt_edit(files, context, "receiver", lambda r: r["params"].update(artifact_sha256="0" * 64))
+        context["observations"][1]["observed_at_ms"] = BASE_TIME + 2_000
+        context["expected"]["snapshots_final_at_cutoff"] = False
+    add("conflict-at-inclusive-cutoff", exact_cutoff_conflict, {
+        "handoff_at_cutoff": "violated-expected-claim", "cross_source.conflicting_digests": True,
+        "cross_source.excluded_sides": [], "receipts.receiver.signature": "valid"})
     return cases
 
 

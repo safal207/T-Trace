@@ -363,7 +363,7 @@ def test_frozen_corpus_covers_all_declared_cases_and_regenerates_exact_bytes(tmp
     from openpoc.artifact_handoff_corpus import declared_cases, evaluate_corpus, generate_corpus
     frozen = ROOT / "examples/artifact-handoff-v0.1"
     report = evaluate_corpus(frozen)
-    assert report["agree_count"] == report["case_count"] == 40
+    assert report["agree_count"] == report["case_count"] == 59
     assert {case["id"] for case in report["cases"]} == {case[0] for case in declared_cases()}
     regenerated = tmp_path / "regenerated"
     generate_corpus(regenerated)
