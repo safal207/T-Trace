@@ -4,3 +4,6 @@ docs/asqav-frozen-package-report.md text eol=lf
 examples/artifact-handoff-v0.1/** -text
 verifiers/node/*.mjs text eol=lf
 docs/artifact-handoff-implementation-comparison.json text eol=lf
+scripts/benchmark_artifact_handoff.py text eol=lf
+scripts/benchmark_handoff_worker.py text eol=lf
+scripts/handoff_benchmark_support.py text eol=lf

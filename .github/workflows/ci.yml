@@ -28,6 +28,8 @@ jobs:
         run: node --test verifiers/node/artifact-handoff.test.mjs
       - name: Compare every full report with isolated Node execution
         run: python scripts/compare_handoff_implementations.py
+      - name: Check fixed-input measurement plumbing without absolute speed assertions
+        run: python scripts/benchmark_artifact_handoff.py smoke /tmp/ttrace-handoff-benchmark-smoke
 
   installed-handoff:
     runs-on: ubuntu-latest

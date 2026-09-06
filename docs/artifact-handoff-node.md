@@ -112,3 +112,7 @@ This closes only the second-implementation gate when merged and fresh CI is
 confirmed. External participant decisions, first-time reviewer timing,
 performance budgets, final boundary audit and release-candidate readiness are
 separate roadmap requirements.
+
+For fixed-size API/CLI timing, whole-worker memory and exact byte accounting,
+see the [measurement guide](artifact-handoff-benchmark.md). Its smoke mode is
+not a performance baseline or an external-user readiness gate.
