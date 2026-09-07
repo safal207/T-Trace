@@ -27,6 +27,30 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '24.19.0'
+      - name: Preserve and verify exact Git blob bytes before measurement
+        shell: python
+        run: |
+          import hashlib, os, subprocess
+          from pathlib import Path
+          # The hosted Windows default converts unmarked LF fixtures to CRLF.
+          # Restore this fresh CI checkout from its index without conversion;
+          # do not relax fixture digest or measured-source validation instead.
+          subprocess.run(['git', 'config', 'core.autocrlf', 'false'], check=True)
+          subprocess.run(['git', 'checkout-index', '--force', '--all'], check=True)
+          entries = subprocess.check_output(['git', 'ls-files', '--stage', '-z']).decode('utf-8').split('\0')
+          checked = 0
+          for entry in entries:
+              if not entry:
+                  continue
+              info, name = entry.split('\t', 1)
+              mode, expected, stage = info.split()
+              assert stage == '0' and mode != '160000', (name, mode, stage)
+              path = Path(name)
+              raw = os.readlink(path).encode('utf-8') if path.is_symlink() else path.read_bytes()
+              actual = hashlib.sha1(b'blob ' + str(len(raw)).encode('ascii') + b'\0' + raw).hexdigest()
+              assert actual == expected, ('checkout bytes differ from Git blob', name, expected, actual)
+              checked += 1
+          print('Verified exact Git blob bytes for', checked, 'tracked files')
       - name: Install pinned receipt dependencies and test runner
         run: python -m pip install -e . 'pytest==8.4.2' 'cryptography==46.0.4' 'cffi==2.1.1' 'pycparser==3.0'
       - name: Check instrumentation regressions before measuring
@@ -81,10 +105,10 @@ jobs:
       - name: Preserve reviewable workspace and require unchanged measured source
         shell: python
         run: |
-          import subprocess, zipfile
+          import json, subprocess, sys, zipfile
           from pathlib import Path
-          from scripts.benchmark_artifact_handoff import source_inventory, validate_report
-          import json
+          sys.path.insert(0, str(Path.cwd()))
+          from scripts.benchmark_artifact_handoff import validate_report
           report = json.loads(Path('handoff-evidence/baseline/report.json').read_bytes())
           validate_report(report, check_sources=True)
           changed = subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines()
