@@ -11,15 +11,34 @@ gates still test portability; installation/download cost is excluded here.
 The recorded Windows baseline is available as a
 [human report](benchmarks/artifact-handoff-v0.1/windows/report.md) and
 [machine record with every sample](benchmarks/artifact-handoff-v0.1/windows/report.json).
-It uses Python 3.12.14, Node 24.19.0 and cryptography 46.0.4, with two full
-rounds on source commit `1b039b6635ebffb0b19e9c082cc91c77940e67c7`.
+It was genuinely regenerated on a **GitHub-hosted Windows Server 2022** runner
+(AMD64, four logical CPUs), using Python 3.12.10, Node 24.19.0,
+cryptography 46.0.4, cffi 2.1.1 and pycparser 3.0. The two full rounds
+were collected on source commit `9e24fcbc93343c8c460e21f729dc979cc23d740e`
+in [Windows evidence run 34134175179](https://github.com/safal207/T-Trace/actions/runs/34134175179).
 The measured-source inventory is
-`1e7d90aacbdc62ecd3e9180e32ed17b3ec7a7075c0f84559e930dac88db50ea4`.
+`271db12fdee586d0587ab909e7aec19632c4951a8b4fe673d1af901eaf4c2916`.
+The original machine-record SHA-256 is
+`a85bd4c7d889dcca2417390b5685784d313cdd69fd578827daeeb16e43ae8fa6`;
+the committed machine and generated human reports preserve the collected bytes.
+All 695 Python tests (including the 110 instrumentation regressions), standalone
+Node tests, full baseline validation and a separate real smoke passed on that runner.
+
+This is a **different host from the prior Windows desktop baseline**, not a
+same-host before/after speed comparison. Its derived triggers describe this
+host class only; a change between hosts is not evidence of a performance
+regression or improvement. Earlier measurements remain in Git history; their
+source hashes were not edited to make old samples appear newly measured.
 The committed record can be checked with the validator below; fixture bytes
 are reproducibly regenerated and their identities compared, not assumed.
 
 From the selected source checkout, use the tested Python/Node runtime and pinned
 receipt dependencies from the [second-implementation guide](artifact-handoff-node.md).
+Use a fresh checkout that preserves Git blob bytes (disable automatic newline
+conversion when cloning on Windows, for example `git -c core.autocrlf=false clone`).
+Do not rewrite fixture digests or normalize recorded source identities to hide
+a converted checkout. The cited Windows run verified all 295 tracked files
+against their Git blob identities before measurement.
 Use a new output directory; an existing directory is rejected, not overwritten.
 
 ```sh
@@ -43,6 +62,34 @@ Before timing, the two implementations must reproduce the same **complete**
 report and a supported-under-receiver-context outcome with both native signatures
 and historical/current role authorizations. Every timed result is checked again.
 Negative/insufficient results or changed input hashes abort the measurement.
+
+## Instrumentation preflight
+
+Both collection modes reject known inherited instrumentation **before** output
+creation, executable discovery, input generation or child launches. The policy
+checks key presence case-insensitively, including empty strings and `"0"`:
+`PYTHONTRACEMALLOC`, `PYTHONMALLOC`, `PYTHONPROFILEIMPORTTIME`, `NODE_V8_COVERAGE`,
+`PYTHONDEVMODE`, `PYTHONMALLOCSTATS`, `PYTHONPERFSUPPORT`,
+`PYTHON_PERF_JIT_SUPPORT`, `PYTHONDEBUG`, `PYTHONVERBOSE`, `NODE_DEBUG` and
+`NODE_DEBUG_NATIVE`. Errors list names only, not environment values.
+
+Unset these variables and restart the driver in a clean Python process.
+Deleting startup variables inside an already running interpreter does not undo
+its instrumentation: the Python parent also times fresh CLI subprocesses.
+Active allocation tracing, trace/profile hooks, diagnostic runtime flags and
+options, and registered `sys.monitoring` tools are rejected, not disabled so
+that measurement can continue. Clearing a variable is not evidence that an
+already initialized allocator or arbitrary external instrumentation is clean.
+
+The existing child-path/options filtering is retained, along with a single
+`PYTHONHASHSEED=0` key. One prepared environment snapshot is used for every
+measured child, preliminary Node verification and Node version lookup; the
+parent environment and required platform variables are preserved.
+This is a bounded instrumentation policy, **not hermetic execution** or proof
+that every source of runtime/host interference is detected. Report validation
+still verifies supplied records; it does not retrospectively authenticate how
+a publisher collected them. Timer scopes, native memory queries, cardinalities,
+source binding, full-result checks and trigger derivation are unchanged.
 
 ## Measurement contract
 
