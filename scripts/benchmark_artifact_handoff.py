@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import sys
 import time
+import tracemalloc
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -26,6 +27,53 @@ SIZES = (75, 65_536, 1_048_576)
 SCHEMA = "ttrace.handoff-benchmark/v1"
 PARAMETERS = {"baseline": {"rounds": 2, "warmups": 5, "samples": 30, "fresh_cli_samples": 5},
               "smoke": {"rounds": 1, "warmups": 1, "samples": 3, "fresh_cli_samples": 1}}
+
+
+# Presence is rejected even for empty/"0" values: runtime enablement rules differ.
+# This is a bounded instrumentation policy, not a hermetic-host claim.
+INSTRUMENTATION_ENV = frozenset({
+    "PYTHONTRACEMALLOC", "PYTHONMALLOC", "PYTHONPROFILEIMPORTTIME", "NODE_V8_COVERAGE",
+    "PYTHONDEVMODE", "PYTHONMALLOCSTATS", "PYTHONPERFSUPPORT", "PYTHON_PERF_JIT_SUPPORT",
+    "PYTHONDEBUG", "PYTHONVERBOSE", "NODE_DEBUG", "NODE_DEBUG_NATIVE",
+})
+
+
+def benchmark_environment() -> dict[str, str]:
+    """Reject instrumentation before any output/work; return one child snapshot.
+
+    Removing a startup variable cannot undo instrumentation in this Python
+    parent, which also measures CLI startup-to-exit. Require a clean restart
+    instead of disabling hooks and then publishing potentially skewed samples.
+    """
+    env = dict(os.environ)
+    blocked = sorted({name.upper() for name in env} & INSTRUMENTATION_ENV)
+    if blocked:
+        raise ValueError("benchmark instrumentation is not allowed; unset these variables "
+                         "and restart Python: " + ", ".join(blocked))
+    active = []
+    if tracemalloc.is_tracing():
+        active.append("tracemalloc")
+    if sys.gettrace() is not None:
+        active.append("sys.settrace")
+    if sys.getprofile() is not None:
+        active.append("sys.setprofile")
+    for flag in ("dev_mode", "debug", "verbose"):
+        if getattr(sys.flags, flag, 0):
+            active.append("sys.flags." + flag)
+    for option in ("tracemalloc", "importtime", "perf", "perf_jit", "showrefcount", "pystats"):
+        if option in sys._xoptions:
+            active.append("-X " + option)
+    monitoring = getattr(sys, "monitoring", None)
+    if monitoring is not None and any(monitoring.get_tool(tool) is not None for tool in range(6)):
+        active.append("sys.monitoring")
+    if active:
+        raise ValueError("benchmark parent instrumentation is active; restart Python without: "
+                         + ", ".join(active))
+    for key in list(env):
+        if key.upper() in {"PYTHONPATH", "PYTHONHOME", "NODE_PATH", "NODE_OPTIONS", "PYTHONHASHSEED"}:
+            env.pop(key)
+    env["PYTHONHASHSEED"] = "0"
+    return env
 
 
 def artifact_for_size(size: int) -> bytes:
@@ -237,6 +285,7 @@ def render_markdown(report: dict) -> str:
 def run_benchmark(destination: Path, node: str, *, mode: str = "baseline") -> dict:
     if mode not in PARAMETERS:
         raise ValueError("unknown measurement mode")
+    env = benchmark_environment()
     if destination.exists() or destination.is_symlink():
         raise ValueError("benchmark destination must be new; existing results are preserved")
     executable = shutil.which(node)
@@ -247,11 +296,6 @@ def run_benchmark(destination: Path, node: str, *, mode: str = "baseline") -> di
     sources = source_inventory()
     destination.mkdir(parents=True, exist_ok=False)
     destination = destination.resolve()
-    env = dict(os.environ)
-    for key in list(env):
-        if key.upper() in {"PYTHONPATH", "PYTHONHOME", "NODE_PATH", "NODE_OPTIONS"}:
-            env.pop(key)
-    env["PYTHONHASHSEED"] = "0"
     from ttrace.artifact_handoff import verify_artifact_handoff
     inputs = {}
     for size in SIZES:
@@ -298,7 +342,7 @@ def run_benchmark(destination: Path, node: str, *, mode: str = "baseline") -> di
                              "fresh_cli_reports_checked": len(cold)})
     if source_inventory() != sources:
         raise RuntimeError("measured source changed during the benchmark")
-    node_version = subprocess.run([executable, "--version"], capture_output=True, text=True, check=True, timeout=10).stdout.strip()
+    node_version = subprocess.run([executable, "--version"], env=env, capture_output=True, text=True, check=True, timeout=10).stdout.strip()
     commit = subprocess.run(["git", "-c", "safe.directory=" + ROOT.as_posix(), "rev-parse", "HEAD"], cwd=ROOT,
                             capture_output=True, text=True, check=True, timeout=10).stdout.strip()
     report = {"schema": SCHEMA, "mode": mode, "parameters": parameters, "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
