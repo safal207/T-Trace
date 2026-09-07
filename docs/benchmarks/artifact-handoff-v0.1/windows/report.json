@@ -1,0 +1,1359 @@
+{
+  "environment": {
+    "architecture": "AMD64",
+    "logical_cpus": 4,
+    "node": "v24.19.0",
+    "os": "Windows",
+    "os_release": "2022Server",
+    "project_loading": "source checkout; module CLI",
+    "python": "3.12.10",
+    "python_hash_seed": 0,
+    "receipt_dependencies": {
+      "cffi": "2.1.1",
+      "cryptography": "46.0.4",
+      "pycparser": "3.0"
+    }
+  },
+  "inputs": {
+    "1048576": {
+      "artifact_bytes": 1048576,
+      "full_report_sha256": "7697a146f0f49e826c56c7c37a73586de970efab5262d8485ef305180d9e07b2",
+      "input_files": {
+        "artifact.bin": {
+          "bytes": 1048576,
+          "sha256": "fbbab289f7f94b25736c58be46a994c441fd02552cc6022352e3d86d2fab7c83"
+        },
+        "manifest.json": {
+          "bytes": 561,
+          "sha256": "7e970de8095d3a74cf432df80e87b2f2f6da34bf85a7260e0bac4e037e0e7822"
+        },
+        "receiver-context.json": {
+          "bytes": 2225,
+          "sha256": "b61579b5be56166d8d9d76f9cf79f434093e7756fdb64684fe9e6ceecdd2bbba"
+        },
+        "receiver.jsonl": {
+          "bytes": 596,
+          "sha256": "a576925aad1dfb8946329a352cb9f02ad5a3c355685112c2f10a18f04769cac3"
+        },
+        "sender.jsonl": {
+          "bytes": 587,
+          "sha256": "e7ec8da6d3330fde6c9176fd5cf53bb3ad9da63cd6a75fadce4364a4947ba94b"
+        }
+      },
+      "input_sha256": "2e8352df0c24525a6180d856bb8c2624a808190158cac27cde4781ec2cfcc712",
+      "package_bytes": 1050320,
+      "receiver_context_bytes": 2225
+    },
+    "65536": {
+      "artifact_bytes": 65536,
+      "full_report_sha256": "df64d37fd51e25b2ef7b75c7fb585d160c26c210f9129141cac01e97d9c9d74f",
+      "input_files": {
+        "artifact.bin": {
+          "bytes": 65536,
+          "sha256": "7daca2095d0438260fa849183dfc67faa459fdf4936e1bc91eec6b281b27e4c2"
+        },
+        "manifest.json": {
+          "bytes": 559,
+          "sha256": "e20c5e3de4990de4d2052e0f8f9bea9a5cfe3dff27476d69737ffdd5d0fc602f"
+        },
+        "receiver-context.json": {
+          "bytes": 2223,
+          "sha256": "52649f862dafe6f90bcf43e39af71da2f1659696d9a7989bd2dff960c11a4454"
+        },
+        "receiver.jsonl": {
+          "bytes": 594,
+          "sha256": "9c4970f9a0574aff31f8f2e5403a95121a051c6924e2c5c3a7a71d7c8c4a939d"
+        },
+        "sender.jsonl": {
+          "bytes": 585,
+          "sha256": "5afae7a194ceb1f27267847c594ed1259764be93837648ab298123b37f666c8d"
+        }
+      },
+      "input_sha256": "216c7e75aaee7f2befbaa88176188b136b23e08ee3d9cee3b81726ed5e90395e",
+      "package_bytes": 67274,
+      "receiver_context_bytes": 2223
+    },
+    "75": {
+      "artifact_bytes": 75,
+      "full_report_sha256": "a94ff4a5cd0164d7402ab637cbfdcd87d1cfc2b736b318f4149343eff600a2be",
+      "input_files": {
+        "artifact.bin": {
+          "bytes": 75,
+          "sha256": "1f722dc1e85f074cb3800ed3b99fd1419b622cd12738685262bdf4046b718678"
+        },
+        "manifest.json": {
+          "bytes": 556,
+          "sha256": "377066ece738ca2775663a37978d648a87c399964d89dfe690dc9174f45e117f"
+        },
+        "receiver-context.json": {
+          "bytes": 2220,
+          "sha256": "2de8aebacc8d2b28d5e0f50032d6eb3bd6ded106c7d40eb95163e40e20430840"
+        },
+        "receiver.jsonl": {
+          "bytes": 591,
+          "sha256": "fb0f16f4d5b8ac8098fba6ee7f31c327b6d3e960ec51a2a33439a1fd8663738d"
+        },
+        "sender.jsonl": {
+          "bytes": 582,
+          "sha256": "1c9aa75b6951bd9424fb4a76132660946705782c30fe96816e574c32dc81248b"
+        }
+      },
+      "input_sha256": "15d562f9edefc97899dcc31f00797571fe3b2b7d9455bd1ab2235fea8c197411",
+      "package_bytes": 1804,
+      "receiver_context_bytes": 2220
+    }
+  },
+  "mode": "baseline",
+  "non_claims": [
+    "production SLA",
+    "cold disk cache",
+    "incremental heap",
+    "fresh CLI peak memory",
+    "installed-console startup",
+    "external pilot",
+    "first-time reviewer setup duration",
+    "measurement provenance authentication"
+  ],
+  "parameters": {
+    "fresh_cli_samples": 5,
+    "rounds": 2,
+    "samples": 30,
+    "warmups": 5
+  },
+  "recorded_at_utc": "2026-09-07T14:40:36.289952+00:00",
+  "repository_base_commit": "9e24fcbc93343c8c460e21f729dc979cc23d740e",
+  "review_guardrails": [
+    {
+      "api_p95_review_trigger_ms": 4,
+      "fresh_cli_p95_review_trigger_ms": 570,
+      "implementation": "python",
+      "input": "75",
+      "package_bytes_exact": 1804,
+      "receiver_context_bytes_exact": 2220,
+      "worker_peak_review_trigger_mib": 55
+    },
+    {
+      "api_p95_review_trigger_ms": 6,
+      "fresh_cli_p95_review_trigger_ms": 310,
+      "implementation": "node",
+      "input": "75",
+      "package_bytes_exact": 1804,
+      "receiver_context_bytes_exact": 2220,
+      "worker_peak_review_trigger_mib": 84
+    },
+    {
+      "api_p95_review_trigger_ms": 5,
+      "fresh_cli_p95_review_trigger_ms": 590,
+      "implementation": "python",
+      "input": "65536",
+      "package_bytes_exact": 67274,
+      "receiver_context_bytes_exact": 2223,
+      "worker_peak_review_trigger_mib": 55
+    },
+    {
+      "api_p95_review_trigger_ms": 7,
+      "fresh_cli_p95_review_trigger_ms": 310,
+      "implementation": "node",
+      "input": "65536",
+      "package_bytes_exact": 67274,
+      "receiver_context_bytes_exact": 2223,
+      "worker_peak_review_trigger_mib": 85
+    },
+    {
+      "api_p95_review_trigger_ms": 11,
+      "fresh_cli_p95_review_trigger_ms": 620,
+      "implementation": "python",
+      "input": "1048576",
+      "package_bytes_exact": 1050320,
+      "receiver_context_bytes_exact": 2225,
+      "worker_peak_review_trigger_mib": 57
+    },
+    {
+      "api_p95_review_trigger_ms": 12,
+      "fresh_cli_p95_review_trigger_ms": 340,
+      "implementation": "node",
+      "input": "1048576",
+      "package_bytes_exact": 1050320,
+      "receiver_context_bytes_exact": 2225,
+      "worker_peak_review_trigger_mib": 99
+    }
+  ],
+  "runs": [
+    {
+      "fresh_cli_reports_checked": 5,
+      "fresh_cli_samples_ns": [
+        135116800,
+        134907000,
+        137199600,
+        133166100,
+        141585800
+      ],
+      "fresh_cli_summary_ns": {
+        "count": 5,
+        "max": 141585800,
+        "median": 135116800,
+        "min": 133166100,
+        "p95": 141585800
+      },
+      "implementation": "python",
+      "input": "75",
+      "round": 0,
+      "worker": {
+        "full_report_sha256": "a94ff4a5cd0164d7402ab637cbfdcd87d1cfc2b736b318f4149343eff600a2be",
+        "implementation": "python",
+        "input_sha256": "15d562f9edefc97899dcc31f00797571fe3b2b7d9455bd1ab2235fea8c197411",
+        "memory_scope": "whole fresh API worker including runtime, imports, input, checks and all calls",
+        "peak_memory": {
+          "bytes": 28319744,
+          "method": "GetProcessMemoryInfo.PeakWorkingSetSize (bytes)"
+        },
+        "receipt_dependencies": {
+          "cffi": "2.1.1",
+          "cryptography": "46.0.4",
+          "pycparser": "3.0"
+        },
+        "reference_checks": 1,
+        "runtime_version": "3.12.10",
+        "sample_count": 30,
+        "samples_ns": [
+          649800,
+          637900,
+          649200,
+          638100,
+          644200,
+          642400,
+          640400,
+          641500,
+          648600,
+          649700,
+          633000,
+          633800,
+          636200,
+          635600,
+          773900,
+          1189100,
+          934300,
+          903700,
+          896100,
+          894600,
+          914900,
+          871100,
+          665700,
+          639100,
+          634500,
+          632700,
+          625500,
+          621600,
+          618300,
+          621200
+        ],
+        "schema": "ttrace.handoff-benchmark-worker/v1",
+        "summary_ns": {
+          "count": 30,
+          "max": 1189100,
+          "median": 641950.0,
+          "min": 618300,
+          "p95": 934300
+        },
+        "warmups": 5
+      }
+    },
+    {
+      "fresh_cli_reports_checked": 5,
+      "fresh_cli_samples_ns": [
+        66557100,
+        65242700,
+        65529200,
+        76800900,
+        65212000
+      ],
+      "fresh_cli_summary_ns": {
+        "count": 5,
+        "max": 76800900,
+        "median": 65529200,
+        "min": 65212000,
+        "p95": 76800900
+      },
+      "implementation": "node",
+      "input": "75",
+      "round": 0,
+      "worker": {
+        "full_report_sha256": "a94ff4a5cd0164d7402ab637cbfdcd87d1cfc2b736b318f4149343eff600a2be",
+        "implementation": "node",
+        "input_sha256": "15d562f9edefc97899dcc31f00797571fe3b2b7d9455bd1ab2235fea8c197411",
+        "memory_scope": "whole fresh API worker including runtime, imports, input, checks and all calls",
+        "openssl_version": "3.5.7",
+        "peak_memory": {
+          "bytes": 44023808,
+          "method": "Node process.resourceUsage().maxRSS (KiB multiplied by 1024)"
+        },
+        "reference_checks": 1,
+        "runtime_version": "v24.19.0",
+        "sample_count": 30,
+        "samples_ns": [
+          1025000,
+          1507300,
+          1313700,
+          679500,
+          634000,
+          673500,
+          705200,
+          656000,
+          1213300,
+          711900,
+          705200,
+          701700,
+          603500,
+          599700,
+          871400,
+          626600,
+          703600,
+          593200,
+          582300,
+          624900,
+          860900,
+          587100,
+          585000,
+          580500,
+          590000,
+          695000,
+          932300,
+          598500,
+          585700,
+          718500
+        ],
+        "schema": "ttrace.handoff-benchmark-worker/v1",
+        "summary_ns": {
+          "count": 30,
+          "max": 1507300,
+          "median": 676500,
+          "min": 580500,
+          "p95": 1313700
+        },
+        "warmups": 5
+      }
+    },
+    {
+      "fresh_cli_reports_checked": 5,
+      "fresh_cli_samples_ns": [
+        134170600,
+        134115700,
+        136187200,
+        138382200,
+        147000100
+      ],
+      "fresh_cli_summary_ns": {
+        "count": 5,
+        "max": 147000100,
+        "median": 136187200,
+        "min": 134115700,
+        "p95": 147000100
+      },
+      "implementation": "python",
+      "input": "65536",
+      "round": 0,
+      "worker": {
+        "full_report_sha256": "df64d37fd51e25b2ef7b75c7fb585d160c26c210f9129141cac01e97d9c9d74f",
+        "implementation": "python",
+        "input_sha256": "216c7e75aaee7f2befbaa88176188b136b23e08ee3d9cee3b81726ed5e90395e",
+        "memory_scope": "whole fresh API worker including runtime, imports, input, checks and all calls",
+        "peak_memory": {
+          "bytes": 28532736,
+          "method": "GetProcessMemoryInfo.PeakWorkingSetSize (bytes)"
+        },
+        "receipt_dependencies": {
+          "cffi": "2.1.1",
+          "cryptography": "46.0.4",
+          "pycparser": "3.0"
+        },
+        "reference_checks": 1,
+        "runtime_version": "3.12.10",
+        "sample_count": 30,
+        "samples_ns": [
+          733700,
+          729000,
+          724300,
+          730500,
+          735500,
+          737100,
+          733100,
+          731300,
+          732700,
+          724000,
+          735200,
+          714100,
+          721500,
+          721400,
+          730200,
+          841100,
+          735000,
+          732900,
+          820300,
+          739000,
+          734800,
+          729600,
+          733700,
+          727900,
+          726900,
+          722200,
+          718200,
+          714700,
+          712900,
+          710200
+        ],
+        "schema": "ttrace.handoff-benchmark-worker/v1",
+        "summary_ns": {
+          "count": 30,
+          "max": 841100,
+          "median": 730350.0,
+          "min": 710200,
+          "p95": 820300
+        },
+        "warmups": 5
+      }
+    },
+    {
+      "fresh_cli_reports_checked": 5,
+      "fresh_cli_samples_ns": [
+        64728200,
+        66861100,
+        66978000,
+        64949200,
+        66122400
+      ],
+      "fresh_cli_summary_ns": {
+        "count": 5,
+        "max": 66978000,
+        "median": 66122400,
+        "min": 64728200,
+        "p95": 66978000
+      },
+      "implementation": "node",
+      "input": "65536",
+      "round": 0,
+      "worker": {
+        "full_report_sha256": "df64d37fd51e25b2ef7b75c7fb585d160c26c210f9129141cac01e97d9c9d74f",
+        "implementation": "node",
+        "input_sha256": "216c7e75aaee7f2befbaa88176188b136b23e08ee3d9cee3b81726ed5e90395e",
+        "memory_scope": "whole fresh API worker including runtime, imports, input, checks and all calls",
+        "openssl_version": "3.5.7",
+        "peak_memory": {
+          "bytes": 44199936,
+          "method": "Node process.resourceUsage().maxRSS (KiB multiplied by 1024)"
+        },
+        "reference_checks": 1,
+        "runtime_version": "v24.19.0",
+        "sample_count": 30,
+        "samples_ns": [
+          1222800,
+          1566300,
+          1322600,
+          819200,
+          810500,
+          766000,
+          979700,
+          802400,
+          1467900,
+          766700,
+          855600,
+          796500,
+          728300,
+          744900,
+          1074300,
+          745600,
+          846700,
+          707400,
+          710600,
+          765400,
+          1102100,
+          739700,
+          722900,
+          713700,
+          689100,
+          791500,
+          1397500,
+          755600,
+          732200,
+          929900
+        ],
+        "schema": "ttrace.handoff-benchmark-worker/v1",
+        "summary_ns": {
+          "count": 30,
+          "max": 1566300,
+          "median": 794000,
+          "min": 689100,
+          "p95": 1467900
+        },
+        "warmups": 5
+      }
+    },
+    {
+      "fresh_cli_reports_checked": 5,
+      "fresh_cli_samples_ns": [
+        140641500,
+        140122800,
+        136928200,
+        137151000,
+        137749200
+      ],
+      "fresh_cli_summary_ns": {
+        "count": 5,
+        "max": 140641500,
+        "median": 137749200,
+        "min": 136928200,
+        "p95": 140641500
+      },
+      "implementation": "python",
+      "input": "1048576",
+      "round": 0,
+      "worker": {
+        "full_report_sha256": "7697a146f0f49e826c56c7c37a73586de970efab5262d8485ef305180d9e07b2",
+        "implementation": "python",
+        "input_sha256": "2e8352df0c24525a6180d856bb8c2624a808190158cac27cde4781ec2cfcc712",
+        "memory_scope": "whole fresh API worker including runtime, imports, input, checks and all calls",
+        "peak_memory": {
+          "bytes": 29532160,
+          "method": "GetProcessMemoryInfo.PeakWorkingSetSize (bytes)"
+        },
+        "receipt_dependencies": {
+          "cffi": "2.1.1",
+          "cryptography": "46.0.4",
+          "pycparser": "3.0"
+        },
+        "reference_checks": 1,
+        "runtime_version": "3.12.10",
+        "sample_count": 30,
+        "samples_ns": [
+          2132600,
+          2197000,
+          2149800,
+          2143200,
+          2140500,
+          2146700,
+          2136500,
+          2145300,
+          2240700,
+          2160200,
+          2145200,
+          2126500,
+          2140100,
+          2139000,
+          2130100,
+          2471600,
+          2231700,
+          2174000,
+          2150900,
+          2155800,
+          2155000,
+          2141600,
+          2273000,
+          2170000,
+          2139700,
+          2131900,
+          2117200,
+          2118000,
+          2127300,
+          2232600
+        ],
+        "schema": "ttrace.handoff-benchmark-worker/v1",
+        "summary_ns": {
+          "count": 30,
+          "max": 2471600,
+          "median": 2145250.0,
+          "min": 2117200,
+          "p95": 2273000
+        },
+        "warmups": 5
+      }
+    },
+    {
+      "fresh_cli_reports_checked": 5,
+      "fresh_cli_samples_ns": [
+        66874900,
+        69046100,
+        70114700,
+        83751000,
+        70759700
+      ],
+      "fresh_cli_summary_ns": {
+        "count": 5,
+        "max": 83751000,
+        "median": 70114700,
+        "min": 66874900,
+        "p95": 83751000
+      },
+      "implementation": "node",
+      "input": "1048576",
+      "round": 0,
+      "worker": {
+        "full_report_sha256": "7697a146f0f49e826c56c7c37a73586de970efab5262d8485ef305180d9e07b2",
+        "implementation": "node",
+        "input_sha256": "2e8352df0c24525a6180d856bb8c2624a808190158cac27cde4781ec2cfcc712",
+        "memory_scope": "whole fresh API worker including runtime, imports, input, checks and all calls",
+        "openssl_version": "3.5.7",
+        "peak_memory": {
+          "bytes": 51666944,
+          "method": "Node process.resourceUsage().maxRSS (KiB multiplied by 1024)"
+        },
+        "reference_checks": 1,
+        "runtime_version": "v24.19.0",
+        "sample_count": 30,
+        "samples_ns": [
+          2714100,
+          2901600,
+          3029600,
+          2485300,
+          2405100,
+          2394400,
+          2709600,
+          2420000,
+          2801100,
+          2323200,
+          2395300,
+          2456600,
+          2349700,
+          2429400,
+          2658800,
+          2378000,
+          2450700,
+          2343700,
+          2360900,
+          2446500,
+          2691400,
+          2376800,
+          2355500,
+          2352100,
+          2359700,
+          2421800,
+          2707200,
+          2341000,
+          2356000,
+          2497200
+        ],
+        "schema": "ttrace.handoff-benchmark-worker/v1",
+        "summary_ns": {
+          "count": 30,
+          "max": 3029600,
+          "median": 2420900,
+          "min": 2323200,
+          "p95": 2901600
+        },
+        "warmups": 5
+      }
+    },
+    {
+      "fresh_cli_reports_checked": 5,
+      "fresh_cli_samples_ns": [
+        67571800,
+        65461800,
+        66031600,
+        72236400,
+        77012400
+      ],
+      "fresh_cli_summary_ns": {
+        "count": 5,
+        "max": 77012400,
+        "median": 67571800,
+        "min": 65461800,
+        "p95": 77012400
+      },
+      "implementation": "node",
+      "input": "1048576",
+      "round": 1,
+      "worker": {
+        "full_report_sha256": "7697a146f0f49e826c56c7c37a73586de970efab5262d8485ef305180d9e07b2",
+        "implementation": "node",
+        "input_sha256": "2e8352df0c24525a6180d856bb8c2624a808190158cac27cde4781ec2cfcc712",
+        "memory_scope": "whole fresh API worker including runtime, imports, input, checks and all calls",
+        "openssl_version": "3.5.7",
+        "peak_memory": {
+          "bytes": 51830784,
+          "method": "Node process.resourceUsage().maxRSS (KiB multiplied by 1024)"
+        },
+        "reference_checks": 1,
+        "runtime_version": "v24.19.0",
+        "sample_count": 30,
+        "samples_ns": [
+          2738400,
+          2848900,
+          3075800,
+          2572200,
+          2403100,
+          2382900,
+          2577600,
+          2370000,
+          2722100,
+          2322200,
+          2426700,
+          2478400,
+          2337500,
+          2359900,
+          2726700,
+          2370400,
+          2462200,
+          2360600,
+          2334000,
+          2392100,
+          2711600,
+          2356100,
+          2328700,
+          2366600,
+          2321100,
+          2428200,
+          2683700,
+          2360700,
+          2359600,
+          2531800
+        ],
+        "schema": "ttrace.handoff-benchmark-worker/v1",
+        "summary_ns": {
+          "count": 30,
+          "max": 3075800,
+          "median": 2397600,
+          "min": 2321100,
+          "p95": 2848900
+        },
+        "warmups": 5
+      }
+    },
+    {
+      "fresh_cli_reports_checked": 5,
+      "fresh_cli_samples_ns": [
+        140608400,
+        153683900,
+        154056600,
+        150918000,
+        144682500
+      ],
+      "fresh_cli_summary_ns": {
+        "count": 5,
+        "max": 154056600,
+        "median": 150918000,
+        "min": 140608400,
+        "p95": 154056600
+      },
+      "implementation": "python",
+      "input": "1048576",
+      "round": 1,
+      "worker": {
+        "full_report_sha256": "7697a146f0f49e826c56c7c37a73586de970efab5262d8485ef305180d9e07b2",
+        "implementation": "python",
+        "input_sha256": "2e8352df0c24525a6180d856bb8c2624a808190158cac27cde4781ec2cfcc712",
+        "memory_scope": "whole fresh API worker including runtime, imports, input, checks and all calls",
+        "peak_memory": {
+          "bytes": 29417472,
+          "method": "GetProcessMemoryInfo.PeakWorkingSetSize (bytes)"
+        },
+        "receipt_dependencies": {
+          "cffi": "2.1.1",
+          "cryptography": "46.0.4",
+          "pycparser": "3.0"
+        },
+        "reference_checks": 1,
+        "runtime_version": "3.12.10",
+        "sample_count": 30,
+        "samples_ns": [
+          2153300,
+          2139200,
+          2210300,
+          2151400,
+          2144000,
+          2145400,
+          2237400,
+          2167900,
+          2139300,
+          2133900,
+          2138100,
+          2473800,
+          2519600,
+          2505100,
+          2471900,
+          2413000,
+          2179700,
+          2143800,
+          2125600,
+          2261700,
+          2524000,
+          2485200,
+          2486200,
+          2496600,
+          2196200,
+          2157600,
+          2190700,
+          2136400,
+          2189400,
+          2134700
+        ],
+        "schema": "ttrace.handoff-benchmark-worker/v1",
+        "summary_ns": {
+          "count": 30,
+          "max": 2524000,
+          "median": 2184550.0,
+          "min": 2125600,
+          "p95": 2519600
+        },
+        "warmups": 5
+      }
+    },
+    {
+      "fresh_cli_reports_checked": 5,
+      "fresh_cli_samples_ns": [
+        73304700,
+        72217800,
+        70592100,
+        76851100,
+        74149100
+      ],
+      "fresh_cli_summary_ns": {
+        "count": 5,
+        "max": 76851100,
+        "median": 73304700,
+        "min": 70592100,
+        "p95": 76851100
+      },
+      "implementation": "node",
+      "input": "65536",
+      "round": 1,
+      "worker": {
+        "full_report_sha256": "df64d37fd51e25b2ef7b75c7fb585d160c26c210f9129141cac01e97d9c9d74f",
+        "implementation": "node",
+        "input_sha256": "216c7e75aaee7f2befbaa88176188b136b23e08ee3d9cee3b81726ed5e90395e",
+        "memory_scope": "whole fresh API worker including runtime, imports, input, checks and all calls",
+        "openssl_version": "3.5.7",
+        "peak_memory": {
+          "bytes": 44113920,
+          "method": "Node process.resourceUsage().maxRSS (KiB multiplied by 1024)"
+        },
+        "reference_checks": 1,
+        "runtime_version": "v24.19.0",
+        "sample_count": 30,
+        "samples_ns": [
+          1617000,
+          1916100,
+          1200900,
+          1141700,
+          1185100,
+          1184200,
+          1094500,
+          1150400,
+          1553100,
+          1077100,
+          1185700,
+          1147900,
+          1040000,
+          856300,
+          1046000,
+          723700,
+          854100,
+          718200,
+          708900,
+          777900,
+          1101900,
+          706700,
+          724600,
+          716200,
+          698400,
+          1001000,
+          1176900,
+          736400,
+          719700,
+          995600
+        ],
+        "schema": "ttrace.handoff-benchmark-worker/v1",
+        "summary_ns": {
+          "count": 30,
+          "max": 1916100,
+          "median": 1043000,
+          "min": 698400,
+          "p95": 1617000
+        },
+        "warmups": 5
+      }
+    },
+    {
+      "fresh_cli_reports_checked": 5,
+      "fresh_cli_samples_ns": [
+        135018900,
+        144511100,
+        133128300,
+        137060500,
+        138587500
+      ],
+      "fresh_cli_summary_ns": {
+        "count": 5,
+        "max": 144511100,
+        "median": 137060500,
+        "min": 133128300,
+        "p95": 144511100
+      },
+      "implementation": "python",
+      "input": "65536",
+      "round": 1,
+      "worker": {
+        "full_report_sha256": "df64d37fd51e25b2ef7b75c7fb585d160c26c210f9129141cac01e97d9c9d74f",
+        "implementation": "python",
+        "input_sha256": "216c7e75aaee7f2befbaa88176188b136b23e08ee3d9cee3b81726ed5e90395e",
+        "memory_scope": "whole fresh API worker including runtime, imports, input, checks and all calls",
+        "peak_memory": {
+          "bytes": 28573696,
+          "method": "GetProcessMemoryInfo.PeakWorkingSetSize (bytes)"
+        },
+        "receipt_dependencies": {
+          "cffi": "2.1.1",
+          "cryptography": "46.0.4",
+          "pycparser": "3.0"
+        },
+        "reference_checks": 1,
+        "runtime_version": "3.12.10",
+        "sample_count": 30,
+        "samples_ns": [
+          747900,
+          732800,
+          727200,
+          772100,
+          762400,
+          735500,
+          727400,
+          734000,
+          726300,
+          716900,
+          711500,
+          2304800,
+          873900,
+          784700,
+          758700,
+          881600,
+          750100,
+          732900,
+          722600,
+          724800,
+          731000,
+          721400,
+          1065700,
+          874100,
+          776900,
+          752800,
+          729100,
+          720900,
+          716600,
+          716200
+        ],
+        "schema": "ttrace.handoff-benchmark-worker/v1",
+        "summary_ns": {
+          "count": 30,
+          "max": 2304800,
+          "median": 733450.0,
+          "min": 711500,
+          "p95": 1065700
+        },
+        "warmups": 5
+      }
+    },
+    {
+      "fresh_cli_reports_checked": 5,
+      "fresh_cli_samples_ns": [
+        68450400,
+        68147500,
+        68271000,
+        73088800,
+        65876500
+      ],
+      "fresh_cli_summary_ns": {
+        "count": 5,
+        "max": 73088800,
+        "median": 68271000,
+        "min": 65876500,
+        "p95": 73088800
+      },
+      "implementation": "node",
+      "input": "75",
+      "round": 1,
+      "worker": {
+        "full_report_sha256": "a94ff4a5cd0164d7402ab637cbfdcd87d1cfc2b736b318f4149343eff600a2be",
+        "implementation": "node",
+        "input_sha256": "15d562f9edefc97899dcc31f00797571fe3b2b7d9455bd1ab2235fea8c197411",
+        "memory_scope": "whole fresh API worker including runtime, imports, input, checks and all calls",
+        "openssl_version": "3.5.7",
+        "peak_memory": {
+          "bytes": 43683840,
+          "method": "Node process.resourceUsage().maxRSS (KiB multiplied by 1024)"
+        },
+        "reference_checks": 1,
+        "runtime_version": "v24.19.0",
+        "sample_count": 30,
+        "samples_ns": [
+          1432800,
+          1734100,
+          1421300,
+          966500,
+          962400,
+          1029800,
+          1039300,
+          1075500,
+          1313900,
+          645200,
+          800000,
+          888900,
+          640900,
+          608600,
+          913100,
+          613600,
+          731800,
+          688200,
+          594400,
+          643200,
+          880900,
+          602700,
+          583500,
+          586900,
+          592100,
+          795400,
+          997100,
+          617500,
+          678500,
+          876800
+        ],
+        "schema": "ttrace.handoff-benchmark-worker/v1",
+        "summary_ns": {
+          "count": 30,
+          "max": 1734100,
+          "median": 797700,
+          "min": 583500,
+          "p95": 1432800
+        },
+        "warmups": 5
+      }
+    },
+    {
+      "fresh_cli_reports_checked": 5,
+      "fresh_cli_samples_ns": [
+        133096600,
+        134337300,
+        135579100,
+        134472800,
+        133000000
+      ],
+      "fresh_cli_summary_ns": {
+        "count": 5,
+        "max": 135579100,
+        "median": 134337300,
+        "min": 133000000,
+        "p95": 135579100
+      },
+      "implementation": "python",
+      "input": "75",
+      "round": 1,
+      "worker": {
+        "full_report_sha256": "a94ff4a5cd0164d7402ab637cbfdcd87d1cfc2b736b318f4149343eff600a2be",
+        "implementation": "python",
+        "input_sha256": "15d562f9edefc97899dcc31f00797571fe3b2b7d9455bd1ab2235fea8c197411",
+        "memory_scope": "whole fresh API worker including runtime, imports, input, checks and all calls",
+        "peak_memory": {
+          "bytes": 28540928,
+          "method": "GetProcessMemoryInfo.PeakWorkingSetSize (bytes)"
+        },
+        "receipt_dependencies": {
+          "cffi": "2.1.1",
+          "cryptography": "46.0.4",
+          "pycparser": "3.0"
+        },
+        "reference_checks": 1,
+        "runtime_version": "3.12.10",
+        "sample_count": 30,
+        "samples_ns": [
+          650800,
+          631800,
+          627600,
+          636700,
+          640700,
+          643900,
+          643900,
+          637500,
+          1169500,
+          791600,
+          693500,
+          664100,
+          662300,
+          644700,
+          653400,
+          758300,
+          647700,
+          637800,
+          630000,
+          631500,
+          636100,
+          644700,
+          637700,
+          640200,
+          637200,
+          632200,
+          631000,
+          627000,
+          649500,
+          657800
+        ],
+        "schema": "ttrace.handoff-benchmark-worker/v1",
+        "summary_ns": {
+          "count": 30,
+          "max": 1169500,
+          "median": 642300.0,
+          "min": 627000,
+          "p95": 791600
+        },
+        "warmups": 5
+      }
+    }
+  ],
+  "schema": "ttrace.handoff-benchmark/v1",
+  "source_files": {
+    "openpoc/__init__.py": {
+      "bytes": 70,
+      "sha256": "0b27e8637796df48a6c88e4fda318954f580b62f0b0366b78d72625039dbda0d"
+    },
+    "openpoc/action_receipt_compat.py": {
+      "bytes": 14605,
+      "sha256": "71f5c6f91b7141d45ae3f912de6b017fd7e013b76367b7e43a87cae826580b59"
+    },
+    "openpoc/action_receipt_compat_v01.py": {
+      "bytes": 23661,
+      "sha256": "ae1e11ed48ba6525e30705d381f39dd5ce32649d1ccbbcf2beae086f82a3cf41"
+    },
+    "openpoc/artifact_handoff_corpus.py": {
+      "bytes": 16836,
+      "sha256": "fe843ccd6c9a222a2dda184d0c73bf94984c9b0fc0e227b87c890cea1796a38a"
+    },
+    "openpoc/artifact_handoff_demo.py": {
+      "bytes": 6829,
+      "sha256": "f1355837014a5c7ba2b8bf05b2344c9711d7ed653ef9a32304db79be57d8b1b1"
+    },
+    "openpoc/asqav_capture_compat.py": {
+      "bytes": 18927,
+      "sha256": "dea31aa551b6440ee542eab2ad94d8173a13895023c69ba6f76c5eef439952ab"
+    },
+    "openpoc/asqav_frozen_package.py": {
+      "bytes": 16204,
+      "sha256": "7ea51c7b5d0660761b6c9fdc734ae93f0fadd87a5020df3d75c7bda9bd52b7c1"
+    },
+    "openpoc/effect_gate.py": {
+      "bytes": 5352,
+      "sha256": "9d01765601dfcf0d1522d47b110c06e6a3f8e8b665a6af2a65c742f7b05c8f5a"
+    },
+    "openpoc/verify_artifact_handoff.py": {
+      "bytes": 4906,
+      "sha256": "162cfcbec2fa3beb00f4bf6b728acfca64b40d46bc536b4b36ec0ad6c5392c76"
+    },
+    "openpoc/verify_assurance.py": {
+      "bytes": 5555,
+      "sha256": "93fd5b759c1bcedc6ba98875568a32dd176985f406eb7ce9ac05078dca59234f"
+    },
+    "openpoc/verify_cross_source.py": {
+      "bytes": 18708,
+      "sha256": "17c12e6fa7b0e14b81d6b1709f0c4a05c7977cf973675bb553c58703d681f254"
+    },
+    "openpoc/verify_reproducibility.py": {
+      "bytes": 17624,
+      "sha256": "6200dc823623bd37c2c5b12e1dd42610c61d0c7e699fcc986bf7f078c0d96eba"
+    },
+    "scripts/benchmark_artifact_handoff.py": {
+      "bytes": 23969,
+      "sha256": "fa3796689aab0d48e1931ba080ef0a2a4b14337635346c3b875790807350e41e"
+    },
+    "scripts/benchmark_handoff_worker.py": {
+      "bytes": 3342,
+      "sha256": "d26f48dd1a2a9358d58f31696c1ff262e1e992c59b674fb663571d75a402970b"
+    },
+    "scripts/handoff_benchmark_support.py": {
+      "bytes": 3859,
+      "sha256": "e25a90a45d0ea7a1f9a4ed2864f70aff16ba878c47ceb1c3dc43b367e9517223"
+    },
+    "ttrace/__init__.py": {
+      "bytes": 13601,
+      "sha256": "636be941303af3fe06ea08e5b8e047e4f6e88506f35af9f32371212e8465d1ed"
+    },
+    "ttrace/artifact_handoff.py": {
+      "bytes": 22092,
+      "sha256": "f521dfb5b7961fb841cc07c04b8c58ec5ada051176a7c509d661e1613592f642"
+    },
+    "ttrace/lineage_compaction.py": {
+      "bytes": 20350,
+      "sha256": "d765d5885fdeaeec4d6b4cc8b50b73e4b2961888e4f0459db5b2ae96ac5bed45"
+    },
+    "ttrace/lineage_consistency.py": {
+      "bytes": 14719,
+      "sha256": "7f29f24d0f52fb58191a7273bbf83fd463337c4d1bd84fe66cf1ef9514564287"
+    },
+    "ttrace/lineage_consistency_core.py": {
+      "bytes": 38062,
+      "sha256": "99b1afd2fb8448b686857356abb401be0884943bc1c6503be6a2f41402686b24"
+    },
+    "ttrace/lineage_membership.py": {
+      "bytes": 29703,
+      "sha256": "d823c09b35078bee0b5c979037b987462c65dc29ab8a7bc1b9fe8c92ceccd529"
+    },
+    "ttrace/lineage_witness.py": {
+      "bytes": 27693,
+      "sha256": "ec0682019d2f2cda213607430699214bfa5b99fa42db03d222105d64a47eaa08"
+    },
+    "ttrace/lineage_witness_handoff.py": {
+      "bytes": 39151,
+      "sha256": "f1ad5b7fab8157e802b1f6c7d1caded15acf406ff06565fd94922d324f55adf5"
+    },
+    "ttrace/lineage_witness_handoff_chain.py": {
+      "bytes": 28973,
+      "sha256": "035760e45c47824e8fa72a711e62ea4976cdb231a769f33459d46768be6da6ec"
+    },
+    "ttrace/lineage_witness_handoff_chain_consistency.py": {
+      "bytes": 42394,
+      "sha256": "1c67cb7a072b3294eea511b9358637a492f986133a6729ae518ea80562440b81"
+    },
+    "ttrace/lineage_witness_handoff_chain_membership.py": {
+      "bytes": 27392,
+      "sha256": "46def69d973b097070b2fd6237b4f64beb597db4cf8499908134deb34492c836"
+    },
+    "ttrace/portable_causality.py": {
+      "bytes": 28816,
+      "sha256": "bb0ace0efa9d74fdf6d02d34af929b9965b54ab776788accd510778a42dd10f3"
+    },
+    "ttrace/validation.py": {
+      "bytes": 4684,
+      "sha256": "d57bdc193c99dbd8467d2d8abdd789be6db556497cf9030451114c817f8eafd2"
+    },
+    "verifiers/node/artifact-handoff.mjs": {
+      "bytes": 27180,
+      "sha256": "dd8589c82da2ce456f6f8d340e660cdaef88cd334bc12afaef6fdd4a0756b7bb"
+    },
+    "verifiers/node/benchmark-artifact-handoff.mjs": {
+      "bytes": 3604,
+      "sha256": "5c5ba254b0b4e398f09f4ce48a54c65909f8c04657db53cb4f5ef5bccff36111"
+    }
+  },
+  "source_files_sha256": "271db12fdee586d0587ab909e7aec19632c4951a8b4fe673d1af901eaf4c2916",
+  "summary": [
+    {
+      "api_ns": {
+        "count": 60,
+        "max": 1189100,
+        "median": 641950.0,
+        "min": 618300,
+        "p95": 914900
+      },
+      "fresh_cli_ns": {
+        "count": 10,
+        "max": 141585800,
+        "median": 134689900.0,
+        "min": 133000000,
+        "p95": 141585800
+      },
+      "implementation": "python",
+      "input": "75",
+      "maximum_worker_peak_bytes": 28540928,
+      "package_bytes": 1804,
+      "receiver_context_bytes": 2220
+    },
+    {
+      "api_ns": {
+        "count": 60,
+        "max": 1734100,
+        "median": 698350.0,
+        "min": 580500,
+        "p95": 1421300
+      },
+      "fresh_cli_ns": {
+        "count": 10,
+        "max": 76800900,
+        "median": 67352300.0,
+        "min": 65212000,
+        "p95": 76800900
+      },
+      "implementation": "node",
+      "input": "75",
+      "maximum_worker_peak_bytes": 44023808,
+      "package_bytes": 1804,
+      "receiver_context_bytes": 2220
+    },
+    {
+      "api_ns": {
+        "count": 60,
+        "max": 2304800,
+        "median": 732000.0,
+        "min": 710200,
+        "p95": 874100
+      },
+      "fresh_cli_ns": {
+        "count": 10,
+        "max": 147000100,
+        "median": 136623850.0,
+        "min": 133128300,
+        "p95": 147000100
+      },
+      "implementation": "python",
+      "input": "65536",
+      "maximum_worker_peak_bytes": 28573696,
+      "package_bytes": 67274,
+      "receiver_context_bytes": 2223
+    },
+    {
+      "api_ns": {
+        "count": 60,
+        "max": 1916100,
+        "median": 850400.0,
+        "min": 689100,
+        "p95": 1553100
+      },
+      "fresh_cli_ns": {
+        "count": 10,
+        "max": 76851100,
+        "median": 68785050.0,
+        "min": 64728200,
+        "p95": 76851100
+      },
+      "implementation": "node",
+      "input": "65536",
+      "maximum_worker_peak_bytes": 44199936,
+      "package_bytes": 67274,
+      "receiver_context_bytes": 2223
+    },
+    {
+      "api_ns": {
+        "count": 60,
+        "max": 2524000,
+        "median": 2152350.0,
+        "min": 2117200,
+        "p95": 2496600
+      },
+      "fresh_cli_ns": {
+        "count": 10,
+        "max": 154056600,
+        "median": 140624950.0,
+        "min": 136928200,
+        "p95": 154056600
+      },
+      "implementation": "python",
+      "input": "1048576",
+      "maximum_worker_peak_bytes": 29532160,
+      "package_bytes": 1050320,
+      "receiver_context_bytes": 2225
+    },
+    {
+      "api_ns": {
+        "count": 60,
+        "max": 3075800,
+        "median": 2412550.0,
+        "min": 2321100,
+        "p95": 2848900
+      },
+      "fresh_cli_ns": {
+        "count": 10,
+        "max": 83751000,
+        "median": 69580400.0,
+        "min": 65461800,
+        "p95": 83751000
+      },
+      "implementation": "node",
+      "input": "1048576",
+      "maximum_worker_peak_bytes": 51830784,
+      "package_bytes": 1050320,
+      "receiver_context_bytes": 2225
+    }
+  ]
+}
