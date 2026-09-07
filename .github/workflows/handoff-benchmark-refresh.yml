@@ -30,13 +30,15 @@ jobs:
       - name: Preserve and verify exact Git blob bytes before measurement
         shell: python
         run: |
-          import hashlib, os, subprocess
+          import hashlib, os, subprocess, zipfile
           from pathlib import Path
-          # The hosted Windows default converts unmarked LF fixtures to CRLF.
-          # Restore this fresh CI checkout from its index without conversion;
-          # do not relax fixture digest or measured-source validation instead.
+          # This disposable CI checkout must use committed bytes, not Windows
+          # CRLF conversion. No fixture digest or source validator is relaxed.
           subprocess.run(['git', 'config', 'core.autocrlf', 'false'], check=True)
-          subprocess.run(['git', 'checkout-index', '--force', '--all'], check=True)
+          archive = Path(os.environ['RUNNER_TEMP']) / 'committed-source.zip'
+          subprocess.run(['git', 'archive', '--format=zip', '--output=' + str(archive), 'HEAD'], check=True)
+          with zipfile.ZipFile(archive) as source:
+              source.extractall(Path.cwd())
           entries = subprocess.check_output(['git', 'ls-files', '--stage', '-z']).decode('utf-8').split('\0')
           checked = 0
           for entry in entries:
@@ -44,9 +46,8 @@ jobs:
                   continue
               info, name = entry.split('\t', 1)
               mode, expected, stage = info.split()
-              assert stage == '0' and mode != '160000', (name, mode, stage)
-              path = Path(name)
-              raw = os.readlink(path).encode('utf-8') if path.is_symlink() else path.read_bytes()
+              assert stage == '0' and mode in ('100644', '100755'), (name, mode, stage)
+              raw = Path(name).read_bytes()
               actual = hashlib.sha1(b'blob ' + str(len(raw)).encode('ascii') + b'\0' + raw).hexdigest()
               assert actual == expected, ('checkout bytes differ from Git blob', name, expected, actual)
               checked += 1
@@ -76,8 +77,8 @@ jobs:
           for name in ('report.json', 'report.md'):
               shutil.copyfile(original / name, evidence / 'prior-baseline' / name)
               shutil.copyfile(output / name, evidence / 'baseline' / name)
-              # Runner-local only, so the unchanged committed-baseline test checks
-              # genuinely regenerated samples. No repository write or auto-commit.
+              # Runner-local only: the unchanged baseline test checks genuinely
+              # new samples. The workflow cannot commit or publish to the repo.
               shutil.copyfile(output / name, original / name)
           manifest = {
               'head_sha': os.environ['GITHUB_SHA'],
