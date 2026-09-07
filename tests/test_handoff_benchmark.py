@@ -7,7 +7,7 @@ import pytest
 
 from scripts.benchmark_artifact_handoff import (
     PARAMETERS, SCHEMA, SIZES, artifact_for_size, derive_guardrails, generated_input,
-    input_description, make_summary, render_markdown, run_benchmark, source_inventory, validate_report,
+    input_description, make_summary, measured_receipt_dependencies, render_markdown, run_benchmark, source_inventory, validate_report,
 )
 from scripts.handoff_benchmark_support import MEMORY_METHODS, checked_report, digest, process_peak_memory, summarize
 from ttrace.artifact_handoff import verify_artifact_handoff
@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def fake_report(mode="smoke"):
     """Synthetic measurement values exist only inside this unit test."""
     parameters = copy.deepcopy(PARAMETERS[mode])
+    dependencies = {"cryptography": "46.0.4", "cffi": "2.1.1", "pycparser": "3.0"}
     inputs = {}
     for size in SIZES:
         files, context = generated_input(size)
@@ -35,6 +36,8 @@ def fake_report(mode="smoke"):
                           "input_sha256": inputs[str(size)]["input_sha256"], "full_report_sha256": inputs[str(size)]["full_report_sha256"],
                           "samples_ns": api, "summary_ns": summarize(api),
                           "peak_memory": {"bytes": 10 * 1048576, "method": MEMORY_METHODS["Windows"][implementation]}}
+                if implementation == "python":
+                    worker["receipt_dependencies"] = dict(dependencies)
                 runs.append({"round": round_number, "input": str(size), "implementation": implementation, "worker": worker,
                              "fresh_cli_samples_ns": cli, "fresh_cli_summary_ns": summarize(cli),
                              "fresh_cli_reports_checked": len(cli)})
@@ -42,6 +45,7 @@ def fake_report(mode="smoke"):
     return {"schema": SCHEMA, "mode": mode, "parameters": parameters, "inputs": inputs,
             "source_files": sources, "source_files_sha256": digest(sources), "runs": runs,
             "environment": {"os": "Windows", "architecture": "unit-test", "python": "unit-test-values-not-measurements",
+                            "receipt_dependencies": dependencies,
                             "node": "unit-test-values-not-measurements"},
             "summary": make_summary(runs, inputs), "review_guardrails": derive_guardrails(runs, inputs) if mode == "baseline" else []}
 
@@ -176,3 +180,52 @@ def test_committed_baseline_reproduces_sources_inputs_statistics_and_human_repor
     assert sum(len(run["worker"]["samples_ns"]) for run in report["runs"]) == 360
     assert sum(len(run["fresh_cli_samples_ns"]) for run in report["runs"]) == 60
     assert render_markdown(report) == (root / "report.md").read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("change", [
+    lambda r: r["runs"][0]["worker"].pop("receipt_dependencies"),
+    lambda r: r["runs"][0]["worker"]["receipt_dependencies"].update(cffi="different-worker"),
+    lambda r: r["runs"][0]["worker"]["receipt_dependencies"].update(cffi=True),
+    lambda r: r["environment"]["receipt_dependencies"].update(cffi="parent-override"),
+], ids=["missing-worker", "inconsistent-workers", "wrong-type", "parent-metadata-substitution"])
+def test_measured_dependency_identity_must_agree_in_every_worker(change):
+    report = fake_report()
+    change(report)
+    with pytest.raises(ValueError):
+        validate_report(report)
+
+
+def test_driver_uses_sanitized_worker_versions_not_parent_lookup(tmp_path, monkeypatch):
+    """Mock timings only in this unit test; do not publish these as measurements."""
+    import importlib.metadata
+    import platform
+    import sys
+    from types import SimpleNamespace
+    from scripts import benchmark_artifact_handoff as driver
+
+    fixture = fake_report()
+    runtime = platform.python_version()
+    monkeypatch.setattr(importlib.metadata, "version", lambda name: "parent-override")
+    monkeypatch.setattr(driver.shutil, "which", lambda name: sys.executable)
+    monkeypatch.setattr(driver.subprocess, "run", lambda command, **kwargs: SimpleNamespace(
+        stdout="unit-test-values-not-measurements" if command[-1] == "--version" else "0" * 40))
+
+    def fake_child(command, env):
+        assert not any(name.upper() in {"PYTHONPATH", "PYTHONHOME", "NODE_PATH", "NODE_OPTIONS"} for name in env)
+        size = next(size for size in SIZES if any(str(tmp_path / "result/inputs" / str(size) / "package") == item for item in command))
+        if any("benchmark_handoff_worker.py" in item or "benchmark-artifact-handoff.mjs" in item for item in command):
+            implementation = "python" if any("benchmark_handoff_worker.py" in item for item in command) else "node"
+            worker = copy.deepcopy(next(run["worker"] for run in fixture["runs"]
+                                        if run["input"] == str(size) and run["implementation"] == implementation))
+            if implementation == "python":
+                worker["runtime_version"] = runtime
+            worker["peak_memory"]["method"] = MEMORY_METHODS[platform.system()][implementation]
+            return worker, 123
+        files, context = generated_input(size)
+        return verify_artifact_handoff(files, context), 123
+
+    monkeypatch.setenv("PYTHONPATH", "unit-test-parent-only-override")
+    monkeypatch.setattr(driver, "run_json", fake_child)
+    report = driver.run_benchmark(tmp_path / "result", "node", mode="smoke")
+    assert report["environment"]["receipt_dependencies"] == measured_receipt_dependencies(fixture["runs"])
+    assert "parent-override" not in report["environment"]["receipt_dependencies"].values()

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import importlib.metadata
 import json
 import math
 import os
@@ -106,6 +105,18 @@ def derive_guardrails(runs: list[dict], inputs: dict) -> list[dict]:
     return result
 
 
+def measured_receipt_dependencies(runs: list[dict]) -> dict:
+    """Use the sanitized timed processes, never the parent's inherited sys.path."""
+    versions = [run["worker"].get("receipt_dependencies") for run in runs if run["implementation"] == "python"]
+    if not versions or any(not isinstance(item, dict) or set(item) != {"cryptography", "cffi", "pycparser"}
+                           or any(type(value) is not str or not value.strip() for value in item.values())
+                           for item in versions):
+        raise ValueError("missing measured Python dependency versions")
+    if any(item != versions[0] for item in versions):
+        raise ValueError("Python dependency versions changed between measured workers")
+    return dict(versions[0])
+
+
 def validate_report(report: dict, *, check_sources: bool = False) -> None:
     if report.get("schema") != SCHEMA or report.get("mode") not in PARAMETERS:
         raise ValueError("unknown benchmark report")
@@ -135,6 +146,8 @@ def validate_report(report: dict, *, check_sources: bool = False) -> None:
     runs = report.get("runs", [])
     if [(run["round"], run["input"], run["implementation"]) for run in runs] != expected_order:
         raise ValueError("missing, duplicate or misordered benchmark run")
+    if report["environment"].get("receipt_dependencies") != measured_receipt_dependencies(runs):
+        raise ValueError("recorded dependencies differ from the measured workers")
     for run in runs:
         worker = run["worker"]
         if type(run["round"]) is not int:
@@ -293,7 +306,7 @@ def run_benchmark(destination: Path, node: str, *, mode: str = "baseline") -> di
               "environment": {"os": platform.system(), "os_release": platform.release(), "architecture": platform.machine(),
                               "logical_cpus": os.cpu_count(), "python": platform.python_version(), "node": node_version,
                               "python_hash_seed": 0, "project_loading": "source checkout; module CLI",
-                              "receipt_dependencies": {name: importlib.metadata.version(name) for name in ("cryptography", "cffi", "pycparser")}},
+                              "receipt_dependencies": measured_receipt_dependencies(runs)},
               "inputs": inputs, "runs": runs, "summary": make_summary(runs, inputs),
               "review_guardrails": derive_guardrails(runs, inputs) if mode == "baseline" else [],
               "non_claims": ["production SLA", "cold disk cache", "incremental heap", "fresh CLI peak memory",

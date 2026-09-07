@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.metadata
 import json
 import platform
 import sys
@@ -43,8 +44,10 @@ def run(package: Path, context: Path, *, warmups: int, samples: int) -> dict:
             durations.append(elapsed)
     inventory = {name: {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()} for name, raw in files.items()}
     inventory["receiver-context.json"] = {"bytes": len(context_bytes), "sha256": hashlib.sha256(context_bytes).hexdigest()}
+    dependencies = {name: importlib.metadata.version(name) for name in ("cryptography", "cffi", "pycparser")}
     memory = process_peak_memory()
     return {"schema": "ttrace.handoff-benchmark-worker/v1", "implementation": "python",
+            "receipt_dependencies": dependencies,
             "runtime_version": platform.python_version(), "reference_checks": 1, "warmups": warmups, "sample_count": samples,
             "input_sha256": digest(inventory), "full_report_sha256": report_digest,
             "samples_ns": durations, "summary_ns": summarize(durations), "peak_memory": memory,

@@ -70,6 +70,9 @@ Negative/insufficient results or changed input hashes abort the measurement.
   median/min/max, actual source-file hashes, runtime/dependency versions and
   each input/result identity are retained. Source identity covers the runtime
   project modules and benchmark instrumentation, not third-party binary hashes.
+  Receipt dependency versions come from every sanitized Python measurement
+  worker and must agree across all rounds; the driver's inherited Python path
+  is not used to identify the libraries in the timed child processes.
   `repository_base_commit` gives the checkout's commit; the full file inventory
   identifies the measured bytes even when benchmark work was uncommitted.
 
