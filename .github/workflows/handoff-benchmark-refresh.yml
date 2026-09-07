@@ -1,0 +1,104 @@
+name: Handoff Windows baseline refresh
+run-name: Handoff Windows evidence at ${{ github.sha }}
+
+on:
+  push:
+    branches: [feat/handoff-measurement-baseline-v0-1]
+    paths:
+      - .github/workflows/handoff-benchmark-refresh.yml
+      - scripts/benchmark_artifact_handoff.py
+      - tests/test_handoff_benchmark_environment.py
+
+permissions:
+  contents: read
+
+jobs:
+  windows-evidence:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24.19.0'
+      - name: Install pinned receipt dependencies and test runner
+        run: python -m pip install -e . 'pytest==8.4.2' 'cryptography==46.0.4' 'cffi==2.1.1' 'pycparser==3.0'
+      - name: Check instrumentation regressions before measuring
+        run: python -m pytest tests/test_handoff_benchmark_environment.py --junitxml=handoff-evidence/instrumentation-tests.xml
+      - name: Collect and validate new Windows samples without altering old evidence
+        shell: python
+        run: |
+          import hashlib, json, os, shutil, subprocess, sys
+          from pathlib import Path
+          evidence = Path('handoff-evidence')
+          output = Path(os.environ['RUNNER_TEMP']) / ('handoff-baseline-' + os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT'])
+          subprocess.run([sys.executable, 'scripts/benchmark_artifact_handoff.py', 'run', str(output)], check=True)
+          subprocess.run([sys.executable, 'scripts/benchmark_artifact_handoff.py', 'validate', str(output / 'report.json')], check=True)
+          report = json.loads((output / 'report.json').read_bytes())
+          assert report['environment']['os'] == 'Windows'
+          assert report['repository_base_commit'] == os.environ['GITHUB_SHA']
+          assert len(report['runs']) == 12
+          assert sum(len(run['worker']['samples_ns']) for run in report['runs']) == 360
+          assert sum(len(run['fresh_cli_samples_ns']) for run in report['runs']) == 60
+          original = Path('docs/benchmarks/artifact-handoff-v0.1/windows')
+          for target in ('baseline', 'prior-baseline'):
+              (evidence / target).mkdir(parents=True, exist_ok=False)
+          for name in ('report.json', 'report.md'):
+              shutil.copyfile(original / name, evidence / 'prior-baseline' / name)
+              shutil.copyfile(output / name, evidence / 'baseline' / name)
+              # Runner-local only, so the unchanged committed-baseline test checks
+              # genuinely regenerated samples. No repository write or auto-commit.
+              shutil.copyfile(output / name, original / name)
+          manifest = {
+              'head_sha': os.environ['GITHUB_SHA'],
+              'run_id': os.environ['GITHUB_RUN_ID'],
+              'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+              'host_class': 'GitHub-hosted windows-2022; not the prior desktop host',
+              'source_files_sha256': report['source_files_sha256'],
+              'report_sha256': hashlib.sha256((output / 'report.json').read_bytes()).hexdigest(),
+              'non_claims': ['same-host speed comparison', 'automatic approval', 'measurement provenance authentication'],
+          }
+          (evidence / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+      - name: Run the full suite against the newly generated source-bound baseline
+        run: python -m pytest --junitxml=handoff-evidence/full-suite.xml
+      - name: Test standalone Node verification
+        run: node --test verifiers/node/artifact-handoff.test.mjs
+      - name: Check real smoke separately from the baseline
+        shell: python
+        run: |
+          import os, shutil, subprocess, sys
+          from pathlib import Path
+          output = Path(os.environ['RUNNER_TEMP']) / ('handoff-smoke-' + os.environ['GITHUB_RUN_ID'])
+          subprocess.run([sys.executable, 'scripts/benchmark_artifact_handoff.py', 'smoke', str(output)], check=True)
+          subprocess.run([sys.executable, 'scripts/benchmark_artifact_handoff.py', 'validate', str(output / 'report.json')], check=True)
+          shutil.copytree(output, Path('handoff-evidence/smoke'))
+      - name: Preserve reviewable workspace and require unchanged measured source
+        shell: python
+        run: |
+          import subprocess, zipfile
+          from pathlib import Path
+          from scripts.benchmark_artifact_handoff import source_inventory, validate_report
+          import json
+          report = json.loads(Path('handoff-evidence/baseline/report.json').read_bytes())
+          validate_report(report, check_sources=True)
+          changed = subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines()
+          assert set(changed) <= {'docs/benchmarks/artifact-handoff-v0.1/windows/report.json', 'docs/benchmarks/artifact-handoff-v0.1/windows/report.md'}, changed
+          paths = subprocess.check_output(['git', 'ls-files', '-z']).decode('utf-8').split('\0')
+          with zipfile.ZipFile('handoff-evidence/workspace-after-regeneration.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+              for name in paths:
+                  if name and Path(name).is_file():
+                      archive.write(name, name)
+      - name: Upload samples, exact-head metadata and test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: handoff-windows-${{ github.sha }}
+          path: handoff-evidence/
+          if-no-files-found: error
+          retention-days: 14
