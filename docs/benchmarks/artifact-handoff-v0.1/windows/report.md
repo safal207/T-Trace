@@ -7,16 +7,16 @@ synthetic inputs, not production SLAs, installed-console startup measurements,
 external-user onboarding time or proof of an external deployment.
 
 Environment: Windows / AMD64; Python 3.12.14; Node v24.19.0.
-Measured source inventory SHA-256: `09d6fb2af50577359dfe21867f280715061503df828d4d425927040fbe9eeb30`.
+Measured source inventory SHA-256: `1e7d90aacbdc62ecd3e9180e32ed17b3ec7a7075c0f84559e930dac88db50ea4`.
 
 | Artifact bytes | Runtime | API median / p95 ms | Fresh CLI median / p95 ms | Worker peak MiB | Package / context bytes |
 |---:|---|---:|---:|---:|---:|
-| 75 | python | 2.105 / 3.407 | 641.291 / 690.951 | 27.6 | 1804 / 2220 |
-| 75 | node | 2.242 / 4.740 | 241.084 / 288.768 | 46.5 | 1804 / 2220 |
-| 65536 | python | 2.262 / 3.553 | 631.857 / 670.225 | 27.8 | 67274 / 2223 |
-| 65536 | node | 2.782 / 4.491 | 254.116 / 279.258 | 45.7 | 67274 / 2223 |
-| 1048576 | python | 5.527 / 6.679 | 632.051 / 682.515 | 28.7 | 1050320 / 2225 |
-| 1048576 | node | 6.162 / 8.169 | 247.395 / 305.364 | 52.3 | 1050320 / 2225 |
+| 75 | python | 2.988 / 4.410 | 808.499 / 1108.897 | 30.3 | 1804 / 2220 |
+| 75 | node | 3.365 / 5.377 | 280.864 / 388.481 | 45.4 | 1804 / 2220 |
+| 65536 | python | 3.375 / 4.270 | 934.747 / 1258.925 | 30.6 | 67274 / 2223 |
+| 65536 | node | 3.546 / 5.625 | 322.566 / 428.861 | 45.7 | 67274 / 2223 |
+| 1048576 | python | 6.614 / 7.971 | 794.965 / 917.202 | 31.3 | 1050320 / 2225 |
+| 1048576 | node | 7.397 / 9.536 | 328.071 / 350.771 | 52.2 | 1050320 / 2225 |
 
 ## Method and limitations
 
@@ -50,9 +50,9 @@ hardware limits or absolute-time CI assertions.
 
 | Artifact bytes | Runtime | API p95 ms | Fresh CLI p95 ms | Worker peak MiB |
 |---:|---|---:|---:|---:|
-| 75 | python | 14 | 2770 | 56 |
-| 75 | node | 35 | 1160 | 94 |
-| 65536 | python | 15 | 2690 | 56 |
-| 65536 | node | 19 | 1120 | 92 |
-| 1048576 | python | 28 | 2740 | 58 |
-| 1048576 | node | 33 | 1230 | 105 |
+| 75 | python | 19 | 4440 | 61 |
+| 75 | node | 26 | 1560 | 91 |
+| 65536 | python | 22 | 5040 | 62 |
+| 65536 | node | 25 | 1720 | 92 |
+| 1048576 | python | 33 | 3670 | 63 |
+| 1048576 | node | 43 | 1410 | 105 |

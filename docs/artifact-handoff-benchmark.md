@@ -12,9 +12,9 @@ The recorded Windows baseline is available as a
 [human report](benchmarks/artifact-handoff-v0.1/windows/report.md) and
 [machine record with every sample](benchmarks/artifact-handoff-v0.1/windows/report.json).
 It uses Python 3.12.14, Node 24.19.0 and cryptography 46.0.4, with two full
-rounds on source commit `fb1868108748584ded59e826a5d993029fa3403e`.
+rounds on source commit `1b039b6635ebffb0b19e9c082cc91c77940e67c7`.
 The measured-source inventory is
-`09d6fb2af50577359dfe21867f280715061503df828d4d425927040fbe9eeb30`.
+`1e7d90aacbdc62ecd3e9180e32ed17b3ec7a7075c0f84559e930dac88db50ea4`.
 The committed record can be checked with the validator below; fixture bytes
 are reproducibly regenerated and their identities compared, not assumed.
 
