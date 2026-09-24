@@ -140,6 +140,8 @@ prove the outage cause, execution of missing actions, or non-bypassability of a
 deployment. The comparison covers these three vectors, not the entire Asqav
 verifier or a production system.
 
+The [Asqav SDK independent-runs registry](https://github.com/jagmarques/asqav-sdk/blob/26b994b6881d993778feab74d620ef11eb2a9216/verifier/independent-runs.json#L6-L19) publicly lists this bounded 3/3 run with T-Trace PR #38 and the pinned upstream commit. The registry records the runner's result; it is not a separate Asqav rerun or endorsement.
+
 Evidence: [report](docs/asqav-capture-compatibility.md) ·
 [verifier](openpoc/asqav_capture_compat.py) ·
 [pinned workflow](.github/workflows/asqav-capture-compatibility.yml).
