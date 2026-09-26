@@ -142,6 +142,29 @@ verifier or a production system.
 
 The [Asqav SDK independent-runs registry](https://github.com/jagmarques/asqav-sdk/blob/26b994b6881d993778feab74d620ef11eb2a9216/verifier/independent-runs.json#L6-L19) publicly lists this bounded 3/3 run with T-Trace PR #38 and the pinned upstream commit. The registry records the runner's result; it is not a separate Asqav rerun or endorsement.
 
+Run `2026-09-04-t-trace-pr38` records `uses_asqav_code=false`. Its head and
+merge pins identify the original PR #38, not later T-Trace changes.
+
+**Later upstream context, not additional test coverage:** [draft `-09`
+(2026-09-21), §12.14](https://datatracker.ietf.org/doc/html/draft-marques-asqav-compliance-receipts-09#section-12.14)
+explicitly excludes Action execution/completion and exactly-once effects;
+effect idempotency remains the receiver's responsibility.
+[§5.5](https://datatracker.ietf.org/doc/html/draft-marques-asqav-compliance-receipts-09#section-5.5)
+treats anchors separately: absent/empty anchors are permitted but are not
+verified anchor evidence, and the selected relying-party policy may still
+require anchors.
+
+The [upstream hook mapping at `bd002c0`](https://github.com/jagmarques/asqav-sdk/blob/bd002c0c9ad863fa0b1c4de675f6378b7321dda0/python/src/asqav/cli_hook.py)
+forwards a nonempty string `tool_use_id` as `invocation_ref`. This supplies a
+correlation value, not an effect count or idempotency guarantee. PR #38 did not
+exercise that later hook path; this note is source/document inspection, not a
+new hook or receiver run.
+
+The result remains three-vector bounded interoperability, **not full-profile
+conformance**. It does not prove global capture completeness, deployment-level
+non-bypassability, policy evaluation of unsigned actions, or absence of effects
+outside the receipt path. Original reports and test pins remain unchanged.
+
 Evidence: [report](docs/asqav-capture-compatibility.md) ·
 [verifier](openpoc/asqav_capture_compat.py) ·
 [pinned workflow](.github/workflows/asqav-capture-compatibility.yml).
