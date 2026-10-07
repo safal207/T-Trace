@@ -40,6 +40,10 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 
 **External interoperability:** The recorded Governex review includes a public link to the independent T-Trace/OpenPoC evidence and the draft author's confirmation of planned RFC 7942 Implementation Status credit for `-01`. That historical confirmation is not a claim about publication status today, co-authorship, IETF adoption, or endorsement.
 
+**Public source:** On 25 August 2026, Nancy Sahu described the Governex conformance suite on the [IETF Agentproto mailing list](https://mailarchive.ietf.org/arch/msg/agentproto/hdNCHMgFckolSgnefTlpRiwNQD8/) as "verified by two independent implementations" and linked the upstream vectors repository. That message documents how the suite was publicly presented; it does not identify T-Trace as either of those implementations and is not an IETF adoption or endorsement claim.
+
+**Current publication status (checked 7 October 2026):** [IETF Datatracker](https://datatracker.ietf.org/doc/draft-sahu-agent-action-receipts/) lists only `draft-sahu-agent-action-receipts-00`, dated 16 August 2026. Its published Implementation Status does not name Aleksei Safonov or T-Trace. The pinned T-Trace/OpenPoC `-01` 18/18 result is repository-level interoperability evidence for that upstream vector state, not evidence that an IETF `-01` revision has been published.
+
 **Start here:** [Reviewer path: run, interpret, and bound the result](docs/reviewer-path.md). It connects the base trace, OpenPoC-01/02/03, and pinned external receipts without turning one successful check into a broader assurance claim.
 <!-- seo-product-intro:end -->
 

@@ -6,6 +6,10 @@
 - Verifier: `openpoc/action_receipt_compat.py`
 - Upstream verifier execution: **disabled**; CI reads only the manifest and vector data.
 
+## External public reference
+
+On 25 August 2026, Nancy Sahu described the Governex conformance suite on the [IETF Agentproto mailing list](https://mailarchive.ietf.org/arch/msg/agentproto/hdNCHMgFckolSgnefTlpRiwNQD8/) as "verified by two independent implementations" and linked the upstream vectors repository. This records the suite's public interoperability claim; it does not identify T-Trace as either of those implementations and does not constitute IETF adoption or endorsement.
+
 ## Result
 
 **13/13 vectors agree; 0 disagree; 0 unsupported.**
