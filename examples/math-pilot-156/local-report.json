@@ -5,9 +5,10 @@
       "status": "NOT_RUN"
     },
     "focused_controls": {
+      "dependency_snapshot_tests": 12,
       "inventory_policy_tests": 3,
       "preparation_tests": 15,
-      "proof_fixture_kind": "synthetic subprocesses only",
+      "proof_fixture_kind": "synthetic subprocesses and Git fixtures only",
       "receipt_tests": 37,
       "status": "PASS"
     },
@@ -34,11 +35,11 @@
       "errors": 0,
       "evidence": "local-tests.junit.xml",
       "failures": 0,
-      "junit_reported_cases": 598,
+      "junit_reported_cases": 610,
       "skipped": 0,
       "status": "PASS",
       "subtests_passed": 5,
-      "tests_passed": 593
+      "tests_passed": 605
     },
     "runner_static_checks": {
       "checks": [
@@ -63,7 +64,7 @@
       "status": "PASS"
     }
   },
-  "collected_at": "2026-10-07T12:21:47.536049+00:00",
+  "collected_at": "2026-10-07T12:36:06.790915+00:00",
   "implementation_base_commit": "353b0d9e497291529cb20c28d6ab45a5b50cc008",
   "implementation_file_snapshots": [
     {
@@ -80,7 +81,7 @@
     },
     {
       "path": "scripts/run_math_pilot_156.sh",
-      "sha256": "215d695a3357351b1859738031c0ac066214b6a47c1b033d6e234babe4133182"
+      "sha256": "1565d688d06dc93f68d41d219e1b545305611c99c8175ea0d5c5f54ba893570c"
     },
     {
       "path": "scripts/math_pilot_no_unix.c",
@@ -88,7 +89,7 @@
     },
     {
       "path": ".github/workflows/math-pilot-156.yml",
-      "sha256": "5e78b1c22267a80d73edd16c62ca71e35f1d91dad33136cf59f17b745dff9e75"
+      "sha256": "b0feb3037dcc3d58d40cfacfda2caff318d6b6e83e57ae45279614aa0e7b89aa"
     },
     {
       "path": "tests/test_math_pilot.py",
@@ -101,6 +102,14 @@
     {
       "path": "tests/test_math_pilot_inventory_binding.py",
       "sha256": "4263aee759fc2dce2b6da34f7e2200bcb3d8258540a7bac5f2bc8a39634ef904"
+    },
+    {
+      "path": "scripts/math_pilot_dependencies.py",
+      "sha256": "f40e0f2da3dd28aeda5460b2db883515168b99e42ad200b40d919cb45e0a49f3"
+    },
+    {
+      "path": "tests/test_math_pilot_dependencies.py",
+      "sha256": "2c28274ded65374796cf68b0e908fdaa0b0e3e374e79e66c290fd022abac4668"
     }
   ],
   "independently_retained_input_manifest_sha256": "a90de3c2d2459f53faade72cb8fc4a1f08e244f77419c580c2405c180491af78",

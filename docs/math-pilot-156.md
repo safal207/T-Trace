@@ -54,6 +54,11 @@ The original large upstream Lakefile and dependency manifest are retained under
 **selected-module reproduction profile**, not a build of the entire published
 library. The derived build file and selected Mathlib revision are also hashed.
 
+Hosted dependency snapshots verify every tracked Git blob in the selected
+dependency checkouts. A tracked symbolic link is recorded by its literal link
+text and Git mode, without hashing the destination's content. Absolute targets,
+targets outside the dependency checkout, and replaced links are rejected.
+
 ## Receipt adapter
 
 `python -m openpoc.math_pilot` provides `create`, `preflight`, `record`, and
@@ -106,7 +111,7 @@ attacks; runtime path resolution; timeout and failure; and semantic overclaims.
 They do not execute invalid Lean proofs.
 
 ```bash
-python -m pytest tests/test_math_pilot.py tests/test_math_pilot_preparation.py
+python -m pytest tests/test_math_pilot*.py
 ```
 
 The hosted workflow attempts real Comparator checking only after the runtime

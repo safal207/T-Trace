@@ -260,45 +260,7 @@ cp "$MATH_BUNDLE/lake-manifest.json" "$MATH_EVIDENCE/selected-lake-manifest.json
 
 # Capture every tracked source byte of each selected Git dependency.  Lake's
 # compiled Mathlib cache is explicitly a trust assumption, not rebuilt here.
-cat > "$MATH_RUN_ROOT/dependency_snapshot.py" <<'PY'
-import hashlib, json, pathlib, re, subprocess, sys
-root = pathlib.Path(sys.argv[1])
-manifest = json.loads((root / 'lake-manifest.json').read_text())
-package_root = root / manifest.get('packagesDir', '.lake/packages')
-mathlib_packages = json.loads((package_root / 'mathlib/lake-manifest.json').read_text())['packages']
-expected = {package['name']: package for package in mathlib_packages}
-selected = {package['name']: package for package in manifest['packages'] if package['name'] != 'mathlib'}
-assert set(selected) == set(expected), 'Selected dependency names differ from pinned Mathlib manifest'
-for name, package in selected.items():
-    assert package['type'] == expected[name]['type'] == 'git'
-    assert (package['url'], package['rev']) == (expected[name]['url'], expected[name]['rev']), name
-items = []
-for package in manifest['packages']:
-    assert package['type'] == 'git' and re.fullmatch('[0-9a-f]{40}', package['rev']), package
-    repo = package_root / package['name']
-    env = {'PATH': '/usr/bin:/bin', 'GIT_NO_REPLACE_OBJECTS': '1', 'GIT_NO_LAZY_FETCH': '1'}
-    def git(*args):
-        return subprocess.check_output(['git', '--no-replace-objects', '-C', str(repo), *args], env=env)
-    assert git('rev-parse', 'HEAD').decode().strip() == package['rev'], package
-    assert not git('for-each-ref', '--format=%(refname)', 'refs/replace').strip()
-    files = []
-    for entry in git('ls-tree', '-r', '-z', 'HEAD').split(b'\0'):
-        if not entry: continue
-        metadata, path = entry.split(b'\t', 1)
-        mode, kind, blob = metadata.decode().split()
-        path = path.decode()
-        assert kind == 'blob' and mode in ('100644', '100755'), (package['name'], path, mode)
-        target = repo / path
-        assert target.is_file() and not target.is_symlink(), target
-        raw = target.read_bytes()
-        assert hashlib.sha1(f'blob {len(raw)}\0'.encode() + raw).hexdigest() == blob, target
-        files.append({'path': path, 'sha256': hashlib.sha256(raw).hexdigest(), 'git_blob': blob})
-    items.append({'name': package['name'], 'url': package['url'], 'commit': package['rev'], 'files': files})
-assert any(x['name'] == 'mathlib' and x['commit'] == 'd13f23b723b8a846827a245b89c10fc7d3f11612' for x in items), 'Unexpected Mathlib pin'
-result = {'schema': 'ttrace.math-pilot.dependency-snapshot/v1', 'scope': 'selected-manifest-tracked-source-bytes', 'packages': items, 'compiled_cache': 'TRUSTED_NOT_REBUILT'}
-pathlib.Path(sys.argv[2]).write_text(json.dumps(result, sort_keys=True, separators=(',', ':')) + '\n')
-PY
-python3 "$MATH_RUN_ROOT/dependency_snapshot.py" "$MATH_BUNDLE" "$MATH_BUNDLE/dependency-source-inventory.json"
+python3 "$MATH_REPO_ROOT/scripts/math_pilot_dependencies.py" "$MATH_BUNDLE" "$MATH_BUNDLE/dependency-source-inventory.json"
 cp "$MATH_BUNDLE/dependency-source-inventory.json" "$MATH_EVIDENCE/dependency-source-inventory.json"
 
 MATH_PHASE=receipt-manifest
@@ -338,7 +300,7 @@ env -i PATH="$MATH_TOOL_PATH" HOME="$MATH_RUNNER_HOME" PYTHONPATH="$MATH_REPO_RO
   lake env "$MATH_COMPARATOR" "$MATH_BUNDLE/ComparatorChallenges/BorsukNine.json"
 
 MATH_PHASE=postrun-source-and-receipt-check
-python3 "$MATH_RUN_ROOT/dependency_snapshot.py" "$MATH_BUNDLE" "$MATH_EVIDENCE/dependency-source-inventory.after.json"
+python3 "$MATH_REPO_ROOT/scripts/math_pilot_dependencies.py" "$MATH_BUNDLE" "$MATH_EVIDENCE/dependency-source-inventory.after.json"
 cmp "$MATH_BUNDLE/dependency-source-inventory.json" "$MATH_EVIDENCE/dependency-source-inventory.after.json"
 env -i PATH=/usr/bin:/bin PYTHONPATH="$MATH_REPO_ROOT" python3 -m openpoc.math_pilot verify \
   --bundle "$MATH_RUN_ROOT/bundle" --manifest "$MATH_RUN_ROOT/bundle/manifest.json" \
