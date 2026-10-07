@@ -1,0 +1,128 @@
+{
+  "checks": {
+    "euclidean_nine_corollary": {
+      "selected_in_config": false,
+      "status": "NOT_RUN"
+    },
+    "focused_controls": {
+      "dependency_snapshot_tests": 12,
+      "inventory_policy_tests": 3,
+      "preparation_tests": 15,
+      "proof_fixture_kind": "synthetic subprocesses and Git fixtures only",
+      "receipt_tests": 37,
+      "status": "PASS"
+    },
+    "formal_proof": {
+      "evidence": "runtime-preflight.json",
+      "reason": "Required Landlock syscall returns ENOSYS38; Lean --version also fails startup",
+      "status": "NOT_RUN"
+    },
+    "independent_second_proof_run": {
+      "status": "NOT_RUN"
+    },
+    "input_preflight": {
+      "declared_files": 278,
+      "proof_execution": "NOT_RUN",
+      "status": "PASS"
+    },
+    "negative_lean_controls": {
+      "status": "NOT_RUN"
+    },
+    "paper_alignment": {
+      "status": "NEEDS_REVIEW"
+    },
+    "python_suite": {
+      "errors": 0,
+      "evidence": "local-tests.junit.xml",
+      "failures": 0,
+      "junit_reported_cases": 610,
+      "skipped": 0,
+      "status": "PASS",
+      "subtests_passed": 5,
+      "tests_passed": 605
+    },
+    "runner_static_checks": {
+      "checks": [
+        "bash -n",
+        "gcc -Wall -Wextra -Werror",
+        "independent review"
+      ],
+      "status": "PASS"
+    },
+    "scientific_novelty": {
+      "status": "NEEDS_REVIEW"
+    },
+    "source_preparation": {
+      "local_lean_lines": 78964,
+      "local_modules": 269,
+      "status": "PASS",
+      "upstream_dependency_bytes_verified": false
+    },
+    "syscall_guard_control": {
+      "evidence": "syscall-guard-control.json",
+      "scope": "our guard only, no Comparator execution",
+      "status": "PASS"
+    }
+  },
+  "collected_at": "2026-10-07T12:36:06.790915+00:00",
+  "implementation_base_commit": "353b0d9e497291529cb20c28d6ab45a5b50cc008",
+  "implementation_file_snapshots": [
+    {
+      "path": "openpoc/math_pilot.py",
+      "sha256": "76bd663869fc2620638f02e131bf03caa39aeafa821805727fce20c6985f26da"
+    },
+    {
+      "path": "scripts/prepare_math_pilot.py",
+      "sha256": "ff42bccee76cd96cc1f0e3edb68fb4ba7d3b4c0600ebbb3e40c270fc2462424e"
+    },
+    {
+      "path": "scripts/create_math_pilot_manifest.py",
+      "sha256": "575d8b25d360e399280e43ad54cfc84a5705f92db6e2b06dc6da64eb17484886"
+    },
+    {
+      "path": "scripts/run_math_pilot_156.sh",
+      "sha256": "1565d688d06dc93f68d41d219e1b545305611c99c8175ea0d5c5f54ba893570c"
+    },
+    {
+      "path": "scripts/math_pilot_no_unix.c",
+      "sha256": "a84007117731458afb2614cba5a90df7a531a1711fe3076ed40d86ab7378cfe7"
+    },
+    {
+      "path": ".github/workflows/math-pilot-156.yml",
+      "sha256": "b0feb3037dcc3d58d40cfacfda2caff318d6b6e83e57ae45279614aa0e7b89aa"
+    },
+    {
+      "path": "tests/test_math_pilot.py",
+      "sha256": "d6dd5af9c5b1de24d0eb2fdad613478a8976da8b041df943f8982fe9d1f4c21a"
+    },
+    {
+      "path": "tests/test_math_pilot_preparation.py",
+      "sha256": "5a6bedea38acedee2d56030cb3ac2d7a634815e3fab518f3d3406e14da98a816"
+    },
+    {
+      "path": "tests/test_math_pilot_inventory_binding.py",
+      "sha256": "4263aee759fc2dce2b6da34f7e2200bcb3d8258540a7bac5f2bc8a39634ef904"
+    },
+    {
+      "path": "scripts/math_pilot_dependencies.py",
+      "sha256": "f40e0f2da3dd28aeda5460b2db883515168b99e42ad200b40d919cb45e0a49f3"
+    },
+    {
+      "path": "tests/test_math_pilot_dependencies.py",
+      "sha256": "2c28274ded65374796cf68b0e908fdaa0b0e3e374e79e66c290fd022abac4668"
+    }
+  ],
+  "independently_retained_input_manifest_sha256": "a90de3c2d2459f53faade72cb8fc4a1f08e244f77419c580c2405c180491af78",
+  "limitations": [
+    "Receipts are unsigned; issuer authenticity is not established.",
+    "Pre/post snapshots do not detect transient changes restored between snapshots.",
+    "Static lexical absence of sorry/admit/axiom does not establish theorem truth.",
+    "Hosted workflow results must be read separately at its exact T-Trace commit."
+  ],
+  "overall": "INSUFFICIENT_FOR_FORMAL_PROOF_VERIFICATION",
+  "profile": "selected-module-mathlib-only",
+  "proof_semantic_status": "NOT_ESTABLISHED",
+  "schema": "ttrace.math-pilot.local-report/v1",
+  "selected_theorem": "OAI.BorsukNine.main_theorem",
+  "source_commit": "adc7f1241b42e322a6451854ab7e4b4c146bf78a"
+}

@@ -1,0 +1,1683 @@
+{
+  "config_path": "lean/ComparatorChallenges/BorsukNine.json",
+  "coverage": "declared-inputs-only",
+  "inputs": [
+    {
+      "path": "lean/ComparatorChallenges/BorsukNine.json",
+      "role": "config",
+      "sha256": "166280fe4f1677ef284ff142354470b9fb18b030ce8ff5632d9790c8aa5e4f43",
+      "size_bytes": 306
+    },
+    {
+      "path": "lean/ComparatorChallenges/BorsukNine.lean",
+      "role": "source",
+      "sha256": "c097288178f7b71023274b9cc3e5b600fad2e9b4c85bd635b7bf06c307fc631c",
+      "size_bytes": 826
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Counterexample.lean",
+      "role": "source",
+      "sha256": "d0eba420bfb1ea328656febc8f52fdc9709831729d114ce1785d2fff18da9ae8",
+      "size_bytes": 2277
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases001.lean",
+      "role": "source",
+      "sha256": "98b830a8244031b0a7bb02cd9f20d052cc10a14642e68337acc673779c607aa9",
+      "size_bytes": 24844
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases002.lean",
+      "role": "source",
+      "sha256": "62ff992d44137f7a034f530f677da693c36e298f30e144759b3bc49f68572dd8",
+      "size_bytes": 27178
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases003.lean",
+      "role": "source",
+      "sha256": "cf8f76ff2cc6594ff42ae0476fd0d9ce1adec8bb30471b91ed8feaa017bb709f",
+      "size_bytes": 27935
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases004.lean",
+      "role": "source",
+      "sha256": "9891ec94f92f36389996e9e261b7b8063560c076dfcfc63730d370e2edd3dce4",
+      "size_bytes": 27347
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases005.lean",
+      "role": "source",
+      "sha256": "6cbce79957d09d463c0ee7ae392d754c5ef1981e1b2f5659e789545471337086",
+      "size_bytes": 28717
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases006.lean",
+      "role": "source",
+      "sha256": "6bf9d359666b0295d490b1b14f71b32b10302a3709898b62ad95f48eb4ebd15e",
+      "size_bytes": 25592
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases007.lean",
+      "role": "source",
+      "sha256": "6b73a84cce9e87fc55fe615bb0de93eded06d3be191d492bfe35a65d4811ad65",
+      "size_bytes": 26433
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases008.lean",
+      "role": "source",
+      "sha256": "bf57f3bd79b25998120b3ef3047f98de5463eb7169d4c74c9e1a0895b01759c3",
+      "size_bytes": 25544
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases009.lean",
+      "role": "source",
+      "sha256": "673e25c1d80bef0a5e12f2c688696934c1d03f8c53901ee946edefd632975a66",
+      "size_bytes": 25592
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases010.lean",
+      "role": "source",
+      "sha256": "4a33e91c39c732b7031c052b94d599d0e4f85cb0cb82b9587184d919002f7b45",
+      "size_bytes": 26866
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases011.lean",
+      "role": "source",
+      "sha256": "f67782b8bbc26de7d1d07a263c82fbf79e4e50bcb696b13d8de866660802c2dd",
+      "size_bytes": 27983
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases012.lean",
+      "role": "source",
+      "sha256": "388dd01028ea94065f40e99e13888b49d9007721f38c854be7b2e4d078e2c8a5",
+      "size_bytes": 25678
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases013.lean",
+      "role": "source",
+      "sha256": "c713f0bc56757ee89cd590053098a3c9bea92090ebfcbcf313866ee780356848",
+      "size_bytes": 27097
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases014.lean",
+      "role": "source",
+      "sha256": "92f50961bea49eb48e31ad6e466974c120674f5e1ada0b5b234e7482f1eece1f",
+      "size_bytes": 27745
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases015.lean",
+      "role": "source",
+      "sha256": "5573147bef91778119af294bea95a650dde5a1096e515cb1b47cee13c04839fb",
+      "size_bytes": 28452
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases016.lean",
+      "role": "source",
+      "sha256": "4e1a1f8a947640d4a040ee993fe3e9162bad8a714c5535d810c73e93f529b2c8",
+      "size_bytes": 28094
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases017.lean",
+      "role": "source",
+      "sha256": "ec5b0d8741a74ae8d756902aedb3bbaf09ccb37bdac4ab223c1614791616d352",
+      "size_bytes": 28779
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases018.lean",
+      "role": "source",
+      "sha256": "09ff75995aec27c9fafd28f647a9152dad204021389eb889d170d3364f4871d0",
+      "size_bytes": 27789
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases019.lean",
+      "role": "source",
+      "sha256": "280275898fa293b2b28905598f8e2918c66dc4d160cf2b93b5b4a1ae740b5a4a",
+      "size_bytes": 27889
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases020.lean",
+      "role": "source",
+      "sha256": "24afcdf4b35eb23fd77ea34fabc0355b5041ef63ee96e8169490ad609301b6b9",
+      "size_bytes": 26143
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases021.lean",
+      "role": "source",
+      "sha256": "e8897e67cc4cb82deb281151f41f9018300831918fc05d15a974d433131ea4f5",
+      "size_bytes": 26016
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases022.lean",
+      "role": "source",
+      "sha256": "bd9f8c42b9087c592a1d581d4aa28a9e6ec77d6939263b5e749578ef0c9c2ed4",
+      "size_bytes": 27903
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases023.lean",
+      "role": "source",
+      "sha256": "932669489a0825fc9db2497e33d4856584069c6eb1a7f8288bfc722efc3f657d",
+      "size_bytes": 25575
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases024.lean",
+      "role": "source",
+      "sha256": "ab6a0126e6eb325c610ba7475846b6f98c74e87fd0db978ca38989b3dda00e01",
+      "size_bytes": 22324
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases025.lean",
+      "role": "source",
+      "sha256": "528f9e2ff27ec6fbb094b5439832bc27e093af6f7a7b753660fab65a310d594d",
+      "size_bytes": 23264
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases026.lean",
+      "role": "source",
+      "sha256": "4c2ed9df3c87e1ad922a03e8e2635c873ebcae488696e553260b7052445d1fb2",
+      "size_bytes": 23916
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases027.lean",
+      "role": "source",
+      "sha256": "2b25e6afe07d38e5b66f3c7394a0058e2ded47f1399f7406d442ecece07c2da6",
+      "size_bytes": 24197
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases028.lean",
+      "role": "source",
+      "sha256": "3cb978af799281cab413ba7fc98b9e6f6ee910c63edad32e8de7d0e7a0d030bb",
+      "size_bytes": 23881
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases029.lean",
+      "role": "source",
+      "sha256": "fa714bb68b3e35e0883c9cede1208ce39b86ff8eff561206e9e100b61466e531",
+      "size_bytes": 21711
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases030.lean",
+      "role": "source",
+      "sha256": "be4bf1110d70edcc8ff675e7774e893458631794c4055498ba4ae77aec11865c",
+      "size_bytes": 23934
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases031.lean",
+      "role": "source",
+      "sha256": "2ac1554fe25fcc31b4eec5419be2ac426e19e4cd711b415e56912c1f6d2d2f6b",
+      "size_bytes": 25818
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases032.lean",
+      "role": "source",
+      "sha256": "a879540ece6690891b9abad8b9f55ac6182221f2f8f570536fe0761146d2368b",
+      "size_bytes": 24500
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases033.lean",
+      "role": "source",
+      "sha256": "0c58ad6e2de49d9c278ad82cffcf96f39e789154b6fbb2ac76deb58412e71028",
+      "size_bytes": 26111
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases034.lean",
+      "role": "source",
+      "sha256": "56767a29fd3205823d0c20a598fbe47028fdd3285c044c53279339085d06a647",
+      "size_bytes": 24254
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases035.lean",
+      "role": "source",
+      "sha256": "825172a4e058b6c7d04267af677b512136bfdd555bc70cc93d37305d83aa6147",
+      "size_bytes": 22987
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases036.lean",
+      "role": "source",
+      "sha256": "fd038a74ef3dcedffedb50c9861aca4ade886eafcd6ea5520591f085c845a0a0",
+      "size_bytes": 23021
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases037.lean",
+      "role": "source",
+      "sha256": "95d37b815d39e5bc32f901448ec738a057ec9164ee715305ca1feebc4b964a65",
+      "size_bytes": 25177
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases038.lean",
+      "role": "source",
+      "sha256": "53f3804c344ba45c82751cc209f82d7cfbb02a3703d3725712b1cecdce7f7fd8",
+      "size_bytes": 24209
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases039.lean",
+      "role": "source",
+      "sha256": "23df6f4ede7c9dcd4c706dc414ebd72e53934280ec9b8e268f181b0af3c72256",
+      "size_bytes": 26080
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases040.lean",
+      "role": "source",
+      "sha256": "d967de3d9d865f15368497488bdd24e790fabc577cd726bced368d440e5543e7",
+      "size_bytes": 24202
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases041.lean",
+      "role": "source",
+      "sha256": "51b6514e1507ad8349a3e5a25696628463061bc753cafce10c87b9a8874aad4f",
+      "size_bytes": 25781
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases042.lean",
+      "role": "source",
+      "sha256": "aa6772e0afa0462a1f90f2088e283ba9ebc803840388e84b9e669f5abe8e2e64",
+      "size_bytes": 24199
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases043.lean",
+      "role": "source",
+      "sha256": "fd3ec337533c860259ad8a0706518292ee6db14c2cdbd8bebda49edb5ac8079f",
+      "size_bytes": 26123
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases044.lean",
+      "role": "source",
+      "sha256": "18fdb4e41373df34058f8c93f8732bbcdc39768a65a371084708f4edaae433ee",
+      "size_bytes": 22060
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases045.lean",
+      "role": "source",
+      "sha256": "480a6431da69acdcf42fc5711ea64f7b89e8fcf6a0c9d54caf09f506b2931aab",
+      "size_bytes": 23374
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases046.lean",
+      "role": "source",
+      "sha256": "f0a3309a78555640cc76c7a4fdbeca5afe31893c759259f298e5b3a2eee06ade",
+      "size_bytes": 24943
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases047.lean",
+      "role": "source",
+      "sha256": "26f452299a905ffe55d9d3b31df0c585bc57e7f89039fa2d9e8a7f8800d2f767",
+      "size_bytes": 24885
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases048.lean",
+      "role": "source",
+      "sha256": "8d9d724762ce0d730f69219630106061a9820d64e75101e0b4873218a0e7fee0",
+      "size_bytes": 24909
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases049.lean",
+      "role": "source",
+      "sha256": "767caae7abadd5fd8d31e6ff1f1525fdbc2824d67c48a9729690e05678366b10",
+      "size_bytes": 23953
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases050.lean",
+      "role": "source",
+      "sha256": "ad93bbee71954fea9bd4415e0d0746a100c63dec97c5cea33b665d089b340eea",
+      "size_bytes": 24870
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases051.lean",
+      "role": "source",
+      "sha256": "5d11097422cdc76e3eb02652f8204ba43cbbda79ef49d83ce1c448841fbd4e78",
+      "size_bytes": 24630
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases052.lean",
+      "role": "source",
+      "sha256": "3f3b6b45462f5d0e664b99d235fb43c06ceb1d2bfe5d7f3d117f548118d38194",
+      "size_bytes": 21475
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases053.lean",
+      "role": "source",
+      "sha256": "a26c31d306044a82bbe139cf38ec96918fcbd47d816446d28ba8cd9c937d4c4d",
+      "size_bytes": 25181
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases054.lean",
+      "role": "source",
+      "sha256": "ffb81516b8e1a93c359adf3dd0fd61d5189f8bede4a493ddb0c1eb4ba8fda75e",
+      "size_bytes": 26077
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases055.lean",
+      "role": "source",
+      "sha256": "1065c1bc346b321993f42b9420ff9f2b5ba3984f86a5d803fa53ddadbc753e09",
+      "size_bytes": 23545
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases056.lean",
+      "role": "source",
+      "sha256": "7f2e99c1091415a80ccf315d5b3ffb6881c8be5741b24954cc009d3aa7d00bd6",
+      "size_bytes": 24847
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases057.lean",
+      "role": "source",
+      "sha256": "10cdfe1ec8b979a117e7d9d450ca59bd0d62c0b7fe991a70964cf8362073ccb0",
+      "size_bytes": 23849
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases058.lean",
+      "role": "source",
+      "sha256": "e2355a5a25200cfc3926195de7e41410fb75d913d155d185fd59664ff19d3d82",
+      "size_bytes": 24911
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases059.lean",
+      "role": "source",
+      "sha256": "46ccb04ac0f076612027e548a923398de1ca9ff9a18f9112681e755cf45b2ec3",
+      "size_bytes": 24248
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases060.lean",
+      "role": "source",
+      "sha256": "5201742af97465f56440e0647e1f51a035c824b68d5621b73b84736cf650f14a",
+      "size_bytes": 25233
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases061.lean",
+      "role": "source",
+      "sha256": "c3c476c43a7ec27df0177ed3bc86d31dfe490925662fdebeb8cd14480bf18ab7",
+      "size_bytes": 24849
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases062.lean",
+      "role": "source",
+      "sha256": "5a52b6d90fe0c0eb14d61e6d6211c9d6430c643ec8057c40d721706962ed04ce",
+      "size_bytes": 25172
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases063.lean",
+      "role": "source",
+      "sha256": "c518f6e37358bccbc5835fc0586f400217cd472a29790b992f1c3126d039a26e",
+      "size_bytes": 25090
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases064.lean",
+      "role": "source",
+      "sha256": "f912bdbef89ad7bc581edfc5d933ca0a9fe96332d29e5ca95040f4821df05f33",
+      "size_bytes": 25132
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases065.lean",
+      "role": "source",
+      "sha256": "0efe0c39a4cb781de6f4e97df923161bb4f67cf6eb2dd134b1ef2fb319a1f495",
+      "size_bytes": 25074
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases066.lean",
+      "role": "source",
+      "sha256": "1cfd11f802e86df9010b9b6fc6b3b44cde706f0f45fc515e5ef1781c76c3064d",
+      "size_bytes": 24504
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases067.lean",
+      "role": "source",
+      "sha256": "574636b33132066cb1c4f495380356eac507fbe7aea3f9750869af10d33e24db",
+      "size_bytes": 24750
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases068.lean",
+      "role": "source",
+      "sha256": "ea80cce45f0008b08905700f1fddd99acf892b5939915fa0d5ef8aec284f89f4",
+      "size_bytes": 25084
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases069.lean",
+      "role": "source",
+      "sha256": "b767299769547685e6fc43fc87f7d122dc25fe387f6836ca397c8ada15556b33",
+      "size_bytes": 23848
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases070.lean",
+      "role": "source",
+      "sha256": "3f1bebe0b841f3036cbe5a6e616da782c21083518caaba4f2b97f635d61010b1",
+      "size_bytes": 22916
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases071.lean",
+      "role": "source",
+      "sha256": "02f4a2f8a2d66acaf23faf73541d12734b875ccb9dd59d308cb2dd64220b84f3",
+      "size_bytes": 25721
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases072.lean",
+      "role": "source",
+      "sha256": "3fc83a13c4f68669830fe222a52e55fdf61506373b5556eacbfe51bf84c9f6f3",
+      "size_bytes": 24145
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases073.lean",
+      "role": "source",
+      "sha256": "4914ba9fd53d496555bb271fb3890b120453db24a232c7965503916d72820ebd",
+      "size_bytes": 24187
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases074.lean",
+      "role": "source",
+      "sha256": "95d170d50985d9a42533135af10afbc051d2d779fbb4721d2cb59713c1c952dc",
+      "size_bytes": 23871
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases075.lean",
+      "role": "source",
+      "sha256": "4e09e650423e20c06b49efe599bc133bd68e6561e04dda2972edde22743083b8",
+      "size_bytes": 27537
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases076.lean",
+      "role": "source",
+      "sha256": "4c3fecdc3f60484125d46d58377d3a788238f17c098965661d023964bdfabf0c",
+      "size_bytes": 25298
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases077.lean",
+      "role": "source",
+      "sha256": "c46f2360f768a57da631947ebe43cc43f05627235b17f453c9e0a81665d280c5",
+      "size_bytes": 13648
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases078.lean",
+      "role": "source",
+      "sha256": "a91834cc8283bdeace8a7d3be321f299bea973c4ccd5e5abbcd9509837d97464",
+      "size_bytes": 17175
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases079.lean",
+      "role": "source",
+      "sha256": "d5ea11f048170254cb665fe2741aedde814704f4bec04573495644525e3bf80a",
+      "size_bytes": 19117
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases080.lean",
+      "role": "source",
+      "sha256": "51ce261dbbb0b78ff905b556735a138514d4d519c1d4d7a69e33d4e7b09580f3",
+      "size_bytes": 16403
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases081.lean",
+      "role": "source",
+      "sha256": "84f263e303289417dd9f5e327594df56bc044d0e900f47ec6619bf425e875844",
+      "size_bytes": 18007
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases082.lean",
+      "role": "source",
+      "sha256": "b6edec6fabf03868a7ac7e42e59d9dddcc68d79b08b7a61b225628e47fe3bf1a",
+      "size_bytes": 14225
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases083.lean",
+      "role": "source",
+      "sha256": "27eaa7e3795f7648026387af858b4c2ffb89297415a801a42bef8f826645f0d0",
+      "size_bytes": 19132
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases084.lean",
+      "role": "source",
+      "sha256": "fb29ff49efc3ee9948d3dc805c84ccb9bfe1b27ef75aabd9db99424c08f556dd",
+      "size_bytes": 15728
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases085.lean",
+      "role": "source",
+      "sha256": "d90b52b600a2f0dd51110f41300bf3937a5ce755e5153a0f3deaf1cab08b1aa0",
+      "size_bytes": 15748
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases086.lean",
+      "role": "source",
+      "sha256": "84d696c63e9d99395de3a10dfc908aa1df364eca2806d94596eabbe7c6e9e974",
+      "size_bytes": 14289
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases087.lean",
+      "role": "source",
+      "sha256": "714587b00bb7b5e9711b3e3347b09e2a8f4ca7534824bb47fd55273e8e207732",
+      "size_bytes": 15485
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases088.lean",
+      "role": "source",
+      "sha256": "3508697541d192ce7a87ac827ccd56d959e5fe4ffaad653f481a80678e025b8c",
+      "size_bytes": 14081
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases089.lean",
+      "role": "source",
+      "sha256": "e9b6b5f213b061686e49676531bc1ac207762539bf98c278733f0fe059833603",
+      "size_bytes": 13389
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases090.lean",
+      "role": "source",
+      "sha256": "a9c253af4d8ab682c3f8c37e4d5763652364a78974af346b2f43d0cc6d26ecef",
+      "size_bytes": 16781
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases091.lean",
+      "role": "source",
+      "sha256": "10d95fe6e4947837193d07742f908f0124c7012bbeeca55d4eaaf15798e27071",
+      "size_bytes": 16207
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases092.lean",
+      "role": "source",
+      "sha256": "84dbcf624e0f17f675c2e3ce606f4818334b89d894060f1e5bc4e4c667fb4ba9",
+      "size_bytes": 15620
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases093.lean",
+      "role": "source",
+      "sha256": "782b0bc2c008e20a5ac320849b7a02a9357df152360f54ebee94e951e7582347",
+      "size_bytes": 16807
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases094.lean",
+      "role": "source",
+      "sha256": "a31fa8da51f190387a9b394213df6aa050ffcbb162dc99307bf3484d2c970a58",
+      "size_bytes": 15391
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases095.lean",
+      "role": "source",
+      "sha256": "37333ad9d4bb25441fa7c8a1a7087b693c898749847dc01a706a65262210272c",
+      "size_bytes": 14083
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases096.lean",
+      "role": "source",
+      "sha256": "2339179208913e7ac04f7c99dfdb87327b30b43313599fdbe49cfc7c6777d03e",
+      "size_bytes": 15007
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases097.lean",
+      "role": "source",
+      "sha256": "df86358a0a6e3c2a40fbd61c8526ad698ebf3e84c11e11a59898f0939ed77db6",
+      "size_bytes": 14648
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases098.lean",
+      "role": "source",
+      "sha256": "500bbc524074b405584b2e49ed5f3c8596c0b86a1323943b6a42fb55cdde2aa7",
+      "size_bytes": 14739
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases099.lean",
+      "role": "source",
+      "sha256": "1c077c0c30cde38bd1b36d0f403125656c8a538499fc5194842336c774a8a3a8",
+      "size_bytes": 13990
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases100.lean",
+      "role": "source",
+      "sha256": "0afcb1620f1f49f0f9c194d487b35a802f160152315e192c37642bdab71e2357",
+      "size_bytes": 13047
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases101.lean",
+      "role": "source",
+      "sha256": "9da615ecfe4197618f7371c1bacc3fa43fcee3215f4e93f00ed9f881c04dee3f",
+      "size_bytes": 17435
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases102.lean",
+      "role": "source",
+      "sha256": "c4370a83239b0b3fb65e2bca2e2f5ceeba1226bd7934a024804d42a15ad62949",
+      "size_bytes": 15725
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases103.lean",
+      "role": "source",
+      "sha256": "cb73ad142500b18199d316b266aeec5abc788676c9ea47efcd040f44017ec326",
+      "size_bytes": 14827
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases104.lean",
+      "role": "source",
+      "sha256": "b55ff24223552c4623eead5c0c986742e5afd1245b10653e3a3f51eb36a5e688",
+      "size_bytes": 13227
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases105.lean",
+      "role": "source",
+      "sha256": "bf5ea5dcec4c83c1d3763c9ece2aedac78ef427d9c4b0b0e59b6efbdc40a68db",
+      "size_bytes": 13524
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases106.lean",
+      "role": "source",
+      "sha256": "9420debea6227473842dea26de5a708850e94048b5b1b0c800bd4fdb3c830add",
+      "size_bytes": 13113
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases107.lean",
+      "role": "source",
+      "sha256": "22317eea857ad0c2289c02a4e7d4cf631ccc0fe73e394a6daa89ce88a7da1d42",
+      "size_bytes": 13212
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases108.lean",
+      "role": "source",
+      "sha256": "3a7a7557ee36d9d1582fc7168de638dda2fedb9e4ce06ab8f93857c4300bfbb4",
+      "size_bytes": 12936
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases109.lean",
+      "role": "source",
+      "sha256": "80285a1f285828475786af3f7fa449eb6373e4f72c3010c0db00445983546c25",
+      "size_bytes": 16289
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases110.lean",
+      "role": "source",
+      "sha256": "d08743cb4394b891a2237311e17b15d460d2cf6b61c09fb4515451c15416e3b7",
+      "size_bytes": 14318
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases111.lean",
+      "role": "source",
+      "sha256": "bf1426a12469d8797bd113010fbcefa484f9b82ce822633b87fd5685a8f3951f",
+      "size_bytes": 14865
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases112.lean",
+      "role": "source",
+      "sha256": "f5898d980b2215e0edf88b50902833bc9f8fc787b61cbeec7bd1ed05ec281cee",
+      "size_bytes": 16602
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases113.lean",
+      "role": "source",
+      "sha256": "dee772078522574bbc7df8f87306347d71832a7afeeee4555e128cb23ac2e7f6",
+      "size_bytes": 14109
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases114.lean",
+      "role": "source",
+      "sha256": "315559cf95d83099d0c5b040d0e8f1477f41539997a4102c5c7a0529f3f8c075",
+      "size_bytes": 13473
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases115.lean",
+      "role": "source",
+      "sha256": "c4bbf72539cf33c7be466f2f9b14c8f8fd14410e36d7f8cb9031e254e8cf2638",
+      "size_bytes": 14166
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases116.lean",
+      "role": "source",
+      "sha256": "30d8a36c28da66c5d8cd0bc461cf94c1359352804c9d7e3b68f9a933a82ba66b",
+      "size_bytes": 14345
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases117.lean",
+      "role": "source",
+      "sha256": "3d450b1c1fc16f526e5334667a2da931fddd6a7259a2b5a8306c19f894e20c7c",
+      "size_bytes": 15505
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases118.lean",
+      "role": "source",
+      "sha256": "37f94174e06ab64ad769b50aa15b295f5f1643c1d830e16aaec8b5ebb2bf29c9",
+      "size_bytes": 13921
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases119.lean",
+      "role": "source",
+      "sha256": "3dbfb2fa6e833d9a7ae9aab6d0e73ff9ed84c3d1442266027ec942c026666478",
+      "size_bytes": 13318
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases120.lean",
+      "role": "source",
+      "sha256": "2acc4c9182259691cbd374d9d3ff470e35ac89773abf2182d071d3a394de3651",
+      "size_bytes": 14483
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases121.lean",
+      "role": "source",
+      "sha256": "b3f1d3cb766ca2a7a3401a9e34586e2395ef0a550cdbb267c48b688e0a199941",
+      "size_bytes": 14886
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases122.lean",
+      "role": "source",
+      "sha256": "38e9794f21548cfb7ef018e38bf9ed8cf0b99bbcc5120b7e935bd5763ec7a047",
+      "size_bytes": 13207
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases123.lean",
+      "role": "source",
+      "sha256": "f766f6f5dad2c894c7079f9accc502e02923eeaea1f751b9389e8769c99cc367",
+      "size_bytes": 15228
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases124.lean",
+      "role": "source",
+      "sha256": "046b4149b9ef3e424c72f866e04bd2514dc6493a831de6006839a6e9ba4026c9",
+      "size_bytes": 15223
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases125.lean",
+      "role": "source",
+      "sha256": "f1d9d573baa012a12ca72a613cba95981e9e9ebf690ef5332b58e9fc7f5a28fc",
+      "size_bytes": 14880
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases126.lean",
+      "role": "source",
+      "sha256": "e7e99b7ec1bd9ca5171fa08a26f4cbf25f9729ee51923d8342572ebbcba3c93c",
+      "size_bytes": 16177
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases127.lean",
+      "role": "source",
+      "sha256": "edf5d9d57b034cd29e0855d62ecddeeff4b147b092c805d48f9f0a17fe42084a",
+      "size_bytes": 16247
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases128.lean",
+      "role": "source",
+      "sha256": "cfa8297d04b58e382076e55160106c3363bb99cfbaa969a6367f0702bed8d4a4",
+      "size_bytes": 13761
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases129.lean",
+      "role": "source",
+      "sha256": "77a3ffbbebd3b5fb2029a6dc379cbe2034690235f624d11b19e0d0fd51dbe3b3",
+      "size_bytes": 14081
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases130.lean",
+      "role": "source",
+      "sha256": "f60ae773f0eb1ce0afcd9204326a01ab5e80fafa5a78a850ec965691a4125a67",
+      "size_bytes": 16777
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases131.lean",
+      "role": "source",
+      "sha256": "937099b44b768c27f0d2f400b10c4ed42ee526d06462aac0444182ad321d1f00",
+      "size_bytes": 13734
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases132.lean",
+      "role": "source",
+      "sha256": "906265fb6722736eb712694d619e4609b60a40afc1092c492056a45b81364585",
+      "size_bytes": 15091
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases133.lean",
+      "role": "source",
+      "sha256": "819b93ed0dad392b933b3921d34de598c68ec6ce71e3813dccc0160078b660bd",
+      "size_bytes": 15578
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases134.lean",
+      "role": "source",
+      "sha256": "f0a05900a3cf503c9641feb44a727d29500971e5c1a4d94b3c47b53824d30098",
+      "size_bytes": 14980
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases135.lean",
+      "role": "source",
+      "sha256": "09f11a92cd1417aaf84d6809c8472ac7691481e46b334eac62f013007b9836bc",
+      "size_bytes": 13203
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases136.lean",
+      "role": "source",
+      "sha256": "597d5ef2040a72a9e9de96dd8c1fb56fd14a54b4f43ac7f4d93ac6f448566c48",
+      "size_bytes": 14579
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases137.lean",
+      "role": "source",
+      "sha256": "e0ffa4bcc8538a3979b9399cb7afc1acdbe48b7a6204110b1f85768be51bf758",
+      "size_bytes": 13245
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases138.lean",
+      "role": "source",
+      "sha256": "0b7eb910e3eb9e022ff7509ac9b3e652943b3fe81383cace20964e279d6cc0cf",
+      "size_bytes": 14504
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases139.lean",
+      "role": "source",
+      "sha256": "d54c5daf2fd7a81cc877b6528688ebbb17d2c06b1b5bf6febb99680f4d86405d",
+      "size_bytes": 13311
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases140.lean",
+      "role": "source",
+      "sha256": "7a8054672986c36305ad51f057468dcea241fcbe5ba8e51156553e4b2908b842",
+      "size_bytes": 12743
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases141.lean",
+      "role": "source",
+      "sha256": "0420d0b9307bfb650a4e6266c801fd50cde415247841b7a68a91ea129bf9163d",
+      "size_bytes": 15826
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases142.lean",
+      "role": "source",
+      "sha256": "384a7a1256a9960644c4db5549a0c28f5f424329590f2f30a6742ca45c5ff3c1",
+      "size_bytes": 14588
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases143.lean",
+      "role": "source",
+      "sha256": "0cdfb9dca8e7e31e2acbd30330e624f8240c77454cc8bc403f6f2045f55a1ed7",
+      "size_bytes": 15860
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases144.lean",
+      "role": "source",
+      "sha256": "7b1d5719a2dfdabe0be1313a594afcfe0bd32f48297f86355da98c0283557c4e",
+      "size_bytes": 12358
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/FiniteCases/Cases145.lean",
+      "role": "source",
+      "sha256": "cb08b049ca67b43f65131392679699a7f6431a29f136dc422ad335379ed1aa6b",
+      "size_bytes": 2676
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/ChartRegular.lean",
+      "role": "source",
+      "sha256": "110f6bf75575c2e1202375723cd0d59b6b15fa03ea59ee2f531e228f575e4556",
+      "size_bytes": 4656
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/LocalModel.lean",
+      "role": "source",
+      "sha256": "88919f6fd72656c544257e7862e8881f7f194c6ef1e3c57c38b1ac84c115e9fd",
+      "size_bytes": 5326
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/LocalRegular.lean",
+      "role": "source",
+      "sha256": "b518526b4f914bbca98e867db0ccf2e6e6e8ffc5dcb17922834fe0822efb9a2d",
+      "size_bytes": 2333
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/MatrixParity.lean",
+      "role": "source",
+      "sha256": "7487d3cbe50a6a3fd74e5c0a9d6ab60227be28d5954540e031fb91d1b4aa7162",
+      "size_bytes": 8092
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/NoFreeRidge.lean",
+      "role": "source",
+      "sha256": "f7462ddb0b84e8d3e5a7b78ac40c35ef340d20c3e2564546e43b77ae95bfb205",
+      "size_bytes": 2731
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/RegularBase.lean",
+      "role": "source",
+      "sha256": "6485efb28051f7188f730669b59b165844bbfd7460601d24e819a193d127d7fe",
+      "size_bytes": 4458
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/RegularModel.lean",
+      "role": "source",
+      "sha256": "767f7bcb25931e72a7b01e07d8b4d36f793e60985e124d070c3a5c5fbce5e313",
+      "size_bytes": 2947
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/RegularPatch.lean",
+      "role": "source",
+      "sha256": "8edd889b89e13c8d4a9b98c6e05b49f860307152f4e1c0c9764e86bf5d1472ba",
+      "size_bytes": 6446
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/Sard.lean",
+      "role": "source",
+      "sha256": "b39a13afbd6780fc5e9925cc8707ee343f0ff3d9d00e083b183ac1300b40828f",
+      "size_bytes": 2074
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/SphereBlock.lean",
+      "role": "source",
+      "sha256": "08e15b28fe08f570dfeb55a433e697eb7af58ada90eb4c3f79bc5763a9c48114",
+      "size_bytes": 5956
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/SphereNullPatch.lean",
+      "role": "source",
+      "sha256": "0bdefae33aa160ddda9d73c2321ffb7b0b5bc5c89d8d206b6e5fb2620490fa3f",
+      "size_bytes": 3108
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/SphereParity.lean",
+      "role": "source",
+      "sha256": "2cd07027b4e539aae17c8f7f5b6a0ff5824b70396441f9967e61d1bc63c72ba7",
+      "size_bytes": 8835
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/LocalParity/TraceLocalModels.lean",
+      "role": "source",
+      "sha256": "8483cf047b2bcf0284727b262f0c56c865c5e22d7d2548cc626909313a333055",
+      "size_bytes": 6270
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Main.lean",
+      "role": "source",
+      "sha256": "ea004f8f339bb8d4f55ba3d05b7959e2169d2c8e712db7419002df6466b8eeae",
+      "size_bytes": 5357
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/BlockLine.lean",
+      "role": "source",
+      "sha256": "181fd09b2a2d9906fb100bddc0851c0b2378d2aed5fe769a9809d8f07cb57e55",
+      "size_bytes": 4984
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/BlockParts.lean",
+      "role": "source",
+      "sha256": "d466c65869661a0b961297286c7ae323778b67b25ed564972adc02e4ac0639cc",
+      "size_bytes": 5326
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/BlockVector.lean",
+      "role": "source",
+      "sha256": "0c814fd75170a205a09bcf7f1eae95f6f29b301cb0196092b6faefa6efba6a34",
+      "size_bytes": 4647
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/CenterApproximation.lean",
+      "role": "source",
+      "sha256": "0be503a8d9ba66ffde914940a511dea4558d1f81433a68b844bd0e0b717b2a69",
+      "size_bytes": 6135
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/FibreContinuity.lean",
+      "role": "source",
+      "sha256": "1550e2cafe051af5805f8839a296b796b35cfcab5113fb6116640221a2baabc4",
+      "size_bytes": 4426
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/FibreHomotopy.lean",
+      "role": "source",
+      "sha256": "8f8416a5bb4b4ccc6470643d26c6620cda3d3f8c1c7f90bd565f3d9261e09626",
+      "size_bytes": 7002
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/FibreTransport.lean",
+      "role": "source",
+      "sha256": "186d0887c6a8f13a14aed85592d4b5b7d08252c3bfdc77d29bde1da4a346cdf6",
+      "size_bytes": 4386
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/FinitePositiveBound.lean",
+      "role": "source",
+      "sha256": "e77561eb5cd44e74930fdcccdc77e464d8d3e8ac63bcb31eaac8c4c73c51e35c",
+      "size_bytes": 5154
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/LineRepresentative.lean",
+      "role": "source",
+      "sha256": "38948dd95a4df997e16a88d32384a5d7fc8b45df2a882a3ab4370aef49e4a3cd",
+      "size_bytes": 4526
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/MatrixCompression.lean",
+      "role": "source",
+      "sha256": "78ecd2678347f4d6635a92576c4607c60153385fe4b803c1b44d5e60b24eaa5c",
+      "size_bytes": 2821
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/MatrixFibre.lean",
+      "role": "source",
+      "sha256": "cb57bda0f650a43b2a0e04728075f699b80ea311e4741d74d9f5113864141b16",
+      "size_bytes": 3624
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/MatrixKernel.lean",
+      "role": "source",
+      "sha256": "cd69bd1887be2b24c5c9621a34a4f1cb15a009a9177806a299f9064a66f0f38b",
+      "size_bytes": 4361
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/MatrixNorm.lean",
+      "role": "source",
+      "sha256": "815e98f66530cc5f712c52edfc12a6b42fc34345c4b55f2d239aaec4d8185284",
+      "size_bytes": 2660
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/MatrixReflection.lean",
+      "role": "source",
+      "sha256": "c8dfd7fd9610ad19d9905d8de225561cdaf245deb8431620b4f9ef465f5e5b85",
+      "size_bytes": 3021
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/MatrixTransport.lean",
+      "role": "source",
+      "sha256": "6e407ea5218c2eafc5ad2eba643128fd8ad2611e0ade5d5dc15503c2dcad80ac",
+      "size_bytes": 3171
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/ModelRay.lean",
+      "role": "source",
+      "sha256": "a14450f799a41022e3cc339707d75686c0519ed3c5694765d74301e0ce333814",
+      "size_bytes": 3195
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/PositiveSlice.lean",
+      "role": "source",
+      "sha256": "d0e9ff3fd4c271d3c86ba18c0d4f3d0918b974b7df7646858f710b4a19b1ec8d",
+      "size_bytes": 2238
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/Rank.lean",
+      "role": "source",
+      "sha256": "aca4595be4e823aed09f0fa6549bf0db48db51cb48a47d701a3cb99828340ae1",
+      "size_bytes": 3656
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/RankPreimage.lean",
+      "role": "source",
+      "sha256": "8fe3284eb526808ea242cd5489ec06b4454651dbc5832f84a90adf977e565b40",
+      "size_bytes": 4318
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/ReflectionTransport.lean",
+      "role": "source",
+      "sha256": "9f84eada958987ef049bd12792e3e5532959b5a52201469c639ac74b0c523432",
+      "size_bytes": 3072
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/SignedExtension.lean",
+      "role": "source",
+      "sha256": "340127bf097e91e77f9fa32e742c8bd8fd6171fec633bae5edfb896ad5f955e9",
+      "size_bytes": 5207
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/SpectralChart.lean",
+      "role": "source",
+      "sha256": "cc5b4bc5b361fb54adc68e7654abc99f6af90068ea4845945fa337f5092b6a02",
+      "size_bytes": 5821
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/SymmetricCoordinates.lean",
+      "role": "source",
+      "sha256": "b4a0fcfd73a00f187d109bf5c879fe439c4e1302d1ad83b578b755ef9cd12a88",
+      "size_bytes": 2473
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/SymmetricEntries.lean",
+      "role": "source",
+      "sha256": "f17fb0e36cf9446f9213b3b77ebe93c3579b58bd228904a3bbc058cc75742a2c",
+      "size_bytes": 2267
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/TraceHomotopy.lean",
+      "role": "source",
+      "sha256": "d7a71767ab4f4d00be99bdcdeabe120904f74affff0fd2fc61d8b7577fe5262a",
+      "size_bytes": 4488
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/MatrixGeometry/TracePatchModels.lean",
+      "role": "source",
+      "sha256": "0511f7178b6f4bd0969009d66ce23136aec1c109889002f4fb15f1f1605d271d",
+      "size_bytes": 3136
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Model.lean",
+      "role": "source",
+      "sha256": "3203ab1c5b886a112c51452aa841391c0ea9e9ab2bf1d403d94869b9003da115",
+      "size_bytes": 643
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/Basic.lean",
+      "role": "source",
+      "sha256": "3373eafbdd86750fc2cc75a4c24a160208c591e5a82e8d7ebfd2e9397e5db45a",
+      "size_bytes": 11829
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/ChartSurgery.lean",
+      "role": "source",
+      "sha256": "5997fe2f974d448121cc506203a03c0aa87585d57af057484b0890d80a369eec",
+      "size_bytes": 6885
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/CompactLocalHomotopy.lean",
+      "role": "source",
+      "sha256": "4bd19a5f43a4451477a522b0e780096e8052095511f827e85e0eaad7fa097f2f",
+      "size_bytes": 3436
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/CompactTargetHits.lean",
+      "role": "source",
+      "sha256": "b1017d58ee1d99c3b4cfee5b6eb19ee16c9928a52525b3a3c112f1ed5d5d86b3",
+      "size_bytes": 7798
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/CoordinateSum.lean",
+      "role": "source",
+      "sha256": "75e90373706196e5d5f608af4396583cff5709e6d1be00720bd817aff9bf6944",
+      "size_bytes": 4126
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/FiniteClosedCutoffs.lean",
+      "role": "source",
+      "sha256": "4fa723cede7ae1ea03d1df503516b933f71d7e4f26d22c62df5070b7e33fd476",
+      "size_bytes": 3391
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/FiniteOpenGlue.lean",
+      "role": "source",
+      "sha256": "274ba7b2b7c75cfddfb1ab34563ff45e46cc78d17b5cb7bfb10eede169d6ae7b",
+      "size_bytes": 2724
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/FinitePatch.lean",
+      "role": "source",
+      "sha256": "7e235f95582eabf2b598b8d1e4de52795e08c108eb614948d5b9094f934540b9",
+      "size_bytes": 3198
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/FiniteSmoothSliceMisses.lean",
+      "role": "source",
+      "sha256": "03d6a20c93412b336942f19feebe15048e74f8e289b037be13b8549e8b6659c3",
+      "size_bytes": 2341
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/FiniteSmoothSliceMissesBounded.lean",
+      "role": "source",
+      "sha256": "f0eaf40efcf7e2677bc151f6cfcfafd675f8df348d4ada141e25c5e26ac6a32a",
+      "size_bytes": 3808
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/NegativeQuadratic.lean",
+      "role": "source",
+      "sha256": "64233f2a9dd892db0e86e0858e20229d9b897d75c071bd34971a2b822e8feb2f",
+      "size_bytes": 7914
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/NullImage.lean",
+      "role": "source",
+      "sha256": "836b4d045a82edee54c0a181d75fcce722906d371623120d36753b4eca2b44ef",
+      "size_bytes": 3609
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/RaySet.lean",
+      "role": "source",
+      "sha256": "899d2559978aa3d836f62baba9cf6942e50c20fe34596569fe54e23c20d8aa7e",
+      "size_bytes": 3952
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/Restrict.lean",
+      "role": "source",
+      "sha256": "841aa9408422089898fd3195b8c2fa624cc03a1f95f017018efd31fd6bb1273e",
+      "size_bytes": 3885
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/SimplexPoint.lean",
+      "role": "source",
+      "sha256": "41d5e0bd4dd8b0d7a15ec51240ee1eb44fa4613950d63c86422795e7addc2a31",
+      "size_bytes": 1930
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/Tangent.lean",
+      "role": "source",
+      "sha256": "b2435144e3d766690da67af78526956d33033c8ecb204fb13a6b351a6456ef93",
+      "size_bytes": 6816
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/TenPure.lean",
+      "role": "source",
+      "sha256": "e7a81e20732cb024e54e2fe8c97afa58f4066f91f52246b1d5f9b446ed2ac5e7",
+      "size_bytes": 5449
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Projectors/Within.lean",
+      "role": "source",
+      "sha256": "6e71be8516ba4d7c7426cbf34a857d81d191be7166ce51d8f3e5ff719b23468c",
+      "size_bytes": 5493
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/Approximation.lean",
+      "role": "source",
+      "sha256": "0ebcaf1cade6e54ef3eaa744610d661a4ffe16a3dbb1ca533de053cfd0f75234",
+      "size_bytes": 8000
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/BarycenterNeg.lean",
+      "role": "source",
+      "sha256": "75c9c0645cf908db8f1f074cad111373b453e715622c7528fc069cfb49decff0",
+      "size_bytes": 3560
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/BoolCubeConstant.lean",
+      "role": "source",
+      "sha256": "f2d6da40c2c9b02f15388822ab12d328ed750dab448d41fa4bf21212dbf9500e",
+      "size_bytes": 4268
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/CharacteristicDegree.lean",
+      "role": "source",
+      "sha256": "6777dd658eb35705eea79c03b0fa69171351e56ecb17d33915eb669f47e6f708",
+      "size_bytes": 6405
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/Coefficients.lean",
+      "role": "source",
+      "sha256": "3462bd08dc378c66d478701baa308271322b0fe6730f7e6b05d71ca2014bbef5",
+      "size_bytes": 4176
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/CompactAdditiveLocality.lean",
+      "role": "source",
+      "sha256": "47a96ced3b7c1f374c177e1bd1f44e0722d41907b7d87a312711492a1e7b43e0",
+      "size_bytes": 7717
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/ContigSimplexBoundary.lean",
+      "role": "source",
+      "sha256": "ed30b958f97f432bfd9834264335a304034beb508c16e732c440318cff9a1922",
+      "size_bytes": 6452
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/CrossChainDimensionBound.lean",
+      "role": "source",
+      "sha256": "a4a42a6d5fd867f359161137535263a48b50ee7b088c1d8b4d4155106dbf8773",
+      "size_bytes": 6501
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/CrossEmbedding.lean",
+      "role": "source",
+      "sha256": "410d7d4aeac56b39250c7a0a4eecf956ce283c928b2c28f69738cec056304f7e",
+      "size_bytes": 3477
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/DoubleEraseSumFun.lean",
+      "role": "source",
+      "sha256": "d3f5ff9a75565f83b377fc39232e96c3cbdf7688d83d0f5c73597576cdda62c1",
+      "size_bytes": 6462
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/Equivariance.lean",
+      "role": "source",
+      "sha256": "9db79ad1e40f6d81a321a22f93b3c073ff35603a3f594d1bbc7d0ace2e483b20",
+      "size_bytes": 6474
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/EventuallyFineSphereLabel.lean",
+      "role": "source",
+      "sha256": "85cac4904a1816c8c36da2b64f57a42cfa548e103a63f2d2feeb4c553d4d495b",
+      "size_bytes": 6485
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/F2.lean",
+      "role": "source",
+      "sha256": "7a1059cd375025a4adcd44dc21ee5208a960e5794a9423cad8a0703710a804f1",
+      "size_bytes": 5524
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/FineCrossMap.lean",
+      "role": "source",
+      "sha256": "2ff139e2e89efd945211e11e28566d7c6366bb32a2fc83ba1865f40ece9b7685",
+      "size_bytes": 7693
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/FineCrossMapMesh.lean",
+      "role": "source",
+      "sha256": "8401bf4e1308f1786a0d52a0bbcec09c53ea15b068aa93b4dbbdf702b5f5d186",
+      "size_bytes": 4852
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/Flip.lean",
+      "role": "source",
+      "sha256": "9297c0f1041ce6800d67998dab936c034b18238f65b9afadf5758dfafa788702",
+      "size_bytes": 5411
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/GeneralTarget.lean",
+      "role": "source",
+      "sha256": "3fe0b471eed9722c22acca2492c117975f0b071db4b1506391294c8040d246f2",
+      "size_bytes": 4427
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/LabelRegion.lean",
+      "role": "source",
+      "sha256": "fb3e38e61d3ba78b9e259ea72b6ee00bc477cfa368d1f92e7793d1f93f62d690",
+      "size_bytes": 7012
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/LinearMapSupport.lean",
+      "role": "source",
+      "sha256": "49a17023e0caf9079b5defdcff944b3d86dd2153be1564e53d9ee55a5a30ee36",
+      "size_bytes": 5641
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/MapChainsEquivSimplexAll.lean",
+      "role": "source",
+      "sha256": "b291cc18aba109d1e299cbd63236908c704c86c5e39ef2446dd6e9867e4be168",
+      "size_bytes": 4979
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/Maps.lean",
+      "role": "source",
+      "sha256": "7b9b6ec9cb09749cab59ea8fed3c97ec26454a3dcabfed1e5357e8d19c993079",
+      "size_bytes": 6597
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/MaxIndex.lean",
+      "role": "source",
+      "sha256": "1b80dd0f110972e435eff7a96a0c1b5b86ac8d42ae9c011533f3531282cfde19",
+      "size_bytes": 3719
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/MemSupportSimplex.lean",
+      "role": "source",
+      "sha256": "8e97de452ff9bf37e83cb30967433a501909acdfddcbbf91b34e99c0ccebd9fb",
+      "size_bytes": 2100
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/NormMap.lean",
+      "role": "source",
+      "sha256": "b5ad77752c30891c6ecc65febc9f648c94f2a38f74aff2c2bd01a2badaed288a",
+      "size_bytes": 4557
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/NullHomotopyLocalModels.lean",
+      "role": "source",
+      "sha256": "120b18206a5b2a7777dc7b2b0952826ad769e08b92c842a8f0fb581f095b8db2",
+      "size_bytes": 5309
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/OddHomotopySurjective.lean",
+      "role": "source",
+      "sha256": "aa0a39e68a32f065ffcf24b4548dc67a34c8e23f15881093abd8571d919fbaf4",
+      "size_bytes": 3971
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/OddSphereDimensionBoundFintype.lean",
+      "role": "source",
+      "sha256": "b0e9333b50a03b69b2632e3bdb169ec6657244b2488caee024c321ac35212b99",
+      "size_bytes": 4893
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/Refinement.lean",
+      "role": "source",
+      "sha256": "35926d34d93e81f84de2738e4edbb004bdb6921f3725b75f2d30fbb4afab72fd",
+      "size_bytes": 5360
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/SignVector.lean",
+      "role": "source",
+      "sha256": "81926294f97afacc10cfe7d2e30eabafcf751be77740b4ee134bace0fed8ef37",
+      "size_bytes": 5924
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/SignedVertex.lean",
+      "role": "source",
+      "sha256": "f6bdcfbf62bba594e1991ce3af0d5ddc6f012248b254474c8340da2f2e2cea54",
+      "size_bytes": 8992
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/SimplexMemDegreeAll.lean",
+      "role": "source",
+      "sha256": "dca21a3753e96d5ca23881e56be2a108661e58e51d1a3a7cc7548ee004fb9fbe",
+      "size_bytes": 7295
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/SubdivSimplex.lean",
+      "role": "source",
+      "sha256": "568df98fecf73af526ffcb188d1bc5703b785168be9ff45037ce2c523655b864",
+      "size_bytes": 3394
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/Supports.lean",
+      "role": "source",
+      "sha256": "21c4cc8754efd9726f4e2004cf58517b44ea5e942c260a487f33284e42662785",
+      "size_bytes": 4302
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Simplicial/UnitRadial.lean",
+      "role": "source",
+      "sha256": "69cdd6de32f6fa21291b1484a5eb0671f6f5ae0826ee29a53e878f882d1078e0",
+      "size_bytes": 5337
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/SmithTheory/CharacteristicCochains.lean",
+      "role": "source",
+      "sha256": "63fc4171c2b47f8831a2d2e4b66c69dfafd7bdb3f11ed850eb6c0e4f385bdfe7",
+      "size_bytes": 3964
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/SmithTheory/Involution.lean",
+      "role": "source",
+      "sha256": "f7fa9723ed6391b7a54c3fbb513407760ed23b844998df6b489657a6150822a3",
+      "size_bytes": 2079
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/SphereGeometry/HemisphereChart.lean",
+      "role": "source",
+      "sha256": "0df4b120b3f4abb3cb225117d383cfc1d6b31727e4cee5b97a8d099e84ca9668",
+      "size_bytes": 4185
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/SphereGeometry/HomogeneousLift.lean",
+      "role": "source",
+      "sha256": "cb3cc661ea6e0b1043766b9413eaf154216bdc0d854eb8190bfd2ec48ecf4271",
+      "size_bytes": 4958
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/SphereGeometry/IntegralLift.lean",
+      "role": "source",
+      "sha256": "a3dec8aaf8c197f207ab25a36c70a40cf1c993ac7cdc146ebed99388878b52a7",
+      "size_bytes": 5883
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/SphereGeometry/NormSphere.lean",
+      "role": "source",
+      "sha256": "111fb57350d49fa33f1ff6e8a42ec72f6dd3c68f143da1aac8b221351384d5ab",
+      "size_bytes": 5289
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/SphereGeometry/OddSphereMap.lean",
+      "role": "source",
+      "sha256": "3d7d0b1e48efa38e1d26fb3105e01e96b83cfa3544071d21a903119243017272",
+      "size_bytes": 4023
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/SphereGeometry/SphereExtension.lean",
+      "role": "source",
+      "sha256": "b9409bbf71c9aaa74f890056622fe52de896f4c3a381d9f45c7a4ca66e1475ca",
+      "size_bytes": 2714
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/SphereGeometry/SphereMeasure.lean",
+      "role": "source",
+      "sha256": "fa5a44b79f29c7e5730a3ab8d8e40cc5300bf557f52fe42694f3d13d3ea524e0",
+      "size_bytes": 3109
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/SphereGeometry/SphereMoments.lean",
+      "role": "source",
+      "sha256": "3327408fefc8e847e4d1036a49b9b901a9d422282b890c1798f210e94faa298b",
+      "size_bytes": 4076
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/SphereGeometry/TraceSphere.lean",
+      "role": "source",
+      "sha256": "24358fe72f274ecbed279b725a83ae85e57f4de20142b44c67ca74bfc9eb4714",
+      "size_bytes": 4153
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/ActiveChambers.lean",
+      "role": "source",
+      "sha256": "fa648c977af96dcb0768fcd728ce03232be07cd98af4ea23f56b40f4bd24ebba",
+      "size_bytes": 3552
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/AllPairs.lean",
+      "role": "source",
+      "sha256": "a6a5810db41bc37a2b10e9fbf303a73577d00f7e7e5d7cab73a4918cbdb37c53",
+      "size_bytes": 7884
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/BalancedChart.lean",
+      "role": "source",
+      "sha256": "03e00e7b2f2b5900a4f6aa857fb241f5440ca0c51de363764a742cc211f61fd6",
+      "size_bytes": 3413
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/ChamberPath.lean",
+      "role": "source",
+      "sha256": "0cb94e0c51be92a88cd3d8eb3ab774cd204473510f60796d6ebf8dd546164b0b",
+      "size_bytes": 3028
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/Chambers.lean",
+      "role": "source",
+      "sha256": "c8a882dd47fe4574091c2e661978a3c0a03d44848bf02914fb67ec4645ed5dd8",
+      "size_bytes": 4682
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/DisjointChambers.lean",
+      "role": "source",
+      "sha256": "d3bb9c116c19febafbdf046b5ae541d406507a92d4ae14f261cf0140f29f3dbc",
+      "size_bytes": 5797
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/FacetTangent.lean",
+      "role": "source",
+      "sha256": "dc00533dbdc36249bc34b44efe8910316e7ed48b9290779203676ccd9cc0bb75",
+      "size_bytes": 1960
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/FullSupport.lean",
+      "role": "source",
+      "sha256": "df0d44ad6a023b11e5aa35b17456944511a8a7fbea27de5fc81bd48d1425bea7",
+      "size_bytes": 4196
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/LocalMix.lean",
+      "role": "source",
+      "sha256": "db33c6aa748b7708b316bf861c24876d54d6853800a818c09e281ad8428a5f82",
+      "size_bytes": 8728
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/MixedHits.lean",
+      "role": "source",
+      "sha256": "8cd50abb7b042a74cd465a7f6e1b3d5b86a3186fef932059b5b39c7f5993443b",
+      "size_bytes": 6303
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/MixedHomotopy.lean",
+      "role": "source",
+      "sha256": "cd9bb15e9d45135ed47d1ab99df505c3802f8d6849f92c12c06888562ea3199a",
+      "size_bytes": 6872
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/NegativeFibre.lean",
+      "role": "source",
+      "sha256": "dfcd6ff2a1eb9ee443050bd2e9824807ed847071c7653b1723c42d9be0c99ad2",
+      "size_bytes": 3544
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/Purity.lean",
+      "role": "source",
+      "sha256": "ac2f13719ed0e9785525ebe3a874ff444bbac73e597f01fb16064e8fbbae6467",
+      "size_bytes": 5117
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/PurityChart.lean",
+      "role": "source",
+      "sha256": "eff561a39ad2f571bae5b15625a8b27d0ae86a3d0ad92627cdbd5641e79f23ed",
+      "size_bytes": 3368
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/PurityGeometry.lean",
+      "role": "source",
+      "sha256": "82e8b87438c75922116eb8e758aadcb42241051287896782699a907d2e31ee9d",
+      "size_bytes": 5542
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/SixFaces.lean",
+      "role": "source",
+      "sha256": "33695451fa0091fa9e423fa4927327054c1fa141c829889ad6df3e0b0c9815f6",
+      "size_bytes": 5566
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/SpectralSupport.lean",
+      "role": "source",
+      "sha256": "5b496d24ea4d08cd933c23e9b5f7eecc02015476d57ce548879d6ae95e26e0e2",
+      "size_bytes": 5416
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/Support/SupportIncidence.lean",
+      "role": "source",
+      "sha256": "b4953f62ce5edc1861cf6943f0d43c5df5abf74f86d8e5046080fca08039a46f",
+      "size_bytes": 5422
+    },
+    {
+      "path": "lean/OAI/Geometry/Borsuk/TenLabels/Labels.lean",
+      "role": "source",
+      "sha256": "2edf8f16845c943113b43f34542a4bcdd26872910067b35d184c76915882ebb0",
+      "size_bytes": 5006
+    },
+    {
+      "path": "lean/lakefile.toml",
+      "role": "dependency",
+      "sha256": "a8f02e4e3e1e5cf918e727b3976db01a9792cecaea330ea46f91445246b58ab6",
+      "size_bytes": 337
+    },
+    {
+      "path": "lean/lean-toolchain",
+      "role": "dependency",
+      "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+      "size_bytes": 25
+    },
+    {
+      "path": "preprints/A-nine-dimensional-counterexample-to-Borsuks-covering-assertion-September-23-2026/README.md",
+      "role": "dependency",
+      "sha256": "3a7c7fe8fa7a5043b340fabda9588103d325a956a02cc2fba9bf2d751d3c13d2",
+      "size_bytes": 677
+    },
+    {
+      "path": "preprints/A-nine-dimensional-counterexample-to-Borsuks-covering-assertion-September-23-2026/paper.pdf",
+      "role": "dependency",
+      "sha256": "e7ffa6f812d97395aa7794f4dc0f394ea36f24b00ced0acad29157c4c3bcca87",
+      "size_bytes": 413156
+    },
+    {
+      "path": "provenance/upstream/lean/lake-manifest.json",
+      "role": "dependency",
+      "sha256": "cf6105a25d9dca2f166b241d9191bd12c7e13305890dc9c4d0952351cccc0794",
+      "size_bytes": 14622
+    },
+    {
+      "path": "provenance/upstream/lean/lakefile.lean",
+      "role": "dependency",
+      "sha256": "4cca977ebece444b6c999d99755c1ad3c93119bafc127ea761f7f703c7279e74",
+      "size_bytes": 15457
+    },
+    {
+      "path": "source-inventory.json",
+      "role": "dependency",
+      "sha256": "b94d77939c5b23b0cdb5ad0b04884de0976d824d2e55d782edf566fb5eb9c883",
+      "size_bytes": 203372
+    }
+  ],
+  "schema": "math-pilot-manifest/v1",
+  "subject": {
+    "commit": "adc7f1241b42e322a6451854ab7e4b4c146bf78a",
+    "origin_check": "caller-asserted",
+    "repository": "https://github.com/openai/math",
+    "theorem_names": [
+      "OAI.BorsukNine.main_theorem"
+    ]
+  }
+}
