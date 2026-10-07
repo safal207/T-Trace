@@ -49,6 +49,7 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 
 ## Review links
 
+- Math proof input and receipt pilot: [docs/math-pilot-156.md](docs/math-pilot-156.md)
 - Reviewer path and claim map: [docs/reviewer-path.md](docs/reviewer-path.md)
 - OpenPoC-03 cross-source correlation: [docs/openpoc-03-cross-source-correlation.md](docs/openpoc-03-cross-source-correlation.md)
 - Grant evidence: [docs/GRANT_EVIDENCE.md](docs/GRANT_EVIDENCE.md)

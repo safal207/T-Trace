@@ -1,0 +1,167 @@
+{
+  "archives": [
+    {
+      "actual_sha256": "47bf4bbd78f70c2e9670598ab7124d92b6efb7330ff33e5fbb4030f6fd72e4e4",
+      "bytes": 580432872,
+      "expected_sha256": "47bf4bbd78f70c2e9670598ab7124d92b6efb7330ff33e5fbb4030f6fd72e4e4",
+      "filename": "lean-4.34.1-linux.tar.zst",
+      "verified": true
+    },
+    {
+      "actual_sha256": "63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445",
+      "bytes": 70553950,
+      "expected_sha256": "63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445",
+      "filename": "go1.27.1.linux-amd64.tar.gz",
+      "verified": true
+    }
+  ],
+  "execution": {
+    "comparator": "NOT_RUN",
+    "independent_kernel": "NOT_RUN",
+    "lean_proof": "NOT_RUN",
+    "negative_proof_controls": "NOT_RUN",
+    "reason": "Required Landlock syscall unavailable (ENOSYS38). Comparator requires real Landrun; no fake sandbox substitution. Official Lean executable also fails version startup with exit1: failed to locate application."
+  },
+  "generated_utc": "2026-10-07T12:07:39.795769+00:00",
+  "host": {
+    "disk_free_bytes": 17332011008,
+    "gid": 0,
+    "gid_map": "0          0          1",
+    "kernel": "6.18.44",
+    "machine": "x86_64",
+    "uid": 0,
+    "uid_map": "0          0          1"
+  },
+  "installer_preflight": {
+    "command": "env -i PATH=/usr/bin:/bin unshare --user runtime/prepared/scripts/setup_math_runtime.sh /absolute/disposable/runtime",
+    "exit_code": 1,
+    "proof_executed": false,
+    "stdout": "Working Landlock required; probe=-1, errno=38\n"
+  },
+  "lean_toolchain": "leanprover/lean4:v4.34.1",
+  "mathlib_commit": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "missing_tools": [
+    "comparator",
+    "landrun",
+    "lean4export",
+    "nanoda_bin"
+  ],
+  "nanoda_required_by_pilot_config": false,
+  "next_environment_requirements": [
+    "non-root UID/GID with no effective capabilities",
+    "Linux with working Landlock ABI and real Landrun",
+    "AF_UNIX creation denied through systemd-run or reviewed seccomp launcher",
+    "Lean4.34.1 startup succeeds",
+    "pinned compatible Comparator and lean4export build succeeds before proof checks"
+  ],
+  "pinned_tools": {
+    "candidate_build_override": "leanprover/lean4:v4.34.1; untested",
+    "candidate_declared_toolchain": "leanprover/lean4:v4.34.0",
+    "comparator_434_candidate": "d03acab154d269c06e60e4de7e4cc85deebff94b",
+    "comparator_cloned": "ca04cfc72b550331658ec314bf47685281bfd4bf",
+    "landrun_source": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4",
+    "lean4export_434_candidate": "076e8e57707e813375e8f9da8bf989799ace9680"
+  },
+  "probes": {
+    "ambient_landlock": {
+      "errno": 38,
+      "probe": "landlock_create_ruleset(NULL,0,LANDLOCK_CREATE_RULESET_VERSION), x86_64 syscall444",
+      "result": -1
+    },
+    "go_version": {
+      "argv": [
+        "env",
+        "-i",
+        "PATH=/usr/bin:/bin",
+        "/workspace/scratch/047861d628f8/runtime/tools/go/bin/go",
+        "version"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "go version go1.27.1 linux/amd64\n"
+    },
+    "lean_version": {
+      "argv": [
+        "env",
+        "-i",
+        "PATH=/usr/bin:/bin",
+        "/workspace/scratch/047861d628f8/runtime/tools/lean-4.34.1-linux/bin/lean",
+        "--version"
+      ],
+      "exit_code": 1,
+      "stderr": "error: failed to locate application\n",
+      "stdout": ""
+    },
+    "privilege_drop": {
+      "argv": [
+        "setpriv",
+        "--reuid=65534",
+        "--regid=65534",
+        "--clear-groups",
+        "id"
+      ],
+      "exit_code": 127,
+      "stderr": "setpriv: setresuid failed: Invalid argument\n",
+      "stdout": ""
+    },
+    "sandbox_syscalls": {
+      "argv": [
+        "unshare",
+        "--user",
+        "--net",
+        "/workspace/scratch/047861d628f8/runtime/tools/seccomp_no_unix",
+        "/usr/bin/python3",
+        "-c",
+        "[inline probe recorded in preflight_probe.py]"
+      ],
+      "exit_code": 0,
+      "parsed": {
+        "gid": 65534,
+        "inet_socket": {
+          "allowed": true
+        },
+        "io_uring_setup": {
+          "errno": 1,
+          "result": -1
+        },
+        "landlock_version": {
+          "errno": 38,
+          "result": -1
+        },
+        "status": {
+          "CapEff": "0000000000000000",
+          "NoNewPrivs": "1",
+          "Seccomp": "2",
+          "Seccomp_filters": "2"
+        },
+        "uid": 65534,
+        "unix_socket": {
+          "allowed": false,
+          "errno": 97
+        },
+        "unix_socketpair": {
+          "allowed": false,
+          "errno": 97
+        }
+      },
+      "stderr": "",
+      "stdout": "{\"gid\": 65534, \"inet_socket\": {\"allowed\": true}, \"io_uring_setup\": {\"errno\": 1, \"result\": -1}, \"landlock_version\": {\"errno\": 38, \"result\": -1}, \"status\": {\"CapEff\": \"0000000000000000\", \"NoNewPrivs\": \"1\", \"Seccomp\": \"2\", \"Seccomp_filters\": \"2\"}, \"uid\": 65534, \"unix_socket\": {\"allowed\": false, \"errno\": 97}, \"unix_socketpair\": {\"allowed\": false, \"errno\": 97}}\n"
+    },
+    "systemd_unix_guard": {
+      "argv": [
+        "systemd-run",
+        "--user",
+        "--wait",
+        "--pipe",
+        "--property=RestrictAddressFamilies=~AF_UNIX",
+        "/usr/bin/id"
+      ],
+      "exit_code": 1,
+      "stderr": "Failed to connect to bus: No medium found\n",
+      "stdout": ""
+    }
+  },
+  "schema": "math-pilot.runtime-preflight/v1",
+  "scope": "Runtime availability and sandbox probes only; no upstream proof source compiled or executed",
+  "source_commit": "adc7f1241b42e322a6451854ab7e4b4c146bf78a"
+}
