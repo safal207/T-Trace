@@ -562,6 +562,16 @@ def render_markdown(report: CompatibilityReport) -> str:
             "- Upstream verifier execution: **disabled**; CI reads only the pinned manifest and vector data.",
             "- Prior `01–18` / `-00` report: remains pinned and unchanged.",
             "",
+            "## Current publication status",
+            "",
+            "Checked 7 October 2026: the [IETF Datatracker](https://datatracker.ietf.org/doc/"
+            "draft-sahu-agent-action-receipts/) lists only `draft-sahu-agent-action-receipts-00`, "
+            "dated 16 August 2026. Its published Implementation Status does not name Aleksei "
+            f"Safonov or T-Trace. This report's {report.agree_count}/{report.check_count} result "
+            "is pinned repository-level interoperability evidence for the upstream `-01` "
+            "vector/profile state; it is not evidence that an IETF `-01` revision has been "
+            "published, adopted, or endorsed.",
+            "",
             "## Result",
             "",
             f"**{report.agree_count}/{report.check_count} checks agree; "
