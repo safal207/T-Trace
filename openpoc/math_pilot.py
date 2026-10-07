@@ -14,6 +14,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import math
 import os
 from pathlib import Path, PurePosixPath
 import platform
@@ -260,14 +261,26 @@ def _tool_identity(command: list[str], bundle: Path) -> dict[str, Any]:
     return identity
 
 
+def _terminate_owned_process(process: subprocess.Popen) -> None:
+    """Stop the invocation's group, including descendants of an exited leader."""
+    try:
+        if os.name == "posix":
+            os.killpg(process.pid, signal.SIGKILL)
+        elif process.poll() is None:
+            process.kill()
+    except ProcessLookupError:
+        pass
+    process.wait()
+
+
 def run_record(bundle: Path, manifest_path: Path, out: Path, command: list[str],
                run_id: str, timeout: float = 600) -> dict[str, Any]:
     if not isinstance(run_id, str) or len(run_id) < 16 or run_id.isspace():
         raise PilotError("use an independently generated fresh run nonce of at least 16 characters")
     if not command or any(not isinstance(token, str) or not token for token in command):
         raise PilotError("a nonempty subprocess argv is required")
-    if timeout <= 0:
-        raise PilotError("timeout must be positive")
+    if not math.isfinite(timeout) or timeout <= 0:
+        raise PilotError("timeout must be finite and positive")
     bundle = bundle.resolve(strict=True)
     manifest_path = manifest_path.resolve(strict=True)
     manifest_bytes = manifest_path.read_bytes()
@@ -290,21 +303,33 @@ def run_record(bundle: Path, manifest_path: Path, out: Path, command: list[str],
     error: str | None = None
     status = "SPAWN_FAILED"
     with (out / "stdout.log").open("wb") as stdout, (out / "stderr.log").open("wb") as stderr:
+        process = None
+        interrupted = False
         try:
-            process = subprocess.Popen(command, cwd=bundle, stdout=stdout, stderr=stderr,
-                                       start_new_session=(os.name == "posix"))
             try:
-                code = process.wait(timeout=timeout)
-                status = "EXIT_ZERO" if code == 0 else "EXIT_NONZERO"
-            except subprocess.TimeoutExpired:
-                if os.name == "posix":
-                    os.killpg(process.pid, signal.SIGKILL)
-                else:
-                    process.kill()
-                code = process.wait()
-                status = "TIMEOUT"
-        except OSError as exception:
-            error = type(exception).__name__ + ": " + str(exception)
+                process = subprocess.Popen(command, cwd=bundle, stdout=stdout, stderr=stderr,
+                                           start_new_session=(os.name == "posix"))
+            except OSError as exception:
+                error = type(exception).__name__ + ": " + str(exception)
+            else:
+                try:
+                    code = process.wait(timeout=timeout)
+                    status = "EXIT_ZERO" if code == 0 else "EXIT_NONZERO"
+                except subprocess.TimeoutExpired:
+                    status = "TIMEOUT"
+        except BaseException:
+            interrupted = True
+            raise
+        finally:
+            if process is not None:
+                try:
+                    _terminate_owned_process(process)
+                except BaseException:
+                    # Preserve the original interruption or postspawn error.
+                    if not interrupted:
+                        raise
+        if status == "TIMEOUT":
+            code = process.returncode
     ended_at = _now()
     inputs_after = "MATCHED_POSTRUN_SNAPSHOT"
     try:
@@ -394,6 +419,13 @@ def verify_receipt(bundle: Path, manifest_path: Path, receipt_path: Path, *,
     _keys(tool, {"python", "platform", "executable_path", "executable_sha256", "version_probe"}, "tool identity")
     if status != "SPAWN_FAILED" and (not tool["executable_path"] or not tool["executable_sha256"]):
         raise PilotError("missing executed tool identity")
+    if status != "SPAWN_FAILED" and (
+            not isinstance(tool["executable_path"], str)
+            or not Path(tool["executable_path"]).is_absolute()
+            or tool["executable_path"] != command[0]):
+        raise PilotError("executed tool identity differs from recorded command")
+    # This is internal consistency of an unsigned archived receipt. The
+    # original runtime need not exist on this host, and is not authenticated.
     if tool["executable_sha256"] is not None:
         _sha(tool["executable_sha256"], "executable digest")
     return {"receipt_integrity": "VALID", "execution_status": status,
@@ -451,7 +483,16 @@ def main(argv: list[str] | None = None) -> int:
             return 1 if result["blockers"] else 0
         elif args.action == "record":
             command = args.command[1:] if args.command[:1] == ["--"] else args.command
-            receipt = run_record(args.bundle, args.manifest, args.out, command, args.run_id, args.timeout)
+            previous_handler = signal.getsignal(signal.SIGTERM)
+
+            def terminate(signum, _frame):
+                raise SystemExit(128 + signum)
+
+            signal.signal(signal.SIGTERM, terminate)
+            try:
+                receipt = run_record(args.bundle, args.manifest, args.out, command, args.run_id, args.timeout)
+            finally:
+                signal.signal(signal.SIGTERM, previous_handler)
             result = {key: receipt[key] for key in ("run_id", "execution_status", "proof_semantic_status", "inputs_after")}
             print(json.dumps(result, sort_keys=True))
             return 0 if receipt["execution_status"] == "EXIT_ZERO" and receipt["inputs_after"] == "MATCHED_POSTRUN_SNAPSHOT" else 1

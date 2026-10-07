@@ -58,6 +58,24 @@ def test_regular_and_executable_files_still_match_git_blobs(tmp_path):
         assert "symlink_target" not in files[path]
 
 
+@pytest.mark.parametrize("path, changed_mode", [("lean", 0o644), ("regular.txt", 0o755)])
+def test_changed_owner_executable_bit_refused(tmp_path, path, changed_mode):
+    bundle, repo, revision = fixture_dependency(tmp_path)
+    (repo / path).chmod(changed_mode)
+    with pytest.raises(DependencySnapshotError, match="Tracked executable mode mismatch"):
+        snapshot(bundle, revision)
+
+
+@pytest.mark.parametrize("path, changed_mode", [
+    ("lean", 0o700), ("lean", 0o750), ("regular.txt", 0o640), ("regular.txt", 0o655),
+])
+def test_permission_changes_within_git_executable_category_allowed(tmp_path, path, changed_mode):
+    bundle, repo, revision = fixture_dependency(tmp_path)
+    before = snapshot(bundle, revision)
+    (repo / path).chmod(changed_mode)
+    assert snapshot(bundle, revision) == before
+
+
 def test_contained_symlink_snapshot_hashes_literal_target_without_dereference(tmp_path):
     bundle, repo, revision = fixture_dependency(tmp_path)
     entry = next(item for item in snapshot(bundle, revision)["packages"][0]["files"] if item["path"] == "lean.py")

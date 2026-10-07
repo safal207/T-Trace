@@ -58,6 +58,8 @@ Hosted dependency snapshots verify every tracked Git blob in the selected
 dependency checkouts. A tracked symbolic link is recorded by its literal link
 text and Git mode, without hashing the destination's content. Absolute targets,
 targets outside the dependency checkout, and replaced links are rejected.
+For regular files, the owner-executable bit must agree with Git's `100644` or
+`100755` category. Other Unix permission bits are outside this snapshot policy.
 
 ## Receipt adapter
 
@@ -91,6 +93,16 @@ configuration must be a separate argument. It records the resolved launcher
 path and hash, actual exit status, stdout/stderr file hashes and timestamps.
 It performs no implicit version command outside the supplied argv. Runtime
 versions must be collected with the intended isolation and bound separately.
+Execution requires a finite positive timeout. On an interrupted or failed wait,
+the adapter terminates its owned process group and reaps the launcher before
+propagating the exception. The `record` CLI handles SIGTERM through that cleanup
+path; interruption can end without an execution receipt.
+
+Verification checks that the recorded launcher path agrees with `command[0]`.
+This is internal consistency, not authentication of the executable digest.
+An archived launcher digest needs independently retained bytes or an expected
+digest for an independent identity check; the verifier does not hash its own
+local runtime as a substitute.
 
 `MATCHED_POSTRUN_SNAPSHOT` means declared input bytes match before and after the
 process. A process could temporarily modify and restore them between snapshots.
@@ -115,7 +127,17 @@ python -m pytest tests/test_math_pilot*.py
 ```
 
 The hosted workflow attempts real Comparator checking only after the runtime
-and isolation gates succeed. It retains logs and a status report on failure.
+and isolation gates succeed. It attempts to retain logs and a status report on
+failure. Production acceptance and control checks use explicit failures, so
+Python optimization cannot remove them.
+
+The complete script, including downloads and preparation, has a 55-minute
+supervised budget and a 30-second cleanup grace. The CI run step has a separate
+57-minute deadline inside the 60-minute job budget, reserving time for artifact
+upload. A supervisor records deadline expiry and seals available partial
+evidence after its bounded shutdown procedure. Forced host or job cancellation
+can still prevent final reporting or upload.
+
 The local runtime observations are saved in
 [`runtime-preflight.json`](../examples/math-pilot-156/runtime-preflight.json).
 

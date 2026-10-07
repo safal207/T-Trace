@@ -3,9 +3,11 @@
 import json
 import os
 from pathlib import Path
+import signal
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from unittest import mock
 
@@ -92,6 +94,157 @@ class ReceiptIntegrityTests(unittest.TestCase):
     def test_timeout_is_recorded_as_actual_failed_execution(self):
         self.record("sleep", timeout=0.1)
         self.assertEqual(self.verify()["execution_status"], "TIMEOUT")
+
+    def test_nonfinite_or_nonpositive_timeout_rejected_before_any_execution(self):
+        for timeout in (float("nan"), float("inf"), float("-inf"), 0, -1):
+            with self.subTest(timeout=timeout), mock.patch.object(pilot.subprocess, "Popen") as spawn:
+                with self.assertRaisesRegex(pilot.PilotError, "finite and positive"):
+                    self.record(timeout=timeout)
+                spawn.assert_not_called()
+                self.assertFalse(self.out.exists())
+
+    def _process_group_fixture(self):
+        (self.bundle / "process_group_checker.py").write_text(
+            "import json, os, subprocess, sys, time\n"
+            "from pathlib import Path\n"
+            "child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)'])\n"
+            "Path('processes.json').write_text(json.dumps([os.getpid(), child.pid]))\n"
+            "if len(sys.argv) > 2 and sys.argv[2] == 'exit': sys.exit(0)\n"
+            "time.sleep(60)\n"
+        )
+        return [sys.executable, "process_group_checker.py", "config.json"]
+
+    def _wait_for_process_group(self):
+        deadline = time.monotonic() + 5
+        path = self.bundle / "processes.json"
+        while time.monotonic() < deadline:
+            if path.exists():
+                try:
+                    return json.loads(path.read_text())
+                except json.JSONDecodeError:
+                    pass
+            time.sleep(0.01)
+        self.fail("process group fixture did not become ready")
+
+    def _assert_process_group_stopped(self, pids):
+        def running(pid):
+            try:
+                os.kill(pid, 0)
+            except ProcessLookupError:
+                return False
+            # An orphan descendant may remain a zombie until init reaps it;
+            # it cannot keep writing logs or running the checker.
+            status = Path(f"/proc/{pid}/stat")
+            try:
+                return status.read_text().split(") ", 1)[1].split()[0] != "Z"
+            except FileNotFoundError:
+                return False
+
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline and any(running(pid) for pid in pids):
+            time.sleep(0.01)
+        self.assertFalse(any(running(pid) for pid in pids), "owned checker group survived cleanup")
+
+    @unittest.skipUnless(os.name == "posix" and Path("/proc").is_dir(), "POSIX process groups with procfs")
+    def test_normal_exit_also_stops_remaining_descendants_before_sealing_logs(self):
+        command = [*self._process_group_fixture(), "exit"]
+        receipt = pilot.run_record(self.bundle, self.manifest_path, self.out, command, self.RUN_ID)
+        pids = self._wait_for_process_group()
+        try:
+            self.assertEqual(receipt["execution_status"], "EXIT_ZERO")
+            self.assertEqual(self.verify()["proof_semantic_status"], "UNASSESSED")
+            self._assert_process_group_stopped(pids)
+        finally:
+            try:
+                os.killpg(pids[0], signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+
+    @unittest.skipUnless(os.name == "posix" and Path("/proc").is_dir(), "POSIX process groups with procfs")
+    def test_interruption_and_postspawn_errors_stop_group_and_preserve_error(self):
+        command = self._process_group_fixture()
+        real_spawn = subprocess.Popen
+        for exception in (KeyboardInterrupt(), OSError("synthetic wait failure"), RuntimeError("unexpected wait failure")):
+            with self.subTest(exception=type(exception).__name__):
+                self.out = self.root / type(exception).__name__
+                (self.bundle / "processes.json").unlink(missing_ok=True)
+                processes = []
+                pids = []
+
+                def spawn(*args, **kwargs):
+                    process = real_spawn(*args, **kwargs)
+                    processes.append(process)
+                    real_wait = process.wait
+                    interrupted = False
+
+                    def wait(timeout=None):
+                        nonlocal interrupted
+                        if not interrupted:
+                            interrupted = True
+                            pids.extend(self._wait_for_process_group())
+                            raise exception
+                        return real_wait(timeout=timeout)
+
+                    process.wait = wait
+                    return process
+
+                try:
+                    with mock.patch.object(pilot.subprocess, "Popen", side_effect=spawn):
+                        with self.assertRaises(type(exception)) as raised:
+                            pilot.run_record(self.bundle, self.manifest_path, self.out, command, self.RUN_ID)
+                    self.assertIs(raised.exception, exception)
+                    self.assertIsNotNone(processes[0].returncode)
+                    self._assert_process_group_stopped(pids)
+                    self.assertFalse((self.out / "receipt.json").exists())
+                finally:
+                    for process in processes:
+                        try:
+                            os.killpg(process.pid, signal.SIGKILL)
+                        except ProcessLookupError:
+                            pass
+                        process.wait()
+
+    @unittest.skipUnless(os.name == "posix" and Path("/proc").is_dir(), "POSIX process groups with procfs")
+    def test_record_cli_signals_clean_checker_group(self):
+        command = self._process_group_fixture()
+        for interruption in (signal.SIGINT, signal.SIGTERM):
+            with self.subTest(signal=interruption):
+                self.out = self.root / str(interruption)
+                (self.bundle / "processes.json").unlink(missing_ok=True)
+                cli = subprocess.Popen([sys.executable, "-m", "openpoc.math_pilot", "record",
+                    "--bundle", str(self.bundle), "--manifest", str(self.manifest_path),
+                    "--out", str(self.out), "--run-id", self.RUN_ID, "--", *command],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
+                pids = []
+                try:
+                    pids = self._wait_for_process_group()
+                    cli.send_signal(interruption)
+                    stdout, stderr = cli.communicate(timeout=5)
+                    if interruption == signal.SIGTERM:
+                        self.assertEqual(cli.returncode, 128 + interruption, (stdout, stderr))
+                    else:
+                        self.assertIn(cli.returncode, (-interruption, 128 + interruption), (stdout, stderr))
+                    self._assert_process_group_stopped(pids)
+                    self.assertFalse((self.out / "receipt.json").exists())
+                finally:
+                    if pids:
+                        try:
+                            os.killpg(pids[0], signal.SIGKILL)
+                        except ProcessLookupError:
+                            pass
+                    if cli.poll() is None:
+                        cli.kill()
+                    cli.communicate(timeout=5)
+
+    def test_record_cli_restores_sigterm_handler_after_error(self):
+        previous_handler = signal.getsignal(signal.SIGTERM)
+        with mock.patch.object(pilot, "run_record", side_effect=pilot.PilotError("synthetic error")):
+            with mock.patch("builtins.print"):
+                result = pilot.main(["record", "--bundle", str(self.bundle),
+                    "--manifest", str(self.manifest_path), "--out", str(self.out),
+                    "--run-id", self.RUN_ID, "--", sys.executable, "config.json"])
+        self.assertEqual(result, 2)
+        self.assertIs(signal.getsignal(signal.SIGTERM), previous_handler)
 
     def test_missing_executable_cannot_pass(self):
         receipt = pilot.run_record(self.bundle, self.manifest_path, self.out,
@@ -228,6 +381,33 @@ class ReceiptIntegrityTests(unittest.TestCase):
         self.mutate_receipt(lambda value: value.update(command=[sys.executable, "wrong.json"]))
         with self.assertRaisesRegex(pilot.PilotError, "selected config"):
             self.verify()
+
+    def test_executable_identity_path_substitution_rejected(self):
+        self.record()
+        self.mutate_receipt(lambda value: value["tool_identity"].update(
+            executable_path="/different-runtime/synthetic-checker"))
+        with self.assertRaisesRegex(pilot.PilotError, "identity differs from recorded command"):
+            self.verify()
+
+    def test_recorded_executable_substitution_rejected(self):
+        self.record()
+        self.mutate_receipt(lambda value: value["command"].__setitem__(0, "/different-runtime/synthetic-checker"))
+        with self.assertRaisesRegex(pilot.PilotError, "identity differs from recorded command"):
+            self.verify()
+
+    def test_archived_tool_identity_does_not_require_local_executable(self):
+        self.record()
+        archived = str(self.root / "unavailable-archived-runtime" / "synthetic-checker")
+
+        def archive(value):
+            value["command"][0] = archived
+            value["tool_identity"]["executable_path"] = archived
+
+        self.mutate_receipt(archive)
+        self.assertFalse(Path(archived).exists())
+        result = self.verify()
+        self.assertEqual(result["receipt_integrity"], "VALID")
+        self.assertEqual(result["authenticity"], "NOT_ASSESSED")
 
     def test_output_directory_cannot_reuse_stale_artifacts(self):
         self.record()

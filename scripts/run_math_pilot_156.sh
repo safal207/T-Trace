@@ -2,6 +2,8 @@
 set -Eeuo pipefail
 umask 077
 MATH_STARTED_AT="$(date +%s)"
+MATH_RUN_BUDGET_SECONDS=3300
+MATH_FINALIZATION_RESERVE_SECONDS=30
 
 # Run only in an unprivileged, disposable Linux environment.  Installation and
 # Mathlib cache preparation use trusted pinned code.  The submitted OAI proof
@@ -14,6 +16,15 @@ MATH_RUN_ROOT="$(realpath -m -- "$MATH_RUN_ROOT")"
 if [[ -e "$MATH_RUN_ROOT" || "$MATH_RUN_ROOT" == "$MATH_REPO_ROOT" || "$MATH_RUN_ROOT" == "$MATH_REPO_ROOT/"* ]]; then
   printf '%s\n' 'Run directory must be new and outside the T-Trace checkout' >&2
   exit 2
+fi
+MATH_RUNNER_HELPER="$MATH_REPO_ROOT/scripts/math_pilot_runner.py"
+if [[ "${MATH_PILOT_SUPERVISOR_PID:-}" != "$PPID" ]]; then
+  # Supervise installation, downloads, controls and preparation as well as the
+  # proof. The 55-minute deadline and 30-second cleanup grace leave CI time to
+  # preserve evidence before the 57-minute step and 60-minute job deadlines.
+  exec python3 "$MATH_RUNNER_HELPER" supervise --timeout "$MATH_RUN_BUDGET_SECONDS" \
+    --evidence "$MATH_RUN_ROOT/evidence" --repo "$MATH_REPO_ROOT" \
+    -- bash "${BASH_SOURCE[0]}" "$MATH_RUN_ROOT"
 fi
 mkdir -p "$MATH_RUN_ROOT/evidence" "$MATH_RUN_ROOT/tools" "$MATH_RUN_ROOT/downloads"
 MATH_EVIDENCE="$MATH_RUN_ROOT/evidence"
@@ -29,64 +40,42 @@ MATH_LEAN_SHA=47bf4bbd78f70c2e9670598ab7124d92b6efb7330ff33e5fbb4030f6fd72e4e4
 MATH_GO_SHA=63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445
 MATH_TOOL_PATH="$MATH_RUN_ROOT/tools/lean-4.34.1-linux/bin:$MATH_RUN_ROOT/tools/go/bin:/usr/bin:/bin"
 
-finish() {
-  local math_exit="$?"
-  trap - EXIT
-  python3 - "$MATH_EVIDENCE" "$MATH_PHASE" "$math_exit" "$MATH_PROOF_STATUS" "$MATH_REPO_ROOT" "$MATH_PROOF_STARTED" <<'PY'
-import datetime, json, pathlib, subprocess, sys
-out, phase, code, status, repo, proof_started = sys.argv[1:]
-out = pathlib.Path(out)
-receipt = {}
-receipt_path = out / 'proof-run/receipt.json'
-if receipt_path.is_file(): receipt = json.loads(receipt_path.read_text())
-head = subprocess.run(['git', '-C', repo, 'rev-parse', 'HEAD'], capture_output=True, text=True).stdout.strip()
-report = {
-    'schema': 'ttrace.math-pilot.hosted-check/v1',
-    'ended_at': datetime.datetime.now(datetime.timezone.utc).isoformat(),
-    'ttrace_commit': head,
-    'source_commit': 'adc7f1241b42e322a6451854ab7e4b4c146bf78a',
-    'selected_theorems': ['OAI.BorsukNine.main_theorem'],
-    'excluded_targets': ['OAI.BorsukNine.euclidean_nine_counterexample'],
-    'phase': phase, 'runner_exit_code': int(code),
-    'comparator_semantic_status': status if int(code) == 0 else 'NOT_ESTABLISHED',
-    'selected_proof_execution_status': receipt.get('execution_status', 'INTERRUPTED_WITHOUT_RECEIPT' if proof_started == '1' else 'NOT_RUN'),
-    'receipt_proof_semantic_status': receipt.get('proof_semantic_status', 'NOT_ESTABLISHED'),
-    'profile': 'selected-module-mathlib-only',
-    'external_kernel': 'NONE; Lean default kernel only',
-    'toolchain': 'leanprover/lean4:v4.34.1',
-    'comparator_commit': 'd03acab154d269c06e60e4de7e4cc85deebff94b',
-    'exporter_commit': '076e8e57707e813375e8f9da8bf989799ace9680',
-    'toolchain_override': 'Comparator/exporter upstream 4.34.0, explicitly built with 4.34.1',
-    'limitations': [
-        'Comparator acceptance is bounded to the selected challenge and theorem.',
-        'Lean kernel, trusted challenge, pinned Mathlib cache, Landrun, syscall guard, OS and hardware remain assumptions.',
-        'No independent external kernel was run.',
-        'This run does not establish paper alignment, scientific novelty, or the separate nine-dimensional corollary.',
-        'Source snapshots before and after execution cannot detect a transient source change restored before the final snapshot.',
-    ],
+set_phase() {
+  MATH_PHASE="$1"
+  printf '%s\n' "$MATH_PHASE" > "$MATH_EVIDENCE/phase.txt"
 }
-(out / 'result.json').write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
-print(json.dumps({'phase': phase, 'exit_code': int(code), 'comparator_semantic_status': report['comparator_semantic_status']}))
-PY
-  # Seal the live log before hashing it; tee must finish consuming its pipe.
+set_phase preflight
+
+finish() {
+  local math_exit="$?" math_cleanup_step
+  trap - EXIT INT TERM
+  # A deadline signals the whole process group, including tee. Restore the
+  # original streams before reporting, and keep cleanup failures from hiding
+  # the primary failure or skipping the remaining evidence.
+  set +e
   if [[ -n "$MATH_LOG_PID" ]]; then
     exec 1>&3 2>&4
     exec 3>&- 4>&-
-    wait "$MATH_LOG_PID"
+    for ((math_cleanup_step=0; math_cleanup_step<50; math_cleanup_step++)); do
+      kill -0 "$MATH_LOG_PID" 2>/dev/null || break
+      sleep 0.1
+    done
+    if kill -0 "$MATH_LOG_PID" 2>/dev/null; then
+      kill -TERM "$MATH_LOG_PID" 2>/dev/null
+      kill -KILL "$MATH_LOG_PID" 2>/dev/null
+    fi
+    wait "$MATH_LOG_PID" 2>/dev/null
   fi
-  python3 - "$MATH_EVIDENCE" <<'PY'
-import hashlib, json, pathlib, sys
-out = pathlib.Path(sys.argv[1])
-files = []
-for path in sorted(out.rglob('*')):
-    if path.is_file() and path.name != 'artifact-sha256.json':
-        raw = path.read_bytes()
-        files.append({'path': str(path.relative_to(out)), 'sha256': hashlib.sha256(raw).hexdigest(), 'size_bytes': len(raw)})
-(out / 'artifact-sha256.json').write_text(json.dumps(files, indent=2) + '\n')
-PY
+  python3 "$MATH_RUNNER_HELPER" report "$MATH_EVIDENCE" "$MATH_PHASE" \
+    "$math_exit" "$MATH_PROOF_STATUS" "$MATH_REPO_ROOT" "$MATH_PROOF_STARTED" \
+    || { if (( math_exit == 0 )); then math_exit=1; fi; }
+  python3 "$MATH_RUNNER_HELPER" seal "$MATH_EVIDENCE" \
+    || { if (( math_exit == 0 )); then math_exit=1; fi; }
   exit "$math_exit"
 }
 trap finish EXIT
+trap 'exit 130' INT
+trap 'exit 124' TERM
 exec 3>&1 4>&2
 exec > >(tee "$MATH_EVIDENCE/runner.log") 2>&1
 MATH_LOG_PID="$!"
@@ -118,17 +107,9 @@ fetch_pinned() {
 
 fetch_subject() {
   local math_dest="$MATH_RUN_ROOT/math-source"
-  python3 - "$MATH_REPO_ROOT/examples/math-pilot-156/source-inventory.json" \
-    "$MATH_EVIDENCE/source-sparse-patterns.txt" <<'PY'
-import json, pathlib, sys
-from pathlib import PurePosixPath
-inventory = json.loads(pathlib.Path(sys.argv[1]).read_text())
-paths = sorted({item['path'] for item in inventory['files']})
-for path in paths:
-    assert not PurePosixPath(path).is_absolute() and '..' not in PurePosixPath(path).parts
-    assert not any(x in path for x in ('\n', '\r', '*', '?', '[', ']', '\\', '!'))
-pathlib.Path(sys.argv[2]).write_text(''.join('/' + path + '\n' for path in paths))
-PY
+  python3 "$MATH_RUNNER_HELPER" sparse-patterns \
+    "$MATH_REPO_ROOT/examples/math-pilot-156/source-inventory.json" \
+    "$MATH_EVIDENCE/source-sparse-patterns.txt"
   git init --quiet "$math_dest"
   git -C "$math_dest" remote add origin https://github.com/openai/math.git
   git -C "$math_dest" -c protocol.file.allow=never fetch --quiet --filter=blob:none --depth 1 origin "$MATH_COMMIT"
@@ -139,7 +120,7 @@ PY
   [[ "$(git -C "$math_dest" rev-parse HEAD)" == "$MATH_COMMIT" ]]
 }
 
-MATH_PHASE=runtime-installation
+set_phase runtime-installation
 curl --fail --location --silent --show-error --retry 3 \
   --output "$MATH_RUN_ROOT/downloads/lean-4.34.1-linux.tar.zst" \
   https://github.com/leanprover/lean4/releases/download/v4.34.1/lean-4.34.1-linux.tar.zst
@@ -165,7 +146,7 @@ MATH_GUARD="$MATH_RUN_ROOT/tools/math_pilot_no_unix"
 MATH_LANDRUN="$MATH_RUN_ROOT/tools/landrun"
 env -i PATH="$MATH_TOOL_PATH" "$MATH_GUARD" --probe > "$MATH_EVIDENCE/syscall-guard-probe.json"
 
-MATH_PHASE=landrun-denial-controls
+set_phase landrun-denial-controls
 mkdir -p "$MATH_RUN_ROOT/sandbox-fixture/allowed"
 printf '%s\n' readable > "$MATH_RUN_ROOT/sandbox-fixture/allowed/read-only.txt"
 printf '%s\n' excluded > "$MATH_RUN_ROOT/sandbox-fixture/excluded.txt"
@@ -175,27 +156,28 @@ env -i PATH="$MATH_TOOL_PATH" "$MATH_GUARD" "$MATH_LANDRUN" \
   > "$MATH_EVIDENCE/landrun-denial-controls.json" <<'PY'
 import errno, json, pathlib, sys
 root = pathlib.Path(sys.argv[1])
-assert (root / 'allowed/read-only.txt').read_text() == 'readable\n'
+if (root / 'allowed/read-only.txt').read_text() != 'readable\n':
+    raise SystemExit('Landrun readable control has unexpected contents')
 try: (root / 'excluded.txt').read_text()
-except OSError as error: assert error.errno in (errno.EACCES, errno.EPERM)
+except OSError as error:
+    if error.errno not in (errno.EACCES, errno.EPERM):
+        raise SystemExit(f'Excluded read failed for an unexpected reason: {error}')
 else: raise SystemExit('Landrun failed to deny excluded read')
 for path in (root / 'allowed/read-only.txt', root / 'allowed/new.txt', root / 'excluded-new.txt'):
     try: path.write_text('forbidden')
-    except OSError as error: assert error.errno in (errno.EACCES, errno.EPERM)
+    except OSError as error:
+        if error.errno not in (errno.EACCES, errno.EPERM):
+            raise SystemExit(f'Denied write failed for an unexpected reason: {error}')
     else: raise SystemExit('Landrun failed to deny write')
 print(json.dumps({'allowed_read': 'ALLOWED', 'excluded_read': 'DENIED', 'read_only_write': 'DENIED', 'new_file_write': 'DENIED'}))
 PY
 [[ "$(cat "$MATH_RUN_ROOT/sandbox-fixture/allowed/read-only.txt")" == readable ]]
 
-MATH_PHASE=comparator-build
+set_phase comparator-build
 cp "$MATH_RUN_ROOT/comparator/lean-toolchain" "$MATH_EVIDENCE/comparator-lean-toolchain.original"
 printf '%s\n' leanprover/lean4:v4.34.1 > "$MATH_RUN_ROOT/comparator/lean-toolchain"
-python3 - "$MATH_RUN_ROOT/comparator/lake-manifest.json" "$MATH_EXPORTER_SHA" <<'PY'
-import json, sys
-packages = json.load(open(sys.argv[1]))['packages']
-assert len(packages) == 1 and packages[0]['name'] == 'lean4export'
-assert packages[0]['rev'] == sys.argv[2], packages
-PY
+python3 "$MATH_RUNNER_HELPER" exporter \
+  "$MATH_RUN_ROOT/comparator/lake-manifest.json" "$MATH_EXPORTER_SHA"
 # The committed manifest pins exporter; do not resolve its floating inputRev.
 (cd "$MATH_RUN_ROOT/comparator" && env -i PATH="$MATH_TOOL_PATH" HOME="$MATH_RUNNER_HOME" \
   lake build lean4export comparator)
@@ -207,7 +189,7 @@ MATH_EXPORTER="$MATH_RUN_ROOT/tools/lean4export"
 git -C "$MATH_RUN_ROOT/comparator" diff -- lean-toolchain > "$MATH_EVIDENCE/comparator-toolchain-override.patch"
 sha256sum "$MATH_COMPARATOR" "$MATH_EXPORTER" "$MATH_LANDRUN" "$MATH_GUARD" > "$MATH_EVIDENCE/installed-tool-sha256.txt"
 
-MATH_PHASE=comparator-canonical-controls
+set_phase comparator-canonical-controls
 for math_case in simple_match simple_mismatch simple_axiom_issue; do
   math_case_root="$MATH_RUN_ROOT/controls/$math_case"
   mkdir -p "$math_case_root"
@@ -227,21 +209,11 @@ TOML
     COMPARATOR_LANDRUN="$MATH_LANDRUN" COMPARATOR_LEAN4EXPORT="$MATH_EXPORTER" \
     "$MATH_GUARD" lake env "$MATH_COMPARATOR" config.json) \
     > "$MATH_EVIDENCE/control-$math_case.log" 2>&1 || math_case_exit="$?"
-  python3 - "$math_case" "$math_case_exit" "$MATH_EVIDENCE/control-$math_case.log" <<'PY'
-import pathlib, sys
-case, code, path = sys.argv[1:]
-text = pathlib.Path(path).read_text(errors='replace')
-if case == 'simple_match':
-    assert int(code) == 0 and 'Lean default kernel accepts the solution' in text and 'Your solution is okay!' in text, text
-elif case == 'simple_mismatch':
-    assert int(code) != 0 and 'Challenge and solution' in text and ('do not match' in text or "don't match" in text), text
-else:
-    assert int(code) != 0 and "Illegal axiom detected: 'helper'" in text, text
-print(f'{case}: expected Comparator verdict observed (exit={code})')
-PY
+  python3 "$MATH_RUNNER_HELPER" control "$math_case" "$math_case_exit" \
+    "$MATH_EVIDENCE/control-$math_case.log"
 done
 
-MATH_PHASE=source-preparation
+set_phase source-preparation
 fetch_subject
 python3 "$MATH_REPO_ROOT/scripts/prepare_math_pilot.py" --source-repo "$MATH_RUN_ROOT/math-source" --output-dir "$MATH_RUN_ROOT/bundle"
 cp "$MATH_RUN_ROOT/bundle/source-inventory.json" "$MATH_EVIDENCE/source-inventory.json"
@@ -251,7 +223,7 @@ env -i PATH=/usr/bin:/bin PYTHONPATH="$MATH_REPO_ROOT" python3 -m scripts.create
   > "$MATH_EVIDENCE/source-binding.json"
 cp "$MATH_RUN_ROOT/bundle/source-manifest.json" "$MATH_EVIDENCE/source-manifest.json"
 
-MATH_PHASE=trusted-mathlib-dependencies
+set_phase trusted-mathlib-dependencies
 # This executes the locally authored Lakefile plus the trusted pinned Mathlib
 # dependency.  No OAI module is compiled before Comparator exports Challenge.
 (cd "$MATH_BUNDLE" && env -i PATH="$MATH_TOOL_PATH" HOME="$MATH_RUNNER_HOME" lake update)
@@ -263,7 +235,7 @@ cp "$MATH_BUNDLE/lake-manifest.json" "$MATH_EVIDENCE/selected-lake-manifest.json
 python3 "$MATH_REPO_ROOT/scripts/math_pilot_dependencies.py" "$MATH_BUNDLE" "$MATH_BUNDLE/dependency-source-inventory.json"
 cp "$MATH_BUNDLE/dependency-source-inventory.json" "$MATH_EVIDENCE/dependency-source-inventory.json"
 
-MATH_PHASE=receipt-manifest
+set_phase receipt-manifest
 env -i PATH=/usr/bin:/bin PYTHONPATH="$MATH_REPO_ROOT" python3 - "$MATH_RUN_ROOT/bundle" <<'PY'
 import json, pathlib, sys
 from openpoc.math_pilot import canonical_bytes, digest, preflight_manifest, write_json
@@ -283,8 +255,8 @@ cp "$MATH_RUN_ROOT/bundle/manifest-canonical-sha256.txt" "$MATH_EVIDENCE/manifes
 MATH_RUN_ID="$(python3 -c 'import secrets; print(secrets.token_hex(32))')"
 printf '%s\n' "$MATH_RUN_ID" > "$MATH_EVIDENCE/run-id.txt"
 
-MATH_PHASE=selected-theorem-comparator
-MATH_PROOF_TIMEOUT="$((3300 - $(date +%s) + MATH_STARTED_AT))"
+set_phase selected-theorem-comparator
+MATH_PROOF_TIMEOUT="$((MATH_RUN_BUDGET_SECONDS - MATH_FINALIZATION_RESERVE_SECONDS - $(date +%s) + MATH_STARTED_AT))"
 if (( MATH_PROOF_TIMEOUT <= 60 )); then
   printf '%s\n' 'Insufficient time remains for proof checking and evidence upload' >&2
   exit 1
@@ -299,7 +271,7 @@ env -i PATH="$MATH_TOOL_PATH" HOME="$MATH_RUNNER_HOME" PYTHONPATH="$MATH_REPO_RO
   -- "$MATH_GUARD" /usr/bin/env --chdir="$MATH_BUNDLE" \
   lake env "$MATH_COMPARATOR" "$MATH_BUNDLE/ComparatorChallenges/BorsukNine.json"
 
-MATH_PHASE=postrun-source-and-receipt-check
+set_phase postrun-source-and-receipt-check
 python3 "$MATH_REPO_ROOT/scripts/math_pilot_dependencies.py" "$MATH_BUNDLE" "$MATH_EVIDENCE/dependency-source-inventory.after.json"
 cmp "$MATH_BUNDLE/dependency-source-inventory.json" "$MATH_EVIDENCE/dependency-source-inventory.after.json"
 env -i PATH=/usr/bin:/bin PYTHONPATH="$MATH_REPO_ROOT" python3 -m openpoc.math_pilot verify \
@@ -309,19 +281,6 @@ env -i PATH=/usr/bin:/bin PYTHONPATH="$MATH_REPO_ROOT" python3 -m openpoc.math_p
   --expected-theorem OAI.BorsukNine.main_theorem --expected-config lean/ComparatorChallenges/BorsukNine.json \
   --expected-run-id "$MATH_RUN_ID" --expected-manifest-sha256 "$(cat "$MATH_EVIDENCE/manifest-canonical-sha256.txt")" \
   > "$MATH_EVIDENCE/receipt-verification.json"
-python3 - "$MATH_EVIDENCE/proof-run" <<'PY'
-import json, pathlib, sys
-run = pathlib.Path(sys.argv[1])
-receipt = json.loads((run / 'receipt.json').read_text())
-assert receipt['execution_status'] == 'EXIT_ZERO' and receipt['exit_code'] == 0
-assert receipt['inputs_after'] == 'MATCHED_POSTRUN_SNAPSHOT'
-assert receipt['proof_semantic_status'] == 'UNASSESSED'
-text = (run / 'stdout.log').read_text(errors='replace')
-assert 'Building ComparatorChallenges.BorsukNine' in text
-assert 'Building OAI.Geometry.Borsuk.Main' in text
-assert 'Lean default kernel accepts the solution' in text
-assert 'Your solution is okay!' in text
-print('Comparator accepted the selected theorem under the recorded profile.')
-PY
-MATH_PHASE=complete
+python3 "$MATH_RUNNER_HELPER" acceptance "$MATH_EVIDENCE/proof-run"
+set_phase complete
 MATH_PROOF_STATUS=COMPARATOR_ACCEPTED_SELECTED_THEOREM

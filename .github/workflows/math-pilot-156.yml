@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/math-pilot-156.yml
       - scripts/run_math_pilot_156.sh
+      - scripts/math_pilot_runner.py
       - scripts/math_pilot_no_unix.c
       - scripts/math_pilot_dependencies.py
       - scripts/prepare_math_pilot.py
@@ -31,6 +32,7 @@ jobs:
           persist-credentials: false
 
       - name: Prepare trusted runtime and run the real sandboxed Comparator
+        timeout-minutes: 57
         shell: bash
         run: bash scripts/run_math_pilot_156.sh "$RUNNER_TEMP/math-pilot-156"
 

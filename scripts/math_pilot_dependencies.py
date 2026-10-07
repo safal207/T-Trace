@@ -67,6 +67,10 @@ def _tracked_blob(repo: Path, path: str, mode: str, kind: str, blob: str) -> dic
         entry["symlink_target"] = link_text
     else:
         _require(stat.S_ISREG(actual_mode), f"Expected regular tracked file: {path}")
+        # Git records only the owner's executable bit for regular files;
+        # other permission bits do not distinguish 100644 from 100755.
+        _require(bool(actual_mode & stat.S_IXUSR) == (mode == "100755"),
+                 f"Tracked executable mode mismatch: {path}")
         raw = target.read_bytes()
     actual_blob = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
     _require(actual_blob == blob, f"Tracked Git blob mismatch: {path}")
