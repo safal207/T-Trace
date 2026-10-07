@@ -158,19 +158,36 @@ def _signal_group(pid: int, signum: int) -> None:
         pass
 
 
-def _stop_process(process: subprocess.Popen, grace: float) -> None:
-    _signal_group(process.pid, signal.SIGTERM)
+def _failure(stage: str, error: BaseException) -> dict[str, str]:
+    return {"stage": stage, "type": type(error).__name__, "message": str(error)}
+
+
+def _stop_process(process: subprocess.Popen, grace: float) -> list[dict[str, str]]:
+    errors = []
+    # Every action gets its own guard: a failed TERM/wait cannot skip KILL or
+    # failure evidence. Even repeated interruption leaves a conservative report.
+    try:
+        _signal_group(process.pid, signal.SIGTERM)
+    except BaseException as error:
+        errors.append(_failure("cleanup-term", error))
     try:
         process.wait(timeout=grace)
     except subprocess.TimeoutExpired:
+        pass  # Expected escalation when the child ignores TERM.
+    except BaseException as error:
+        errors.append(_failure("cleanup-grace-wait", error))
+    try:
+        # Terminate remaining members even if the leader exited promptly.
         _signal_group(process.pid, signal.SIGKILL)
-        try:
-            process.wait(timeout=5)
-        except subprocess.TimeoutExpired:
-            # Keep the final report bounded even for an uninterruptible task.
-            pass
-    # Reap/terminate other members even if the group's leader exited promptly.
-    _signal_group(process.pid, signal.SIGKILL)
+    except BaseException as error:
+        errors.append(_failure("cleanup-kill", error))
+    try:
+        process.wait(timeout=5)
+    except BaseException as error:
+        # Record an unresolved reap rather than losing the failure report or
+        # waiting indefinitely for an uninterruptible task.
+        errors.append(_failure("cleanup-reap", error))
+    return errors
 
 
 def supervise_run(command: list[str], evidence: str | Path, repo: str | Path, *,
@@ -183,23 +200,32 @@ def supervise_run(command: list[str], evidence: str | Path, repo: str | Path, *,
     child_env = dict(os.environ, MATH_PILOT_SUPERVISOR_PID=str(os.getpid()))
     process = subprocess.Popen(command, start_new_session=True, env=child_env)
     timed_out = False
+    supervision_error = None
+    cleanup_errors = []
     try:
         code = process.wait(timeout=timeout)
     except subprocess.TimeoutExpired:
         timed_out = True
-        _stop_process(process, grace)
+        cleanup_errors = _stop_process(process, grace)
         code = 124
     except (KeyboardInterrupt, SystemExit) as error:
-        _stop_process(process, grace)
+        cleanup_errors = _stop_process(process, grace)
         code = 130 if isinstance(error, KeyboardInterrupt) else error.code
         if not isinstance(code, int) or code == 0:
             code = 1
-    except BaseException:
-        _stop_process(process, grace)
-        raise
+    except BaseException as error:
+        supervision_error = _failure("supervised-wait", error)
+        cleanup_errors = _stop_process(process, grace)
+        code = 1
     else:
         # The runner owns this process group; no log writer may outlive sealing.
-        _signal_group(process.pid, signal.SIGKILL)
+        try:
+            _signal_group(process.pid, signal.SIGKILL)
+        except BaseException as error:
+            cleanup_errors = [_failure("completed-group-kill", error)]
+            cleanup_errors.extend(_stop_process(process, grace))
+            if code == 0:
+                code = 1
     if code < 0:
         code = 128 - code
     out = Path(evidence)
@@ -236,11 +262,16 @@ def supervise_run(command: list[str], evidence: str | Path, repo: str | Path, *,
         result["runner_exit_code"] = code
         result["comparator_semantic_status"] = "NOT_ESTABLISHED"
         _write_json(result_path, result)
-    _write_json(out / "supervision.json", {
+    supervision = {
         "whole_run_timeout_seconds": timeout, "cleanup_grace_seconds": grace,
         "whole_run_timed_out": timed_out, "runner_exit_code": code,
         "duration_seconds": time.monotonic() - started,
-    })
+    }
+    if supervision_error is not None:
+        supervision["supervision_error"] = supervision_error
+    if cleanup_errors:
+        supervision["cleanup_errors"] = cleanup_errors
+    _write_json(out / "supervision.json", supervision)
     seal_evidence(out)
     return code
 

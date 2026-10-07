@@ -250,6 +250,16 @@ def _config_argument(command: list[str], bundle: Path, config_path: str) -> bool
     return False
 
 
+def _canonical_absolute_path(value: Any, name: str) -> Path:
+    if not isinstance(value, str) or not value or "\0" in value:
+        raise PilotError(f"{name}: expected a canonical absolute path")
+    path = Path(value)
+    if (not path.is_absolute() or str(path) != value or ".." in path.parts
+            or (os.name == "posix" and value.startswith("//"))):
+        raise PilotError(f"{name}: expected a canonical absolute path")
+    return path
+
+
 def _tool_identity(command: list[str], bundle: Path) -> dict[str, Any]:
     executable = _executable(command[0], bundle)
     identity: dict[str, Any] = {
@@ -360,6 +370,7 @@ def verify_receipt(bundle: Path, manifest_path: Path, receipt_path: Path, *,
                    expected_repository: str, expected_commit: str,
                    expected_theorems: list[str], expected_config: str,
                    expected_run_id: str, expected_manifest_sha256: str,
+                   expected_cwd: str | None = None,
                    not_before: str | None = None) -> dict[str, Any]:
     manifest = _read_json(manifest_path)
     _sha(expected_manifest_sha256, "independently expected manifest digest")
@@ -391,7 +402,15 @@ def verify_receipt(bundle: Path, manifest_path: Path, receipt_path: Path, *,
     if not isinstance(command, list) or not command or any(
             not isinstance(token, str) or not token for token in command):
         raise PilotError("invalid recorded command")
-    if not _config_argument(command, bundle.resolve(), expected_config):
+    recorded_cwd = _canonical_absolute_path(receipt["cwd"], "recorded cwd")
+    trusted_cwd = _canonical_absolute_path(
+        str(bundle.resolve()) if expected_cwd is None else expected_cwd, "independently expected cwd")
+    if recorded_cwd != trusted_cwd:
+        raise PilotError("receipt cwd differs from independently expected cwd")
+    # The archive's local directory can differ from its execution directory.
+    # Resolve argv lexically against the independently pinned original cwd;
+    # that original path need not exist on the verifier host.
+    if not _config_argument(command, recorded_cwd, expected_config):
         raise PilotError("recorded command does not bind selected config")
     if receipt["inputs_after"] != "MATCHED_POSTRUN_SNAPSHOT":
         raise PilotError("postrun input snapshot mismatch")
@@ -465,6 +484,7 @@ def main(argv: list[str] | None = None) -> int:
     verify.add_argument("--expected-config", required=True)
     verify.add_argument("--expected-run-id", required=True)
     verify.add_argument("--expected-manifest-sha256", required=True)
+    verify.add_argument("--expected-cwd", help="independently retained original execution directory; defaults to --bundle")
     verify.add_argument("--not-before")
     args = parser.parse_args(argv)
     try:
@@ -501,7 +521,8 @@ def main(argv: list[str] | None = None) -> int:
                 expected_repository=args.expected_repository, expected_commit=args.expected_commit,
                 expected_theorems=args.expected_theorem, expected_config=args.expected_config,
                 expected_run_id=args.expected_run_id,
-                expected_manifest_sha256=args.expected_manifest_sha256, not_before=args.not_before)
+                expected_manifest_sha256=args.expected_manifest_sha256,
+                expected_cwd=args.expected_cwd, not_before=args.not_before)
             print(json.dumps(result, sort_keys=True))
             return 0 if result["execution_status"] == "EXIT_ZERO" else 1
         print(json.dumps(result, sort_keys=True))

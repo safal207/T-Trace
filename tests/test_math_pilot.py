@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -381,6 +382,64 @@ class ReceiptIntegrityTests(unittest.TestCase):
         self.mutate_receipt(lambda value: value.update(command=[sys.executable, "wrong.json"]))
         with self.assertRaisesRegex(pilot.PilotError, "selected config"):
             self.verify()
+
+    def test_recorded_cwd_substitution_rejected(self):
+        self.record()
+        self.mutate_receipt(lambda value: value.update(cwd=str(self.root / "other-bundle")))
+        with self.assertRaisesRegex(pilot.PilotError, "cwd differs from independently expected cwd"):
+            self.verify()
+
+    def test_malformed_or_noncanonical_recorded_cwd_rejected(self):
+        self.record()
+        for cwd in (None, [], {}, 123, "", "relative/bundle", "/a/../bundle",
+                    "/a/./bundle", "/a//bundle", "/bundle/", "//bundle", "/bundle\0"):
+            with self.subTest(cwd=cwd):
+                self.mutate_receipt(lambda value: value.update(cwd=cwd))
+                with self.assertRaisesRegex(pilot.PilotError, "recorded cwd: expected a canonical absolute path"):
+                    self.verify()
+
+    def test_explicit_expected_cwd_is_validated_and_independently_matched(self):
+        self.record()
+        for expected in ("relative/bundle", "/original/../bundle", ""):
+            with self.subTest(expected=expected):
+                with self.assertRaisesRegex(pilot.PilotError, "independently expected cwd: expected a canonical absolute path"):
+                    self.verify(expected_cwd=expected)
+        with self.assertRaisesRegex(pilot.PilotError, "cwd differs from independently expected cwd"):
+            self.verify(expected_cwd=str(self.root / "different-original-bundle"))
+
+    def _relocate_execution_archive(self):
+        original_cwd = str(self.bundle.resolve())
+        archive = self.root / "archive"
+        archive.mkdir()
+        shutil.copytree(self.bundle, archive / "bundle")
+        shutil.copytree(self.out, archive / "run")
+        shutil.copyfile(self.manifest_path, archive / "manifest.json")
+        shutil.rmtree(self.bundle)
+        self.bundle = archive / "bundle"
+        self.out = archive / "run"
+        self.manifest_path = archive / "manifest.json"
+        self.assertFalse(Path(original_cwd).exists())
+        return original_cwd
+
+    def test_relocated_archive_relative_config_binds_trusted_original_cwd(self):
+        self.record()
+        original_cwd = self._relocate_execution_archive()
+        with self.assertRaisesRegex(pilot.PilotError, "cwd differs from independently expected cwd"):
+            self.verify()
+        result = self.verify(expected_cwd=original_cwd)
+        self.assertEqual(result["receipt_integrity"], "VALID")
+        self.assertEqual(result["authenticity"], "NOT_ASSESSED")
+
+    def test_relocated_archive_absolute_config_binds_trusted_original_cwd(self):
+        pilot.run_record(self.bundle, self.manifest_path, self.out,
+            [sys.executable, "synthetic_checker.py", str(self.bundle / "config.json")], self.RUN_ID)
+        original_cwd = self._relocate_execution_archive()
+        result = self.verify(expected_cwd=original_cwd)
+        self.assertEqual(result["receipt_integrity"], "VALID")
+        self.assertEqual(result["authenticity"], "NOT_ASSESSED")
+        self.mutate_receipt(lambda value: value["command"].__setitem__(2, str(self.bundle / "config.json")))
+        with self.assertRaisesRegex(pilot.PilotError, "selected config"):
+            self.verify(expected_cwd=original_cwd)
 
     def test_executable_identity_path_substitution_rejected(self):
         self.record()

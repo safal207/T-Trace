@@ -104,6 +104,14 @@ An archived launcher digest needs independently retained bytes or an expected
 digest for an independent identity check; the verifier does not hash its own
 local runtime as a substitute.
 
+The recorded working directory must be a canonical absolute path matching the
+independently expected working directory. By default, verification expects the
+current canonical bundle path. When verifying a relocated archive, provide
+`--expected-cwd /original/absolute/bundle/path` from independently retained run
+context; the original directory need not exist on the verifier host. Selected
+configuration arguments are interpreted against that recorded directory.
+Copying the expected directory from an untrusted receipt defeats this binding.
+
 `MATCHED_POSTRUN_SNAPSHOT` means declared input bytes match before and after the
 process. A process could temporarily modify and restore them between snapshots.
 Read-only input enforcement and verified sandbox behavior are responsibilities
@@ -134,9 +142,10 @@ Python optimization cannot remove them.
 The complete script, including downloads and preparation, has a 55-minute
 supervised budget and a 30-second cleanup grace. The CI run step has a separate
 57-minute deadline inside the 60-minute job budget, reserving time for artifact
-upload. A supervisor records deadline expiry and seals available partial
-evidence after its bounded shutdown procedure. Forced host or job cancellation
-can still prevent final reporting or upload.
+upload. A supervisor records deadline expiry or unexpected wait/cleanup errors
+and seals available partial evidence after its bounded shutdown procedure.
+An unexpected wait error cannot produce success or skip fallback reporting.
+Forced host or job cancellation can still prevent final reporting or upload.
 
 The local runtime observations are saved in
 [`runtime-preflight.json`](../examples/math-pilot-156/runtime-preflight.json).

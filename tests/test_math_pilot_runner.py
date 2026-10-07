@@ -11,6 +11,7 @@ import time
 
 import pytest
 
+from scripts import math_pilot_runner
 from scripts.math_pilot_runner import RunnerCheckError, seal_evidence, supervise_run, write_result
 
 
@@ -292,6 +293,180 @@ def test_sigterm_supervisor_stops_owned_child_and_retains_evidence(tmp_path):
         if process.poll() is None:
             process.send_signal(signal.SIGTERM)
             process.wait(timeout=3)
+
+
+def sleeping_preparation_command(evidence):
+    return [sys.executable, "-c", "\n".join([
+        "import os, pathlib, signal, time",
+        "signal.signal(signal.SIGTERM, signal.SIG_IGN)",
+        f"root = pathlib.Path({str(evidence)!r})",
+        "root.mkdir()",
+        "(root / 'phase.txt').write_text('source-preparation\\n')",
+        "(root / 'runner.log').write_text('retained synthetic preparation log\\n')",
+        "(root / 'preparation-child.pid').write_text(str(os.getpid()))",
+        "time.sleep(30)",
+    ])]
+
+
+def fail_first_fixture_wait(monkeypatch, command, evidence):
+    original_wait = subprocess.Popen.wait
+    first = True
+
+    def wait(process, *args, **kwargs):
+        nonlocal first
+        if first and process.args == command:
+            first = False
+            deadline = time.monotonic() + 3
+            while not (evidence / "preparation-child.pid").exists() and time.monotonic() < deadline:
+                time.sleep(0.01)
+            raise OSError("injected unexpected wait failure")
+        return original_wait(process, *args, **kwargs)
+
+    monkeypatch.setattr(subprocess.Popen, "wait", wait)
+
+
+def test_unexpected_wait_failure_still_kills_child_and_finalizes_evidence(tmp_path, monkeypatch):
+    evidence = tmp_path / "evidence"
+    command = sleeping_preparation_command(evidence)
+    fail_first_fixture_wait(monkeypatch, command, evidence)
+    started = time.monotonic()
+    code = supervise_run(command, evidence, REPO, timeout=1, grace=0.1)
+    assert code != 0
+    assert time.monotonic() - started < 3
+    assert not live(int((evidence / "preparation-child.pid").read_text()))
+    report = json.loads((evidence / "result.json").read_text())
+    assert report["phase"] == "source-preparation"
+    assert report["runner_exit_code"] == code
+    assert report["comparator_semantic_status"] == "NOT_ESTABLISHED"
+    supervision = json.loads((evidence / "supervision.json").read_text())
+    assert supervision["runner_exit_code"] == code
+    assert supervision["supervision_error"]["type"] == "OSError"
+    assert "unexpected wait failure" in supervision["supervision_error"]["message"]
+    assert "retained synthetic preparation log" in (evidence / "runner.log").read_text()
+    assert_sealed(evidence)
+
+
+def test_term_cleanup_failure_does_not_skip_kill_or_reporting(tmp_path, monkeypatch):
+    evidence = tmp_path / "evidence"
+    command = sleeping_preparation_command(evidence)
+    fail_first_fixture_wait(monkeypatch, command, evidence)
+    original_signal = math_pilot_runner._signal_group
+    observed_signals = []
+
+    def group_signal(pid, signum):
+        observed_signals.append(signum)
+        if signum == signal.SIGTERM:
+            raise OSError("injected TERM cleanup failure")
+        original_signal(pid, signum)
+
+    monkeypatch.setattr(math_pilot_runner, "_signal_group", group_signal)
+    code = supervise_run(command, evidence, REPO, timeout=1, grace=0.1)
+    assert code != 0
+    assert observed_signals == [signal.SIGTERM, signal.SIGKILL]
+    assert not live(int((evidence / "preparation-child.pid").read_text()))
+    supervision = json.loads((evidence / "supervision.json").read_text())
+    assert supervision["cleanup_errors"][0]["stage"] == "cleanup-term"
+    assert "TERM cleanup failure" in supervision["cleanup_errors"][0]["message"]
+    assert json.loads((evidence / "result.json").read_text())["runner_exit_code"] == code
+    assert_sealed(evidence)
+
+
+def test_cleanup_wait_failure_does_not_skip_kill_and_reap(tmp_path, monkeypatch):
+    evidence = tmp_path / "evidence"
+    command = sleeping_preparation_command(evidence)
+    original_wait = subprocess.Popen.wait
+    waits = []
+    process_holder = []
+
+    def wait(process, *args, **kwargs):
+        if process.args == command:
+            process_holder[:] = [process]
+            waits.append(kwargs.get("timeout"))
+            if len(waits) == 1:
+                deadline = time.monotonic() + 3
+                while not (evidence / "preparation-child.pid").exists() and time.monotonic() < deadline:
+                    time.sleep(0.01)
+                raise OSError("injected initial wait failure")
+            if len(waits) == 2:
+                raise RuntimeError("injected cleanup wait failure")
+        return original_wait(process, *args, **kwargs)
+
+    monkeypatch.setattr(subprocess.Popen, "wait", wait)
+    code = supervise_run(command, evidence, REPO, timeout=1, grace=0.1)
+    assert code != 0
+    assert waits == [1, 0.1, 5]
+    assert process_holder[0].returncode == -signal.SIGKILL
+    assert not live(int((evidence / "preparation-child.pid").read_text()))
+    supervision = json.loads((evidence / "supervision.json").read_text())
+    assert supervision["cleanup_errors"][0]["stage"] == "cleanup-grace-wait"
+    assert "cleanup wait failure" in supervision["cleanup_errors"][0]["message"]
+    assert json.loads((evidence / "result.json").read_text())["comparator_semantic_status"] == "NOT_ESTABLISHED"
+    assert_sealed(evidence)
+
+
+def test_normal_exit_cleanup_error_downgrades_success_report(tmp_path, monkeypatch):
+    proof = tmp_path / "proof-run"
+    proof.mkdir()
+    proof_fixture(proof)
+    write_result(tmp_path, "complete", 0, "COMPARATOR_ACCEPTED_SELECTED_THEOREM", REPO, True)
+    original_signal = math_pilot_runner._signal_group
+    first = True
+
+    def group_signal(pid, signum):
+        nonlocal first
+        if first:
+            first = False
+            raise OSError("injected completed-group cleanup failure")
+        original_signal(pid, signum)
+
+    monkeypatch.setattr(math_pilot_runner, "_signal_group", group_signal)
+    code = supervise_run(["true"], tmp_path, REPO, timeout=1, grace=0.1)
+    assert code != 0
+    report = json.loads((tmp_path / "result.json").read_text())
+    assert report["runner_exit_code"] == code
+    assert report["comparator_semantic_status"] == "NOT_ESTABLISHED"
+    supervision = json.loads((tmp_path / "supervision.json").read_text())
+    assert supervision["cleanup_errors"][0]["stage"] == "completed-group-kill"
+    assert_sealed(tmp_path)
+
+
+@pytest.mark.parametrize("interrupted", [False, True])
+def test_cleanup_error_preserves_timeout_or_interruption_status(tmp_path, monkeypatch, interrupted):
+    evidence = tmp_path / "evidence"
+    command = sleeping_preparation_command(evidence)
+    original_wait = subprocess.Popen.wait
+    original_signal = math_pilot_runner._signal_group
+    first = True
+
+    def wait(process, *args, **kwargs):
+        nonlocal first
+        if interrupted and first and process.args == command:
+            first = False
+            deadline = time.monotonic() + 3
+            while not (evidence / "preparation-child.pid").exists() and time.monotonic() < deadline:
+                time.sleep(0.01)
+            raise SystemExit(143)
+        return original_wait(process, *args, **kwargs)
+
+    def group_signal(pid, signum):
+        if signum == signal.SIGTERM:
+            raise OSError("injected TERM cleanup failure")
+        original_signal(pid, signum)
+
+    monkeypatch.setattr(subprocess.Popen, "wait", wait)
+    monkeypatch.setattr(math_pilot_runner, "_signal_group", group_signal)
+    expected = 143 if interrupted else 124
+    code = supervise_run(command, evidence, REPO, timeout=0.2, grace=0.1)
+    assert code == expected
+    assert not live(int((evidence / "preparation-child.pid").read_text()))
+    supervision = json.loads((evidence / "supervision.json").read_text())
+    assert supervision["runner_exit_code"] == expected
+    assert supervision["whole_run_timed_out"] is (not interrupted)
+    assert supervision["cleanup_errors"][0]["stage"] == "cleanup-term"
+    report = json.loads((evidence / "result.json").read_text())
+    assert report["runner_exit_code"] == expected
+    assert report["comparator_semantic_status"] == "NOT_ESTABLISHED"
+    assert_sealed(evidence)
 
 
 @pytest.mark.parametrize("timeout", [float("nan"), float("inf"), 0, -1, 3301])
