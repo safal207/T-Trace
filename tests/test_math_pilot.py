@@ -96,6 +96,89 @@ class ReceiptIntegrityTests(unittest.TestCase):
         self.record("sleep", timeout=0.1)
         self.assertEqual(self.verify()["execution_status"], "TIMEOUT")
 
+    def _mock_owned_process(self, waits, returncode=None):
+        process = mock.Mock(spec=subprocess.Popen)
+        process.pid = 123456789
+        process.returncode = returncode
+        process.wait.side_effect = waits
+        return process
+
+    def test_unreaped_cleanup_timeout_does_not_seal_receipt(self):
+        execution_timeout = subprocess.TimeoutExpired("synthetic-checker", 0.01)
+        cleanup_timeout = subprocess.TimeoutExpired("synthetic-checker", pilot.CLEANUP_TIMEOUT_SECONDS)
+        for first_wait in (execution_timeout, 0):
+            with self.subTest(first_wait=first_wait):
+                self.out = self.root / ("timed-out" if isinstance(first_wait, Exception) else "normal-exit")
+                process = self._mock_owned_process([first_wait, cleanup_timeout])
+                with mock.patch.object(pilot.subprocess, "Popen", return_value=process), \
+                        mock.patch.object(pilot.os, "killpg"), \
+                        mock.patch.object(pilot, "preflight_manifest", wraps=pilot.preflight_manifest) as preflight:
+                    with self.assertRaisesRegex(pilot.PilotError, "could not be reaped"):
+                        self.record(timeout=0.01)
+                self.assertEqual(process.wait.call_args_list,
+                    [mock.call(timeout=0.01), mock.call(timeout=pilot.CLEANUP_TIMEOUT_SECONDS)])
+                self.assertIsNone(process.returncode)
+                self.assertEqual(preflight.call_count, 1)
+                self.assertFalse((self.out / "receipt.json").exists())
+
+    def test_cleanup_timeout_preserves_original_interruption_or_postspawn_error(self):
+        for original in (KeyboardInterrupt(), SystemExit(143), OSError("synthetic wait error")):
+            with self.subTest(original=type(original).__name__):
+                self.out = self.root / type(original).__name__
+                process = self._mock_owned_process([original,
+                    subprocess.TimeoutExpired("synthetic-checker", pilot.CLEANUP_TIMEOUT_SECONDS)])
+                with mock.patch.object(pilot.subprocess, "Popen", return_value=process), \
+                        mock.patch.object(pilot.os, "killpg"):
+                    with self.assertRaises(type(original)) as raised:
+                        self.record(timeout=0.01)
+                self.assertIs(raised.exception, original)
+                self.assertEqual(process.wait.call_args_list,
+                    [mock.call(timeout=0.01), mock.call(timeout=pilot.CLEANUP_TIMEOUT_SECONDS)])
+                self.assertFalse((self.out / "receipt.json").exists())
+
+    def test_stop_error_still_attempts_bounded_reap_and_cannot_seal_success(self):
+        original = OSError("synthetic group kill failure")
+        process = self._mock_owned_process([0, 0], returncode=0)
+        with mock.patch.object(pilot.subprocess, "Popen", return_value=process), \
+                mock.patch.object(pilot.os, "killpg", side_effect=original):
+            with self.assertRaises(OSError) as raised:
+                self.record(timeout=0.01)
+        self.assertIs(raised.exception, original)
+        self.assertEqual(process.wait.call_args_list,
+            [mock.call(timeout=0.01), mock.call(timeout=pilot.CLEANUP_TIMEOUT_SECONDS)])
+        self.assertFalse((self.out / "receipt.json").exists())
+
+    def test_cleanup_wait_return_without_reaped_exit_code_cannot_seal_success(self):
+        for code in (None, True):
+            with self.subTest(code=code):
+                self.out = self.root / str(code)
+                process = self._mock_owned_process([0, 0], returncode=code)
+                with mock.patch.object(pilot.subprocess, "Popen", return_value=process), \
+                        mock.patch.object(pilot.os, "killpg"):
+                    with self.assertRaisesRegex(pilot.PilotError, "did not establish a reaped exit code"):
+                        self.record(timeout=0.01)
+                self.assertFalse((self.out / "receipt.json").exists())
+
+    def test_zero_exit_during_cleanup_keeps_timed_out_verdict_and_actual_code(self):
+        process = self._mock_owned_process([
+            subprocess.TimeoutExpired("synthetic-checker", 0.01), 0], returncode=0)
+        with mock.patch.object(pilot.subprocess, "Popen", return_value=process), \
+                mock.patch.object(pilot.os, "killpg", side_effect=ProcessLookupError):
+            receipt = self.record(timeout=0.01)
+        self.assertEqual(receipt["exit_code"], 0)
+        self.assertEqual(receipt["execution_status"], "TIMEOUT")
+        result = self.verify()
+        self.assertEqual(result["execution_status"], "TIMEOUT")
+        self.assertEqual(result["proof_semantic_status"], "NOT_ESTABLISHED")
+
+    def test_timeout_receipt_requires_actual_integer_exit_code(self):
+        self.record("sleep", timeout=0.1)
+        for code in (None, True):
+            with self.subTest(code=code):
+                self.mutate_receipt(lambda receipt: receipt.update(exit_code=code))
+                with self.assertRaisesRegex(pilot.PilotError, "execution status disagrees with exit code"):
+                    self.verify()
+
     def test_nonfinite_or_nonpositive_timeout_rejected_before_any_execution(self):
         for timeout in (float("nan"), float("inf"), float("-inf"), 0, -1):
             with self.subTest(timeout=timeout), mock.patch.object(pilot.subprocess, "Popen") as spawn:
@@ -203,7 +286,7 @@ class ReceiptIntegrityTests(unittest.TestCase):
                             os.killpg(process.pid, signal.SIGKILL)
                         except ProcessLookupError:
                             pass
-                        process.wait()
+                        process.wait(timeout=pilot.CLEANUP_TIMEOUT_SECONDS)
 
     @unittest.skipUnless(os.name == "posix" and Path("/proc").is_dir(), "POSIX process groups with procfs")
     def test_record_cli_signals_clean_checker_group(self):

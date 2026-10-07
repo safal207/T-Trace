@@ -31,6 +31,7 @@ MANIFEST_SCHEMA = "math-pilot-manifest/v1"
 RECEIPT_SCHEMA = "math-pilot-receipt/v1"
 SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 COMMIT = re.compile(r"[0-9a-f]{40}\Z")
+CLEANUP_TIMEOUT_SECONDS = 5
 
 
 class PilotError(ValueError):
@@ -272,7 +273,8 @@ def _tool_identity(command: list[str], bundle: Path) -> dict[str, Any]:
 
 
 def _terminate_owned_process(process: subprocess.Popen) -> None:
-    """Stop the invocation's group, including descendants of an exited leader."""
+    """Signal the owned group and attempt a bounded reap of its launcher."""
+    stop_error = None
     try:
         if os.name == "posix":
             os.killpg(process.pid, signal.SIGKILL)
@@ -280,7 +282,22 @@ def _terminate_owned_process(process: subprocess.Popen) -> None:
             process.kill()
     except ProcessLookupError:
         pass
-    process.wait()
+    except BaseException as error:
+        stop_error = error
+    try:
+        process.wait(timeout=CLEANUP_TIMEOUT_SECONDS)
+    except subprocess.TimeoutExpired as error:
+        if stop_error is not None:
+            raise stop_error from error
+        raise PilotError("owned process could not be reaped within the cleanup timeout") from error
+    except BaseException:
+        if stop_error is not None:
+            raise stop_error
+        raise
+    if stop_error is not None:
+        raise stop_error
+    if type(process.returncode) is not int:
+        raise PilotError("owned process cleanup did not establish a reaped exit code")
 
 
 def run_record(bundle: Path, manifest_path: Path, out: Path, command: list[str],
@@ -431,7 +448,8 @@ def verify_receipt(bundle: Path, manifest_path: Path, receipt_path: Path, *,
     if receipt["proof_semantic_status"] != expected_semantic:
         raise PilotError("receipt overstates proof semantics")
     if (status == "EXIT_ZERO" and (type(code) is not int or code != 0)) or (
-            status in ("EXIT_NONZERO", "TIMEOUT") and (type(code) is not int or code == 0)) or (
+            status == "EXIT_NONZERO" and (type(code) is not int or code == 0)) or (
+            status == "TIMEOUT" and type(code) is not int) or (
             status == "SPAWN_FAILED" and code is not None):
         raise PilotError("execution status disagrees with exit code")
     tool = receipt["tool_identity"]

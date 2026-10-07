@@ -94,9 +94,13 @@ path and hash, actual exit status, stdout/stderr file hashes and timestamps.
 It performs no implicit version command outside the supplied argv. Runtime
 versions must be collected with the intended isolation and bound separately.
 Execution requires a finite positive timeout. On an interrupted or failed wait,
-the adapter terminates its owned process group and reaps the launcher before
-propagating the exception. The `record` CLI handles SIGTERM through that cleanup
-path; interruption can end without an execution receipt.
+the adapter attempts to terminate its owned process group and reap the launcher
+with a bounded final wait before returning or propagating an exception. If the
+launcher cannot be reaped, execution ends with an error and no receipt. Sending
+a kill signal alone does not establish that every descendant has stopped; the
+execution environment remains responsible for containment. The `record` CLI
+handles SIGTERM through that cleanup path; interruption can end without an
+execution receipt.
 
 Verification checks that the recorded launcher path agrees with `command[0]`.
 This is internal consistency, not authentication of the executable digest.
@@ -117,10 +121,12 @@ process. A process could temporarily modify and restore them between snapshots.
 Read-only input enforcement and verified sandbox behavior are responsibilities
 of the execution environment. `record` is not a sandbox.
 
-An intact receipt for an exit-zero process has semantic status `UNASSESSED`.
-Nonzero, spawn failure or timeout remains `NOT_ESTABLISHED`; input preflight
-remains `NOT_RUN`. Receipt integrity does not authenticate its issuer or prove
-that a supplied unsigned execution record was not fabricated.
+An intact receipt with execution status `EXIT_ZERO` has semantic status
+`UNASSESSED`. An expired deadline remains `TIMEOUT` and `NOT_ESTABLISHED`, even
+if the launcher finishes with code 0 during cleanup. Nonzero and spawn failure
+also remain `NOT_ESTABLISHED`; input preflight remains `NOT_RUN`. Receipt
+integrity does not authenticate its issuer or prove that a supplied unsigned
+execution record was not fabricated.
 
 ## Controls and execution gates
 
