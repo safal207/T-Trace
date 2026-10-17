@@ -83,6 +83,8 @@ record-integrity claim remains insufficient without a real evidence adapter.
 
 Read: [OpenPoC-02](openpoc-02-independent-reproducibility.md).
 
+For public IETF/Governex commentary kept deliberately separate from machine-generated conformance reports, see [Governex publication and context notes](governex-public-context.md).
+
 ## 4. Review external receipts
 
 These are separate, bounded compatibility subjects. Do not add their counts
