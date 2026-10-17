@@ -51,6 +51,7 @@ Event logs answer **what was recorded**. T-Trace adds machine-checkable transiti
 
 - Reviewer path and claim map: [docs/reviewer-path.md](docs/reviewer-path.md)
 - Agent-evaluation completeness brief: [three runnable omission/replay controls](docs/eval-completeness-reviewer-brief.md)
+- Governex/IETF public context (kept separate from generated reports): [docs/governex-public-context.md](docs/governex-public-context.md)
 - OpenPoC-03 cross-source correlation: [docs/openpoc-03-cross-source-correlation.md](docs/openpoc-03-cross-source-correlation.md)
 - Grant evidence: [docs/GRANT_EVIDENCE.md](docs/GRANT_EVIDENCE.md)
 - Protocol spec: [spec/t-trace.md](spec/t-trace.md)
